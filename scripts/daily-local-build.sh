@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 # Daily local macOS build: sync your GitHub fork, build release .app + DMG when changed.
 #
-# Defaults track origin/main on your fork (hliebscher/openhuman). Optionally merges
+# Defaults track origin/daily-local-build on your fork. Optionally merges
 # upstream/main (tinyhumansai/openhuman) before each build and pushes back to origin.
 #
 # Usage (from repo root or anywhere):
 #   scripts/daily-local-build.sh              # update + build only when HEAD moved
-#   scripts/daily-local-build.sh --force      # build even when already up to date
+#   scripts/daily-local-build.sh --force      # build even when up to date; dirty tree → local-only
+#   scripts/daily-local-build.sh --no-sync    # skip git fetch/merge; build current tree
 #   scripts/daily-local-build.sh --dry-run    # fetch + report; no checkout/build
 #   scripts/daily-local-build.sh --debug      # debug build instead of release
 #
 # Environment:
 #   OPENHUMAN_SYNC_REMOTE=origin              Fork remote (default: origin)
-#   OPENHUMAN_TRACK_BRANCH=main               Branch on your fork (default: main)
+#   OPENHUMAN_TRACK_BRANCH=daily-local-build   Branch on your fork
 #   OPENHUMAN_MERGE_UPSTREAM=1                Merge upstream/main before build (default: 1)
 #
 # Schedule daily with launchd:
@@ -28,18 +29,21 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
 SYNC_REMOTE="${OPENHUMAN_SYNC_REMOTE:-origin}"
-TRACK_BRANCH="${OPENHUMAN_TRACK_BRANCH:-main}"
+TRACK_BRANCH="${OPENHUMAN_TRACK_BRANCH:-daily-local-build}"
 MERGE_UPSTREAM="${OPENHUMAN_MERGE_UPSTREAM:-1}"
 REMOTE_REF="${SYNC_REMOTE}/${TRACK_BRANCH}"
 
 FORCE=0
 DRY_RUN=0
+NO_SYNC=0
 BUILD_MODE="release"
 APPLICATIONS_LINK="${HOME}/Applications/OpenHuman (Daily).app"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --) shift; continue ;;
     --force) FORCE=1; shift ;;
+    --no-sync) NO_SYNC=1; shift ;;
     --dry-run|-n) DRY_RUN=1; shift ;;
     --debug) BUILD_MODE="debug"; shift ;;
     -h|--help)
@@ -156,7 +160,16 @@ push_to_fork() {
 }
 
 sync_from_fork() {
-  local before_sha after_sha
+  local before_sha after_sha dirty_files
+
+  if [[ "$NO_SYNC" -eq 1 ]]; then
+    log "--no-sync: skipping git fetch/merge; building current working tree"
+    before_sha="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
+    log "local HEAD: $before_sha"
+    log "installing JS dependencies..."
+    pnpm install --frozen-lockfile 2>/dev/null || pnpm install
+    return 0
+  fi
 
   log "fetching remotes (fork=$SYNC_REMOTE branch=$TRACK_BRANCH merge_upstream=$MERGE_UPSTREAM)..."
   if [[ "$MERGE_UPSTREAM" == "1" ]] && git remote get-url upstream >/dev/null 2>&1; then
@@ -179,8 +192,22 @@ sync_from_fork() {
     exit 0
   fi
 
-  if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
-    log "working tree has uncommitted tracked changes; refusing to sync/build (commit, stash, or reset)"
+  dirty_files="$(git status --porcelain --untracked-files=no || true)"
+  if [[ -n "$dirty_files" ]]; then
+    if [[ "$FORCE" -eq 1 ]]; then
+      log "WARNING: uncommitted tracked changes — skipping sync, building local tree (--force)"
+      log "dirty files:"
+      echo "$dirty_files" | sed 's/^/[daily-build]   /'
+      log "installing JS dependencies..."
+      pnpm install --frozen-lockfile 2>/dev/null || pnpm install
+      return 0
+    fi
+    log "working tree has uncommitted tracked changes; refusing to sync/build"
+    log "  • commit or stash, then retry"
+    log "  • or: bash scripts/daily-local-build.sh --force   (build local tree, skip sync)"
+    log "  • or: bash scripts/daily-local-build.sh --no-sync"
+    log "dirty files:"
+    echo "$dirty_files" | sed 's/^/[daily-build]   /'
     write_state "${before_sha:-unknown}" "" "" "" "skipped_dirty_tree"
     exit 0
   fi
