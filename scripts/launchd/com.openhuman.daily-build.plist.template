@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.openhuman.daily-build</string>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/bin/bash</string>
+      <string>-lc</string>
+      <string>@@REPO_ROOT@@/scripts/daily-local-build.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>@@REPO_ROOT@@</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>PATH</key>
+      <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+      <key>HOME</key>
+      <string>@@HOME_DIR@@</string>
+      <key>OPENHUMAN_SYNC_REMOTE</key>
+      <string>origin</string>
+      <key>OPENHUMAN_TRACK_BRANCH</key>
+      <string>daily-local-build</string>
+      <key>OPENHUMAN_MERGE_UPSTREAM</key>
+      <string>1</string>
+    </dict>
+
+    <!-- Daily at 06:00 local time -->
+    <key>StartCalendarInterval</key>
+    <dict>
+      <key>Hour</key>
+      <integer>6</integer>
+      <key>Minute</key>
+      <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>@@REPO_ROOT@@/target/daily-build/logs/launchd.stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>@@REPO_ROOT@@/target/daily-build/logs/launchd.stderr.log</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+  </dict>
+</plist>
