@@ -18,6 +18,7 @@ mod state;
 mod types;
 mod vision;
 
+pub use engine::record_core_process_started;
 pub use ops as rpc;
 pub use ops::*;
 pub use schemas::{

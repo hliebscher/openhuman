@@ -8,7 +8,8 @@
 use crate::openhuman::config::ScreenIntelligenceConfig;
 use std::collections::VecDeque;
 use std::path::PathBuf;
-use std::sync::{Arc, OnceLock};
+use std::sync::atomic::{AtomicI64, Ordering};
+use std::sync::Arc;
 
 use super::capture::now_ms;
 use super::helpers::push_ephemeral_frame;
@@ -586,9 +587,25 @@ impl AccessibilityEngine {
     }
 }
 
+static CORE_PROCESS_STARTED_AT_MS: AtomicI64 = AtomicI64::new(0);
+
+/// Records when the embedded core server last became ready.
+///
+/// Called from the Tauri shell after `restart_core_process` or initial startup
+/// so permission-refresh UI can detect a real restart (PID stays the OpenHuman
+/// app process; only this timestamp changes).
+pub fn record_core_process_started() {
+    let now = now_ms();
+    CORE_PROCESS_STARTED_AT_MS.store(now, Ordering::SeqCst);
+    tracing::debug!("[screen_intelligence] core_process_started_at_ms recorded={now}");
+}
+
 fn core_process_started_at_ms() -> i64 {
-    static CORE_PROCESS_STARTED_AT_MS: OnceLock<i64> = OnceLock::new();
-    *CORE_PROCESS_STARTED_AT_MS.get_or_init(now_ms)
+    let stored = CORE_PROCESS_STARTED_AT_MS.load(Ordering::SeqCst);
+    if stored == 0 {
+        record_core_process_started();
+    }
+    CORE_PROCESS_STARTED_AT_MS.load(Ordering::SeqCst)
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────

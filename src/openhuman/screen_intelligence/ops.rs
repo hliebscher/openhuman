@@ -254,6 +254,34 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn record_core_process_started_updates_status_timestamp() {
+        use super::super::record_core_process_started;
+        use tokio::time::{sleep, Duration};
+
+        record_core_process_started();
+        let t1 = accessibility_status()
+            .await
+            .expect("status")
+            .value
+            .core_process
+            .expect("core_process")
+            .started_at_ms;
+        sleep(Duration::from_millis(10)).await;
+        record_core_process_started();
+        let t2 = accessibility_status()
+            .await
+            .expect("status")
+            .value
+            .core_process
+            .expect("core_process")
+            .started_at_ms;
+        assert_ne!(
+            t1, t2,
+            "started_at_ms should advance after record_core_process_started"
+        );
+    }
+
+    #[tokio::test]
     async fn accessibility_doctor_cli_json_returns_summary_permissions_and_recommendations() {
         let v = accessibility_doctor_cli_json().await.expect("doctor json");
         assert!(v.get("result").is_some());

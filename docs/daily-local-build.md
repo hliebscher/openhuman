@@ -8,6 +8,7 @@ Anleitung für einen **persönlichen Build-Rechner**, der OpenHuman aus **deinem
 | Branch | `daily-local-build` |
 | Upstream-Merge | ja (`upstream/main` von tinyhumansai/openhuman) |
 | Automatik | launchd, täglich 06:00 |
+| macOS-Architektur | **nur Apple Silicon** (`aarch64-apple-darwin` / `arm64`) — kein Intel |
 | Launcher | `~/Applications/OpenHuman (Daily).app` |
 
 ---
@@ -189,13 +190,42 @@ OPENHUMAN_MERGE_UPSTREAM=0 pnpm daily:build
 
 ## 4. Build-Artefakte
 
-Nach erfolgreichem Release-Build:
+Nach erfolgreichem Release-Build (**Apple Silicon only**):
 
 | Artefakt | Pfad |
 |----------|------|
-| App | `app/src-tauri/target/release/bundle/macos/OpenHuman.app` |
-| DMG | `app/src-tauri/target/release/bundle/dmg/OpenHuman_<version>_arm64.dmg` |
+| App | `app/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/OpenHuman.app` |
+| Core in der App (MCP/CLI) | `…/OpenHuman.app/Contents/MacOS/openhuman-core` |
+| Core für Skripte | `target/release/openhuman-core` (Kopie aus dem arm64-Build) |
+| CLI im Terminal | `~/.local/bin/openhuman-core` (Symlink auf die Staging-Binary) |
+| DMG | `…/bundle/dmg/OpenHuman_<version>_arm64.dmg` |
 | Launcher | `~/Applications/OpenHuman (Daily).app` |
+
+Das Skript baut `openhuman-core` separat und kopiert die Binary nach:
+
+1. **`Contents/MacOS/openhuman-core`** neben `OpenHuman` (Release-MCP-Pfad in der App)
+2. **`target/release/openhuman-core`** im Repo-Root (für `serve`, Tests, Skripte)
+3. **`~/.local/bin/openhuman-core`** — Symlink für Terminal-CLI (`openhuman-core serve`, `openhuman-core mcp`, …)
+
+Falls `~/.local/bin` noch nicht in der `PATH` steht, wird es einmalig in `.zshrc` / `.bashrc` ergänzt.
+
+### CLI ohne vollen App-Build
+
+Wenn nur die Core-Binary fehlt (z. B. MCP-Einstellungen in der App zeigen „Binary not found“):
+
+```bash
+pnpm daily:cli
+# oder nach einem Daily-Build automatisch mit dabei
+```
+
+Prüfen:
+
+```bash
+openhuman-core --help
+openhuman-core serve   # JSON-RPC auf :7788 (eigenes Terminal)
+```
+
+Es gibt **keine** Intel- (`x86_64`) oder Universal-Builds in diesem Workflow.
 
 App starten:
 
@@ -304,6 +334,10 @@ bash scripts/daily-local-build.sh --no-sync
 # ── Logs & Status ──
 tail -f target/daily-build/logs/latest.log
 cat target/daily-build/last-build.json
+
+# ── CLI (Terminal / MCP-Snippets) ──
+pnpm daily:cli
+openhuman-core --help
 
 # ── App starten ──
 open ~/Applications/OpenHuman\ \(Daily\).app

@@ -329,6 +329,7 @@ impl CoreProcessHandle {
 
                 if received_ready && self.is_rpc_port_open().await {
                     log::info!("[core] core rpc became ready at {}", self.rpc_url());
+                    openhuman_core::openhuman::screen_intelligence::record_core_process_started();
                     return Ok(());
                 }
 
@@ -575,7 +576,10 @@ impl CoreProcessHandle {
 
         let result = self.ensure_running().await;
         match &result {
-            Ok(()) => log::info!("[core] restart: embedded core ready after restart"),
+            Ok(()) => {
+                log::info!("[core] restart: embedded core ready after restart");
+                openhuman_core::openhuman::screen_intelligence::record_core_process_started();
+            }
             Err(e) => log::error!("[core] restart: failed to restart embedded core: {e}"),
         }
         result

@@ -45,9 +45,13 @@ fi
 
 mkdir -p "$HOME/Library/LaunchAgents" "$REPO_ROOT/target/daily-build/logs"
 
+RUST_CHANNEL="$(grep -E '^channel\s*=' "$REPO_ROOT/rust-toolchain.toml" 2>/dev/null | sed -E 's/.*"([^"]+)".*/\1/' || echo "1.93.0")"
+RUST_BIN="$HOME/.rustup/toolchains/${RUST_CHANNEL}-aarch64-apple-darwin/bin"
+
 sed \
   -e "s|@@REPO_ROOT@@|$REPO_ROOT|g" \
   -e "s|@@HOME_DIR@@|$HOME|g" \
+  -e "s|@@RUST_BIN@@|$RUST_BIN|g" \
   "$TEMPLATE" >"$DEST.tmp"
 
 # Patch schedule hour/minute without requiring a second template.
@@ -62,5 +66,6 @@ echo "[install-daily-build-launchd] installed $DEST"
 echo "[install-daily-build-launchd] schedule: daily at $(printf '%02d:%02d' "$HOUR" "$MINUTE")"
 echo "[install-daily-build-launchd] fork remote: origin (override: OPENHUMAN_SYNC_REMOTE)"
 echo "[install-daily-build-launchd] track branch: daily-local-build (override: OPENHUMAN_TRACK_BRANCH)"
+echo "[install-daily-build-launchd] macOS target: aarch64-apple-darwin (Apple Silicon only)"
 echo "[install-daily-build-launchd] manual run: $REPO_ROOT/scripts/daily-local-build.sh"
 echo "[install-daily-build-launchd] logs: $REPO_ROOT/target/daily-build/logs/"

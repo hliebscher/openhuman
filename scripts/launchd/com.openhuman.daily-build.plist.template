@@ -18,7 +18,7 @@
     <key>EnvironmentVariables</key>
     <dict>
       <key>PATH</key>
-      <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+      <string>@@RUST_BIN@@:@@REPO_ROOT@@/.cache/cargo-install/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
       <key>HOME</key>
       <string>@@HOME_DIR@@</string>
       <key>OPENHUMAN_SYNC_REMOTE</key>
@@ -27,6 +27,8 @@
       <string>daily-local-build</string>
       <key>OPENHUMAN_MERGE_UPSTREAM</key>
       <string>1</string>
+      <key>OPENHUMAN_MACOS_TARGET</key>
+      <string>aarch64-apple-darwin</string>
     </dict>
 
     <!-- Daily at 06:00 local time -->

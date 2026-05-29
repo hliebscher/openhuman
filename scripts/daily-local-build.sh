@@ -15,6 +15,7 @@
 #   OPENHUMAN_SYNC_REMOTE=origin              Fork remote (default: origin)
 #   OPENHUMAN_TRACK_BRANCH=daily-local-build   Branch on your fork
 #   OPENHUMAN_MERGE_UPSTREAM=1                Merge upstream/main before build (default: 1)
+#   OPENHUMAN_MACOS_TARGET=aarch64-apple-darwin  Apple Silicon only (default; no Intel)
 #
 # Schedule daily with launchd:
 #   scripts/install-daily-build-launchd.sh
@@ -38,6 +39,9 @@ DRY_RUN=0
 NO_SYNC=0
 BUILD_MODE="release"
 APPLICATIONS_LINK="${HOME}/Applications/OpenHuman (Daily).app"
+# Daily builds are Apple Silicon (arm64) only — no x86_64 / universal artifacts.
+MACOS_TARGET="${OPENHUMAN_MACOS_TARGET:-aarch64-apple-darwin}"
+ARCH_LABEL="arm64"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -79,15 +83,18 @@ acquire_lock() {
 }
 
 write_state() {
-  local sha="$1" version="$2" app_path="$3" dmg_path="$4" status="$5"
+  local sha="$1" version="$2" app_path="$3" dmg_path="$4" status="$5" core_path="${6:-}" cli_shim="${7:-}"
   cat >"$STATE_DIR/last-build.json" <<EOF
 {
   "status": "$status",
   "sha": "$sha",
   "version": "$version",
   "build_mode": "$BUILD_MODE",
+  "macos_target": "$MACOS_TARGET",
   "app_path": "$app_path",
   "dmg_path": "$dmg_path",
+  "core_binary_path": "$core_path",
+  "cli_shim_path": "$cli_shim",
   "applications_link": "$APPLICATIONS_LINK",
   "sync_remote": "$SYNC_REMOTE",
   "track_branch": "$TRACK_BRANCH",
@@ -96,6 +103,120 @@ write_state() {
   "finished_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 }
 EOF
+}
+
+ensure_local_bin_on_path() {
+  local bin_dir="${HOME}/.local/bin"
+  if echo ":${PATH}:" | grep -q ":${bin_dir}:"; then
+    return 0
+  fi
+  local shell_name config_file
+  shell_name="$(basename "${SHELL:-/bin/bash}")"
+  case "${shell_name}" in
+    zsh) config_file="${HOME}/.zshrc" ;;
+    bash) config_file="${HOME}/.bashrc" ;;
+    *) config_file="${HOME}/.profile" ;;
+  esac
+  if [[ ! -f "$config_file" ]]; then
+    touch "$config_file"
+  fi
+  if ! grep -q '.local/bin' "$config_file" 2>/dev/null; then
+    {
+      echo ""
+      echo '# OpenHuman daily build — user binaries on PATH'
+      echo 'export PATH="$HOME/.local/bin:$PATH"'
+    } >>"$config_file"
+    log "added ~/.local/bin to PATH via $config_file (open a new shell or: source $config_file)"
+  fi
+}
+
+# Symlink openhuman-core into ~/.local/bin for terminal CLI + MCP config snippets.
+install_cli_shims() {
+  local core_binary="$1"
+  local bin_dir="${HOME}/.local/bin"
+  local shim="${bin_dir}/openhuman-core"
+
+  if [[ ! -x "$core_binary" ]]; then
+    log "ERROR: cannot install CLI shim — not executable: $core_binary"
+    exit 1
+  fi
+
+  mkdir -p "$bin_dir"
+  ln -sf "$core_binary" "$shim"
+  ensure_local_bin_on_path
+  log "CLI: $shim -> $core_binary"
+  printf '%s\n' "$shim"
+}
+
+require_apple_silicon_host() {
+  local host_arch
+  host_arch="$(uname -m)"
+  if [[ "$MACOS_TARGET" != "aarch64-apple-darwin" ]]; then
+    log "ERROR: daily build only supports OPENHUMAN_MACOS_TARGET=aarch64-apple-darwin (got $MACOS_TARGET)"
+    exit 1
+  fi
+  if [[ "$host_arch" != "arm64" ]]; then
+    log "ERROR: daily build is Apple Silicon only; this host is $host_arch"
+    log "Intel/universal macOS bundles are not produced by this script."
+    exit 1
+  fi
+  log "macOS target: $MACOS_TARGET ($ARCH_LABEL only)"
+}
+
+tauri_target_dir() {
+  local profile="$1"
+  echo "$REPO_ROOT/app/src-tauri/target/${MACOS_TARGET}/${profile}"
+}
+
+repo_core_target_dir() {
+  local profile="$1"
+  echo "$REPO_ROOT/target/${MACOS_TARGET}/${profile}"
+}
+
+repo_core_staging_dir() {
+  local profile="$1"
+  echo "$REPO_ROOT/target/${profile}"
+}
+
+build_openhuman_core() {
+  local profile="$1"
+  local cargo_profile_flag=()
+  if [[ "$profile" == "release" ]]; then
+    cargo_profile_flag=(--release)
+  fi
+
+  log "building openhuman-core ($MACOS_TARGET, $profile)..." >&2
+  cargo build --manifest-path "$REPO_ROOT/Cargo.toml" \
+    --bin openhuman-core \
+    --target "$MACOS_TARGET" \
+    "${cargo_profile_flag[@]}"
+
+  local built_core staging_core
+  built_core="$(repo_core_target_dir "$profile")/openhuman-core"
+  staging_core="$(repo_core_staging_dir "$profile")/openhuman-core"
+
+  if [[ ! -x "$built_core" ]]; then
+    log "ERROR: openhuman-core missing at $built_core"
+    exit 1
+  fi
+
+  mkdir -p "$(dirname "$staging_core")"
+  cp -f "$built_core" "$staging_core"
+  chmod +x "$staging_core"
+  log "staged openhuman-core for CLI/scripts: $staging_core" >&2
+  printf '%s\n' "$built_core"
+}
+
+stage_core_into_app_bundle() {
+  local profile="$1" app_path="$2"
+  local built_core app_core
+  built_core="$(build_openhuman_core "$profile")"
+  app_core="$app_path/Contents/MacOS/openhuman-core"
+
+  cp -f "$built_core" "$app_core"
+  chmod +x "$app_core"
+  log "installed openhuman-core into app bundle: $app_core" >&2
+  printf '%s\n' "$app_core"
 }
 
 ensure_sync_remote() {
@@ -243,6 +364,7 @@ sync_from_fork() {
 }
 
 build_app() {
+  require_apple_silicon_host
   setup_build_path
 
   if [[ -f "$REPO_ROOT/.env" ]]; then
@@ -255,35 +377,40 @@ build_app() {
   log "ensuring vendored cargo-tauri..."
   bash "$SCRIPT_DIR/ensure-tauri-cli.sh"
 
-  local tauri_args bundle_dir profile_label
+  local tauri_args bundle_dir profile_label profile_name
   if [[ "$BUILD_MODE" == "debug" ]]; then
-    tauri_args=(build --debug --bundles app -- --bin OpenHuman)
-    bundle_dir="$REPO_ROOT/app/src-tauri/target/debug/bundle"
+    tauri_args=(build --debug --target "$MACOS_TARGET" --bundles app -- --bin OpenHuman)
+    profile_name="debug"
     profile_label="debug"
   else
-    tauri_args=(build --bundles app -- --bin OpenHuman)
-    bundle_dir="$REPO_ROOT/app/src-tauri/target/release/bundle"
+    tauri_args=(build --target "$MACOS_TARGET" --bundles app -- --bin OpenHuman)
+    profile_name="release"
     profile_label="release"
   fi
+  bundle_dir="$(tauri_target_dir "$profile_name")/bundle"
 
-  log "starting Tauri $profile_label build (app bundle only)..."
+  log "starting Tauri $profile_label build ($MACOS_TARGET, app bundle only)..."
   (
     cd "$REPO_ROOT/app"
     cargo tauri "${tauri_args[@]}"
   )
 
-  local app_path version arch dmg_dir dmg_path
+  local app_path version dmg_dir dmg_path core_in_app
   app_path="$bundle_dir/macos/OpenHuman.app"
   if [[ ! -d "$app_path" ]]; then
     log "ERROR: expected app bundle missing at $app_path"
     exit 1
   fi
 
+  core_in_app="$(stage_core_into_app_bundle "$profile_name" "$app_path")"
+  local staging_core cli_shim
+  staging_core="$(repo_core_staging_dir "$profile_name")/openhuman-core"
+  cli_shim="$(install_cli_shims "$staging_core")"
+
   version="$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" "$app_path/Contents/Info.plist")"
-  arch="$(uname -m)"
   dmg_dir="$bundle_dir/dmg"
   mkdir -p "$dmg_dir"
-  dmg_path="$dmg_dir/OpenHuman_${version}_${arch}.dmg"
+  dmg_path="$dmg_dir/OpenHuman_${version}_${ARCH_LABEL}.dmg"
 
   log "creating DMG with hdiutil (avoids Finder AppleScript timeouts)..."
   rm -f "$dmg_path"
@@ -296,9 +423,12 @@ build_app() {
 
   local sha
   sha="$(git rev-parse HEAD)"
-  write_state "$sha" "$version" "$app_path" "$dmg_path" "built"
-  log "done — OpenHuman $version ($sha)"
+  write_state "$sha" "$version" "$app_path" "$dmg_path" "built" "$core_in_app" "$cli_shim"
+  log "done — OpenHuman $version ($sha) [$ARCH_LABEL]"
   log "app: $app_path"
+  log "core: $core_in_app"
+  log "core (scripts): $staging_core"
+  log "cli: $cli_shim  (openhuman-core --help)"
   log "dmg: $dmg_path"
   log "launcher: $APPLICATIONS_LINK"
   log "fork: $REMOTE_REF"

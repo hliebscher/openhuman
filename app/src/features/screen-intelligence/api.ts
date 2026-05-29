@@ -9,7 +9,7 @@ import {
   openhumanAccessibilityVisionFlush,
   openhumanAccessibilityVisionRecent,
   openhumanScreenIntelligenceCaptureTest,
-  openhumanServiceRestart,
+  restartCoreProcess,
 } from '../../utils/tauriCommands';
 
 const ACCESSIBILITY_ERROR_PREFIX = '[screen-intelligence]';
@@ -66,11 +66,14 @@ export async function refreshScreenIntelligencePermissionsWithRestart(
     console.debug(
       `${ACCESSIBILITY_ERROR_PREFIX} refreshPermissionsWithRestart: requesting core self-restart`
     );
-    await openhumanServiceRestart('screen-intelligence-ui', 'refresh_permissions');
+    // In-process desktop: restart the embedded JSON-RPC server via Tauri IPC.
+    // `openhuman.service_restart` targets standalone CLI sidecars and does not
+    // recycle the in-app core (PID stays the OpenHuman.app process).
+    await restartCoreProcess();
     console.debug(
-      `${ACCESSIBILITY_ERROR_PREFIX} refreshPermissionsWithRestart: waiting for sidecar ready`
+      `${ACCESSIBILITY_ERROR_PREFIX} refreshPermissionsWithRestart: waiting for embedded core ready`
     );
-    await new Promise<void>(resolve => setTimeout(resolve, 400));
+    await new Promise<void>(resolve => setTimeout(resolve, 800));
     console.debug(
       `${ACCESSIBILITY_ERROR_PREFIX} refreshPermissionsWithRestart: fetching updated status`
     );
@@ -85,14 +88,15 @@ export async function refreshScreenIntelligencePermissionsWithRestart(
           status.permissions.input_monitoring
         );
         const currentProcess = status.core_process;
+        // PID is always the OpenHuman.app process when core is in-process; only
+        // `started_at_ms` changes after a successful embedded restart.
         if (
           previousProcess &&
           currentProcess &&
-          previousProcess.pid === currentProcess.pid &&
           previousProcess.started_at_ms === currentProcess.started_at_ms
         ) {
           throw new Error(
-            `Core restart command completed, but the same core instance is still serving requests (${formatCoreIdentity(status)}).`
+            `Core restart command completed, but the same core instance is still serving requests (${formatCoreIdentity(status)}). Quit and reopen the app, or try again.`
           );
         }
 
