@@ -81,6 +81,7 @@ pub fn run(config: &Config) -> Result<DoctorReport> {
     check_memory_tree_db(config, &mut items);
     check_embedding_model_health(config, &mut items);
     check_claude_agent_sdk(config, &mut items);
+    items.extend(super::permissions::check_permissions());
 
     let errors = items
         .iter()

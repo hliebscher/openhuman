@@ -126,3 +126,20 @@ fn check_memory_tree_db_ok_when_accessible() {
         ok_items[0].message
     );
 }
+
+#[test]
+fn report_includes_permission_diagnostics() {
+    let config = Config::default();
+    let report = run(&config).expect("doctor report");
+    assert!(
+        report
+            .items
+            .iter()
+            .any(|i| i.category.starts_with("permissions")),
+        "doctor report should include at least one permissions item"
+    );
+    assert!(
+        report.items.iter().any(|i| i.category == "bundle"),
+        "doctor report should include a bundle-signature item"
+    );
+}
