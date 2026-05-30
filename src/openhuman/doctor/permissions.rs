@@ -5,6 +5,7 @@
 
 use super::core::{DiagnosticItem, Severity};
 use crate::openhuman::accessibility::PermissionState;
+use crate::openhuman::accessibility::detect_permissions;
 use std::path::{Path, PathBuf};
 
 /// Severity for a single permission. Denied is a warning (feature restricted);
@@ -112,6 +113,78 @@ fn bundle_signature_item_from_codesign(codesign_stderr: Option<&str>) -> Diagnos
              across rebuilds.",
         )
     }
+}
+
+/// Run `codesign -dvv` against a bundle and return its combined output, or
+/// `None` if codesign is unavailable or fails. Read-only, fail-soft.
+#[cfg(target_os = "macos")]
+fn run_codesign(bundle: &Path) -> Option<String> {
+    let output = std::process::Command::new("codesign")
+        .arg("-dvv")
+        .arg(bundle)
+        .output()
+        .ok()?;
+    // codesign writes its description to stderr.
+    Some(String::from_utf8_lossy(&output.stderr).into_owned())
+}
+
+/// Full permission + bundle-signature diagnosis, appended to the doctor report.
+pub(super) fn check_permissions() -> Vec<DiagnosticItem> {
+    let mut items = Vec::new();
+    let perms = detect_permissions();
+
+    items.push(permission_item(
+        "accessibility",
+        &perms.accessibility,
+        "Accessibility",
+        "controlling keyboard/mouse and reading focused text (autocomplete, overlay)",
+        "Privacy_Accessibility",
+    ));
+    items.push(permission_item(
+        "screen_recording",
+        &perms.screen_recording,
+        "Screen Recording",
+        "Screen Intelligence capture",
+        "Privacy_ScreenCapture",
+    ));
+    items.push(permission_item(
+        "input_monitoring",
+        &perms.input_monitoring,
+        "Input Monitoring",
+        "Tab/Escape and Globe-key detection",
+        "Privacy_ListenEvent",
+    ));
+    items.push(permission_item(
+        "microphone",
+        &perms.microphone,
+        "Microphone",
+        "voice capture",
+        "Privacy_Microphone",
+    ));
+
+    items.push(bundle_signature_check());
+    items
+}
+
+/// Bundle-signature check: macOS resolves the `.app` and runs codesign;
+/// other platforms report not-applicable.
+#[cfg(target_os = "macos")]
+fn bundle_signature_check() -> DiagnosticItem {
+    let bundle = std::env::current_exe()
+        .ok()
+        .and_then(|exe| enclosing_app_bundle(&exe));
+    match bundle {
+        Some(app) => bundle_signature_item_from_codesign(run_codesign(&app).as_deref()),
+        None => bundle_signature_item_from_codesign(None),
+    }
+}
+
+#[cfg(not(target_os = "macos"))]
+fn bundle_signature_check() -> DiagnosticItem {
+    DiagnosticItem::ok(
+        "bundle",
+        "Bundle signature: not applicable on this platform.",
+    )
 }
 
 #[cfg(test)]
