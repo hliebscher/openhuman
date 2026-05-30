@@ -72,7 +72,7 @@ ln -sfn "$LOG_FILE" "$LOG_DIR/latest.log"
 
 exec > >(tee -a "$LOG_FILE") 2>&1
 
-log() { echo "[daily-build] $(date '+%Y-%m-%d %H:%M:%S') $*"; }
+log() { echo "[daily-build] $(date '+%Y-%m-%d %H:%M:%S') $*" >&2; }
 
 acquire_lock() {
   if ! mkdir "$LOCK_FILE" 2>/dev/null; then
@@ -144,7 +144,7 @@ install_cli_shims() {
   mkdir -p "$bin_dir"
   ln -sf "$core_binary" "$shim"
   ensure_local_bin_on_path
-  log "CLI: $shim -> $core_binary"
+  log "CLI: $shim -> $core_binary" >&2
   printf '%s\n' "$shim"
 }
 
