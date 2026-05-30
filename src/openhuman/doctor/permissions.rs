@@ -4,8 +4,8 @@
 //! does not constitute a broken system.
 
 use super::core::{DiagnosticItem, Severity};
-use crate::openhuman::accessibility::PermissionState;
 use crate::openhuman::accessibility::detect_permissions;
+use crate::openhuman::accessibility::PermissionState;
 use std::path::{Path, PathBuf};
 
 /// Severity for a single permission. Denied is a warning (feature restricted);
@@ -13,9 +13,9 @@ use std::path::{Path, PathBuf};
 fn severity_for(state: &PermissionState) -> Severity {
     match state {
         PermissionState::Denied => Severity::Warn,
-        PermissionState::Granted
-        | PermissionState::Unknown
-        | PermissionState::Unsupported => Severity::Ok,
+        PermissionState::Granted | PermissionState::Unknown | PermissionState::Unsupported => {
+            Severity::Ok
+        }
     }
 }
 

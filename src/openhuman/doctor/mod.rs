@@ -1,8 +1,8 @@
 //! Diagnostic checks for OpenHuman configuration, workspace health, and daemon state.
 
 mod core;
-mod permissions;
 pub mod ops;
+mod permissions;
 mod schemas;
 
 pub use core::*;
