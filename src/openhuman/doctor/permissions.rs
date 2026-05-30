@@ -78,6 +78,42 @@ fn enclosing_app_bundle(exe: &Path) -> Option<PathBuf> {
     }
 }
 
+/// Build the bundle-signature diagnostic from raw `codesign -dvv` output.
+///
+/// `None` means we never ran codesign (no enclosing `.app` — plain binary,
+/// `cargo run`, tests, the CLI shim). That is a neutral Ok, not a problem.
+///
+/// Ad-hoc / unsigned bundles produce `Signature=adhoc` (or no Authority line)
+/// and are flagged Warn because macOS keys TCC grants to bundle identity, so a
+/// freshly rebuilt ad-hoc bundle can lose Accessibility / Screen Recording
+/// grants after each daily build.
+fn bundle_signature_item_from_codesign(codesign_stderr: Option<&str>) -> DiagnosticItem {
+    let Some(out) = codesign_stderr else {
+        return DiagnosticItem::ok(
+            "bundle",
+            "Bundle signature: not launched from a .app bundle (plain binary, \
+             dev run, or CLI shim) — TCC stability check skipped.",
+        );
+    };
+    let is_adhoc = out.contains("Signature=adhoc");
+    let has_authority = out.contains("Authority=");
+    if is_adhoc || !has_authority {
+        DiagnosticItem::warn(
+            "bundle",
+            "Bundle signature: ad-hoc / unsigned. macOS keys permission (TCC) \
+             grants to bundle identity, so Accessibility / Screen Recording / \
+             Input Monitoring can reset after each daily rebuild. Fix: give the \
+             bundle a stable ad-hoc identity — see scripts/setup-dev-codesign.sh.",
+        )
+    } else {
+        DiagnosticItem::ok(
+            "bundle",
+            "Bundle signature: stably signed — permission grants should persist \
+             across rebuilds.",
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -151,5 +187,32 @@ mod tests {
     fn bundle_path_none_for_target_debug() {
         let exe = PathBuf::from("/repo/target/debug/openhuman-core");
         assert_eq!(enclosing_app_bundle(&exe), None);
+    }
+
+    #[test]
+    fn classify_adhoc_signature_warns() {
+        // codesign -dvv prints to stderr; ad-hoc shows "Signature=adhoc".
+        let out = "Executable=/Applications/OpenHuman.app/Contents/MacOS/OpenHuman\n\
+                   Identifier=ai.openhuman\nFormat=app bundle\nSignature=adhoc\n";
+        let item = bundle_signature_item_from_codesign(Some(out));
+        assert_eq!(item.severity, Severity::Warn);
+        assert!(item.message.contains("ad-hoc"));
+        assert!(item.message.contains("setup-dev-codesign.sh"));
+    }
+
+    #[test]
+    fn classify_real_signature_is_ok() {
+        let out = "Executable=/Applications/OpenHuman.app/Contents/MacOS/OpenHuman\n\
+                   Authority=Developer ID Application: Example (TEAMID)\n\
+                   TeamIdentifier=TEAMID\n";
+        let item = bundle_signature_item_from_codesign(Some(out));
+        assert_eq!(item.severity, Severity::Ok);
+    }
+
+    #[test]
+    fn classify_no_bundle_is_ok_neutral() {
+        let item = bundle_signature_item_from_codesign(None);
+        assert_eq!(item.severity, Severity::Ok);
+        assert!(item.message.to_lowercase().contains("not launched from"));
     }
 }
