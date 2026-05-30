@@ -62,6 +62,10 @@ fn permission_item(
 /// macOS app binaries live at `<Name>.app/Contents/MacOS/<bin>`. Returns the
 /// `<Name>.app` directory when that layout is present, else `None` (plain CLI
 /// binary, `cargo run`, tests, the `~/.local/bin` shim, etc.).
+///
+/// Only called from the macOS `bundle_signature_check` and the test module;
+/// allow dead_code on non-macOS non-test builds where both callers are cfg'd out.
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
 fn enclosing_app_bundle(exe: &Path) -> Option<PathBuf> {
     let macos_dir = exe.parent()?; // .../Contents/MacOS
     if macos_dir.file_name()?.to_str()? != "MacOS" {
@@ -88,6 +92,10 @@ fn enclosing_app_bundle(exe: &Path) -> Option<PathBuf> {
 /// and are flagged Warn because macOS keys TCC grants to bundle identity, so a
 /// freshly rebuilt ad-hoc bundle can lose Accessibility / Screen Recording
 /// grants after each daily build.
+///
+/// Only called from the macOS `bundle_signature_check` and the test module;
+/// allow dead_code on non-macOS non-test builds where both callers are cfg'd out.
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
 fn bundle_signature_item_from_codesign(codesign_stderr: Option<&str>) -> DiagnosticItem {
     let Some(out) = codesign_stderr else {
         return DiagnosticItem::ok(
@@ -119,11 +127,18 @@ fn bundle_signature_item_from_codesign(codesign_stderr: Option<&str>) -> Diagnos
 /// `None` if codesign is unavailable or fails. Read-only, fail-soft.
 #[cfg(target_os = "macos")]
 fn run_codesign(bundle: &Path) -> Option<String> {
-    let output = std::process::Command::new("codesign")
+    log::debug!("[doctor] running codesign -dvv on {}", bundle.display());
+    let output = match std::process::Command::new("codesign")
         .arg("-dvv")
         .arg(bundle)
         .output()
-        .ok()?;
+    {
+        Ok(out) => out,
+        Err(e) => {
+            log::debug!("[doctor] codesign unavailable or failed: {e}");
+            return None;
+        }
+    };
     // codesign writes its description to stderr.
     Some(String::from_utf8_lossy(&output.stderr).into_owned())
 }
