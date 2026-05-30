@@ -5,6 +5,7 @@
 
 use super::core::{DiagnosticItem, Severity};
 use crate::openhuman::accessibility::PermissionState;
+use std::path::{Path, PathBuf};
 
 /// Severity for a single permission. Denied is a warning (feature restricted);
 /// everything else (granted / unknown / unsupported) is Ok.
@@ -52,6 +53,28 @@ fn permission_item(
         Severity::Ok => DiagnosticItem::ok(format!("permissions:{category_key}"), message),
         Severity::Warn => DiagnosticItem::warn(format!("permissions:{category_key}"), message),
         Severity::Error => DiagnosticItem::error(format!("permissions:{category_key}"), message),
+    }
+}
+
+/// Walk up from an executable path to the enclosing `.app` bundle, if any.
+///
+/// macOS app binaries live at `<Name>.app/Contents/MacOS/<bin>`. Returns the
+/// `<Name>.app` directory when that layout is present, else `None` (plain CLI
+/// binary, `cargo run`, tests, the `~/.local/bin` shim, etc.).
+fn enclosing_app_bundle(exe: &Path) -> Option<PathBuf> {
+    let macos_dir = exe.parent()?; // .../Contents/MacOS
+    if macos_dir.file_name()?.to_str()? != "MacOS" {
+        return None;
+    }
+    let contents_dir = macos_dir.parent()?; // .../Contents
+    if contents_dir.file_name()?.to_str()? != "Contents" {
+        return None;
+    }
+    let app_dir = contents_dir.parent()?; // .../<Name>.app
+    if app_dir.extension()?.to_str()? == "app" {
+        Some(app_dir.to_path_buf())
+    } else {
+        None
     }
 }
 
@@ -107,5 +130,26 @@ mod tests {
         );
         assert_eq!(item.severity, Severity::Ok);
         assert!(item.message.to_lowercase().contains("not applicable"));
+    }
+
+    #[test]
+    fn bundle_path_from_macos_exe() {
+        let exe = PathBuf::from("/Applications/OpenHuman.app/Contents/MacOS/OpenHuman");
+        assert_eq!(
+            enclosing_app_bundle(&exe),
+            Some(PathBuf::from("/Applications/OpenHuman.app"))
+        );
+    }
+
+    #[test]
+    fn bundle_path_none_for_plain_binary() {
+        let exe = PathBuf::from("/Users/me/.local/bin/openhuman-core");
+        assert_eq!(enclosing_app_bundle(&exe), None);
+    }
+
+    #[test]
+    fn bundle_path_none_for_target_debug() {
+        let exe = PathBuf::from("/repo/target/debug/openhuman-core");
+        assert_eq!(enclosing_app_bundle(&exe), None);
     }
 }
