@@ -67,6 +67,9 @@ fn source_entry(kind: SourceKind, id: &str) -> MemorySourceEntry {
         query: None,
         since_days: None,
         max_items: None,
+        max_commits: None,
+        max_issues: None,
+        max_prs: None,
         selector: None,
     }
 }
@@ -587,6 +590,7 @@ fn threads_turn_state_store_skips_corrupt_entries_and_marks_interrupted() {
         subagent: Some(SubagentActivity {
             task_id: "task-1".into(),
             agent_id: "researcher".into(),
+            status: Some("running".into()),
             mode: Some("read".into()),
             dedicated_thread: Some(false),
             child_iteration: Some(1),
