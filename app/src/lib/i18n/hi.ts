@@ -722,16 +722,16 @@ const messages: TranslationMap = {
   'privacy.sentTo': 'भेजा गया',
   'privacy.leavesDevice': 'डिवाइस से बाहर जाता है',
   'privacy.staysLocal': 'लोकल रहता है',
-  'privacy.anonymizedAnalytics': 'अनॉनिमाइज़्ड एनालिटिक्स',
-  'privacy.shareAnonymizedData': 'अनॉनिमाइज़्ड यूसेज डेटा शेयर करें',
+  'privacy.anonymizedAnalytics': 'प्रोडक्ट एनालिटिक्स',
+  'privacy.shareAnonymizedData': 'प्रोडक्ट एनालिटिक्स और डायग्नॉस्टिक्स शेयर करें',
   'privacy.shareAnonymizedDataDesc':
-    'अनॉनिमस क्रैश रिपोर्ट और यूसेज एनालिटिक्स शेयर करके OpenHuman को बेहतर बनाने में मदद करें। सभी डेटा पूरी तरह अनॉनिमाइज़्ड है — कोई पर्सनल डेटा, मैसेज, वॉलेट keys या सेशन जानकारी कभी कलेक्ट नहीं होती।',
+    'प्राइवेसी-लिमिटेड क्रैश रिपोर्ट और यूसेज इवेंट शेयर करके OpenHuman को बेहतर बनाने में मदद करें, जिनमें स्थिर अकाउंट ID और ऐप वर्ज़न मेटाडेटा शामिल होता है। मैसेज, वॉलेट keys, API keys और सेशन tokens कभी कलेक्ट नहीं होते।',
   'privacy.meetingFollowUps': 'मीटिंग फॉलो-अप',
   'privacy.autoHandoffMeet': 'Google Meet ट्रांसक्रिप्ट ऑटो-हैंडऑफ ऑर्केस्ट्रेटर को करें',
   'privacy.autoHandoffMeetDesc':
     'Google Meet कॉल खत्म होने पर, OpenHuman का ऑर्केस्ट्रेटर ट्रांसक्रिप्ट पढ़ सकता है और मैसेज ड्राफ्ट करना, फॉलो-अप शेड्यूल करना या Slack पर सारांश पोस्ट करना जैसे काम कर सकता है। डिफ़ॉल्ट रूप से बंद है।',
   'privacy.analyticsDisclaimer':
-    'सभी एनालिटिक्स और बग रिपोर्ट पूरी तरह अनॉनिमाइज़्ड हैं। चालू होने पर, हम केवल क्रैश जानकारी, डिवाइस टाइप और एरर फाइल लोकेशन कलेक्ट करते हैं। हम कभी आपके मैसेज, सेशन डेटा, वॉलेट keys, API keys या कोई भी पर्सनल जानकारी एक्सेस नहीं करते। यह सेटिंग कभी भी बदल सकते हैं।',
+    'चालू होने पर, प्रोडक्ट एनालिटिक्स और डायग्नॉस्टिक्स में प्राइवेसी-लिमिटेड क्रैश रिपोर्ट, यूसेज इवेंट, स्थिर अकाउंट ID और ऐप वर्ज़न मेटाडेटा शामिल हो सकते हैं। मैसेज, वॉलेट keys, API keys और सेशन tokens कभी कलेक्ट नहीं होते। यह सेटिंग कभी भी बदल सकते हैं।',
   'settings.about.version': 'वर्जन',
   'settings.about.updateAvailable': 'उपलब्ध है',
   'settings.about.softwareUpdates': 'सॉफ्टवेयर अपडेट',
@@ -1991,6 +1991,11 @@ const messages: TranslationMap = {
   'memorySources.pageUrl': 'पृष्ठ URL',
   'memorySources.cssSelector': 'CSS चयनकर्ता (वैकल्पिक)',
   'memorySources.searchQuery': 'खोज क्वेरी',
+  'memorySources.build.title': 'बनाएं',
+  'memorySources.build.building': 'बना रहा है…',
+  'memorySources.build.successTitle': 'ट्री बन गई',
+  'memorySources.build.failedTitle': 'निर्माण विफल',
+  'memorySources.build.sealsMessage': 'सील पूर्ण हुई',
   'backend.aiBackend': 'AI बैकएंड',
   'backend.cloud': 'क्लाउड',
   'backend.recommended': 'सुझावित',
@@ -2803,7 +2808,9 @@ const messages: TranslationMap = {
   'settings.ai.workloadGroupChat': 'चैट वर्कलोड ग्रुप',
   'settings.ai.disconnectProvider': 'डिस्कनेक्ट करें {label}',
   'settings.ai.connectProviderLabel': 'कनेक्ट करें {label}',
+  'settings.ai.editProviderEndpoint': '{label} समापन बिंदु संपादित करें',
   'settings.ai.defaultLocalEndpoint': 'http://localhost:11434/v1',
+  'settings.ai.editEndpoint': 'समापन बिंदु संपादित करें',
   'settings.ai.endpointUrlLabel': 'समापन बिंदु URL',
   'settings.ai.localRuntimeHelper':
     'जहां {label} पहुंच योग्य है। डिफ़ॉल्ट स्थानीयहोस्ट है; इसे रिमोट होस्ट पर इंगित करें (उदाहरण के लिए, http://10.0.0.4:11434/v1) एक साझा उदाहरण का उपयोग करने के लिए)।',
@@ -3604,6 +3611,13 @@ const messages: TranslationMap = {
   'settings.agentAccess.requireTaskPlanApproval.label': 'कार्य योजना अनुमोदन की आवश्यकता',
   'settings.agentAccess.requireTaskPlanApproval.desc':
     'एक निर्धारित एजेंट से पहले रोकें एक एजेंट-लेखित कार्य संक्षिप्त निष्पादित करता है।',
+  'settings.agentAccess.timeout.label': 'क्रिया टाइमआउट',
+  'settings.agentAccess.timeout.desc':
+    'किसी एकल टूल या क्रिया को रद्द होने से पहले कितनी देर चलने दिया जाए। यदि कोई बड़ा लोकल मॉडल अपना उत्तर पूरा करने से पहले रुक जाता है तो इसे बढ़ाएँ।',
+  'settings.agentAccess.timeout.unit': 'सेकंड',
+  'settings.agentAccess.timeout.invalid': 'अनुमत सीमा के भीतर सेकंड की एक पूर्ण संख्या दर्ज करें',
+  'settings.agentAccess.timeout.envOverride':
+    'OPENHUMAN_TOOL_TIMEOUT_SECS एनवायरनमेंट वेरिएबल इस सेटिंग को ओवरराइड कर रहा है, इसलिए जब तक इसे अनसेट नहीं किया जाता, यहाँ किए गए बदलावों का कोई असर नहीं होगा।',
   'settings.agentAccess.grantedFolders': 'स्वीकृत फ़ोल्डर',
   'settings.agentAccess.alwaysAllow': 'हमेशा की अनुमति उपकरण',
   'settings.agentAccess.alwaysAllowDesc':
@@ -3620,6 +3634,15 @@ const messages: TranslationMap = {
   'settings.agentAccess.add': 'जोड़ें',
   'settings.agentAccess.saving': 'बचत',
   'settings.agentAccess.changesApply': 'परिवर्तन आपके अगले संदेश पर लागू होते हैं।',
+  'settings.agentAccess.directories': 'निर्देशिकाएँ',
+  'settings.agentAccess.actionSandbox': 'एक्शन सैंडबॉक्स',
+  'settings.agentAccess.readWriteAccess': 'पढ़ना + लिखना',
+  'settings.agentAccess.actionSandboxDesc':
+    'शेल, फ़ाइल और git टूल के लिए डिफ़ॉल्ट कार्य निर्देशिका।',
+  'settings.agentAccess.internalState': 'आंतरिक स्थिति',
+  'settings.agentAccess.agentBlocked': 'एजेंट-अवरुद्ध',
+  'settings.agentAccess.internalStateDesc':
+    'मेमोरी डेटाबेस, सत्र, टोकन और अन्य मुख्य डेटा। एजेंट टूल के लिए सुलभ नहीं।',
   'settings.agentAccess.approvalHistory': 'Approval history',
   'settings.agentAccess.approvalHistoryDesc':
     'Review past Approve / Deny decisions the agent requested.',
@@ -4434,6 +4457,63 @@ const messages: TranslationMap = {
   'keyring.settings.revokeConsent': 'स्थानीय भंडारण अस्वीकार करें',
   'pages.settings.account.security': 'सुरक्षा',
   'pages.settings.account.securityDesc': 'रहस्य भंडारण मोड और कीचेन स्थिति',
+
+  // Agent activity level
+  'activityLevel.title': 'एजेंट गतिविधि स्तर',
+  'activityLevel.description':
+    'नियंत्रित करें कि आपका एजेंट कितना सक्रिय है। उच्च स्तर पर अधिक टोकन का उपयोग होता है।',
+  'activityLevel.off': 'बंद',
+  'activityLevel.offDesc': 'पृष्ठभूमि में कोई प्रसंस्करण नहीं। केवल बटन दबाने पर सिंक होता है।',
+  'activityLevel.minimal': 'न्यूनतम',
+  'activityLevel.minimalDesc': 'दिन में एक बार स्रोत सिंक करता है। कोई सक्रिय संदेश नहीं।',
+  'activityLevel.moderate': 'मध्यम',
+  'activityLevel.moderateDesc': 'हर घंटे सिंक करता है। दैनिक सारांश। क्रियाएं सुझाता है।',
+  'activityLevel.active': 'सक्रिय',
+  'activityLevel.activeDesc':
+    'हर 10 मिनट में सिंक करता है। चैनलों की निगरानी करता है, प्राथमिकता देता है और उत्तर तैयार करता है।',
+  'activityLevel.alwaysOn': 'हमेशा चालू',
+  'activityLevel.alwaysOnDesc': 'रीयल-टाइम सिंक। निर्धारित सीमाओं के भीतर पूर्ण स्वायत्तता।',
+  'activityLevel.currentMonth': 'इस महीने: ${amount}',
+  'activityLevel.saved': 'गतिविधि स्तर अपडेट किया गया।',
+  'activityLevel.default': 'डिफ़ॉल्ट',
+  'activityLevel.costFree': '$0',
+  'activityLevel.costRange': '~${min}–${max}/माह',
+
+  // Sync budget dialog
+  'syncBudget.title': 'सिंक बजट',
+  'syncBudget.maxTokens': 'प्रति सिंक अधिकतम टोकन',
+  'syncBudget.maxTokensHelp': 'इतने टोकन उपयोग होने पर सिंक बंद करें।',
+  'syncBudget.maxCost': 'प्रति सिंक अधिकतम लागत (USD)',
+  'syncBudget.maxCostHelp': 'प्रति सिंक रन के लिए डॉलर की सीमा।',
+  'syncBudget.syncDepth': 'सिंक गहराई',
+  'syncBudget.syncDepthHelp': 'केवल इस समय सीमा के आइटम लाएं।',
+  'syncBudget.days7': 'पिछले 7 दिन',
+  'syncBudget.days30': 'पिछले 30 दिन',
+  'syncBudget.days90': 'पिछले 90 दिन',
+  'syncBudget.allTime': 'सब समय',
+  'syncBudget.unlimited': 'असीमित',
+  'syncBudget.saved': 'बजट सहेजा गया।',
+
+  // Sync confirm dialog
+  'syncConfirm.title': 'सिंक की पुष्टि करें',
+  'syncConfirm.message': 'यह सिंक ~{items} आइटम (~{tokens} टोकन, अनुमानित ${cost}) प्रोसेस करेगा।',
+  'syncConfirm.budgetNote': 'बजट सीमा: ${max}',
+  'syncConfirm.proceed': 'आगे बढ़ें',
+  'syncConfirm.cancel': 'रद्द करें',
+  'syncConfirm.estimating': 'लागत का अनुमान लगाया जा रहा है...',
+
+  // Monthly cost badge
+  'monthlyCost.badge': 'इस महीने ${amount}',
+  'monthlyCost.noData': 'इस महीने कोई सिंक नहीं',
+
+  // Onboarding: Custom > Activity
+  'onboarding.custom.stepperActivity': 'गतिविधि',
+  'onboarding.custom.activity.title': 'एजेंट गतिविधि',
+  'onboarding.custom.activity.subtitle':
+    'आपका एजेंट पृष्ठभूमि में कितनी सक्रियता से निगरानी और कार्य करता है।',
+  'onboarding.custom.activity.defaultDesc': 'मध्यम गतिविधि — प्रति घंटे सिंक, दैनिक सारांश।',
+  'onboarding.custom.activity.configureDesc':
+    'अपना गतिविधि स्तर चुनें। सेटिंग्स › एजेंट गतिविधि स्तर में कॉन्फ़िगर करें।',
 };
 
 export default messages;

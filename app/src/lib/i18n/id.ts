@@ -725,16 +725,16 @@ const messages: TranslationMap = {
   'privacy.sentTo': 'Dikirim ke',
   'privacy.leavesDevice': 'Keluar dari perangkat',
   'privacy.staysLocal': 'Tetap lokal',
-  'privacy.anonymizedAnalytics': 'Analitik Anonim',
-  'privacy.shareAnonymizedData': 'Bagikan Data Penggunaan Anonim',
+  'privacy.anonymizedAnalytics': 'Analitik Produk',
+  'privacy.shareAnonymizedData': 'Bagikan Analitik Produk dan Diagnostik',
   'privacy.shareAnonymizedDataDesc':
-    'Bantu meningkatkan OpenHuman dengan membagikan laporan crash dan analitik penggunaan anonim. Semua data sepenuhnya anonim; tidak ada data pribadi, pesan, kunci dompet, atau informasi sesi yang dikumpulkan.',
+    'Bantu meningkatkan OpenHuman dengan membagikan laporan crash dan peristiwa penggunaan yang dibatasi privasi, termasuk ID akun stabil dan metadata versi aplikasi. Pesan, kunci dompet, kunci API, dan token sesi tidak pernah dikumpulkan.',
   'privacy.meetingFollowUps': 'Tindak lanjut rapat',
   'privacy.autoHandoffMeet': 'Serahkan transkrip Google Meet otomatis ke orchestrator',
   'privacy.autoHandoffMeetDesc':
     'Saat panggilan Google Meet berakhir, orchestrator OpenHuman dapat membaca transkrip dan mengambil tindakan seperti menyusun pesan, menjadwalkan tindak lanjut, atau memposting ringkasan ke workspace Slack yang terhubung. Nonaktif secara default.',
   'privacy.analyticsDisclaimer':
-    'Semua analitik dan laporan bug sepenuhnya anonim. Saat aktif, kami hanya mengumpulkan informasi crash, jenis perangkat, dan lokasi file error. Kami tidak pernah mengakses pesan, data sesi, kunci dompet, API key, atau informasi pribadi Anda. Pengaturan ini bisa diubah kapan saja.',
+    'Saat aktif, Analitik Produk dan Diagnostik dapat menyertakan laporan crash dan peristiwa penggunaan yang dibatasi privasi, ID akun stabil, dan metadata versi aplikasi. Pesan, kunci dompet, kunci API, dan token sesi tidak pernah dikumpulkan. Pengaturan ini bisa diubah kapan saja.',
   'settings.about.version': 'Versi',
   'settings.about.updateAvailable': 'tersedia',
   'settings.about.softwareUpdates': 'Pembaruan perangkat lunak',
@@ -1994,6 +1994,11 @@ const messages: TranslationMap = {
   'memorySources.pageUrl': 'URL halaman',
   'memorySources.cssSelector': 'pemilih CSS (opsional)',
   'memorySources.searchQuery': 'Kueri pencarian',
+  'memorySources.build.title': 'Bangun',
+  'memorySources.build.building': 'Membangun…',
+  'memorySources.build.successTitle': 'Pohon dibangun',
+  'memorySources.build.failedTitle': 'Pembangunan gagal',
+  'memorySources.build.sealsMessage': 'penyegelan selesai',
   'backend.aiBackend': 'Backend AI',
   'backend.cloud': 'Awan',
   'backend.recommended': 'Direkomendasikan',
@@ -2807,7 +2812,9 @@ const messages: TranslationMap = {
   'settings.ai.workloadGroupChat': 'Grup beban kerja chat',
   'settings.ai.disconnectProvider': 'Putuskan sambungan {label}',
   'settings.ai.connectProviderLabel': 'Sambungkan {label}',
+  'settings.ai.editProviderEndpoint': 'Ubah titik akhir {label}',
   'settings.ai.defaultLocalEndpoint': 'http://localhost:11434/v1',
+  'settings.ai.editEndpoint': 'Edit titik akhir',
   'settings.ai.endpointUrlLabel': 'Titik Akhir URL',
   'settings.ai.localRuntimeHelper':
     'Dimana {label} bisa dihubungi. Baku adalah localhost; arahkan ini ke host jarak jauh (misalnya, http://10.0.0.4:11434/v1) untuk memakai suatu contoh bersama.',
@@ -3612,6 +3619,14 @@ const messages: TranslationMap = {
   'settings.agentAccess.requireTaskPlanApproval.label': 'Perlu persetujuan rencana tugas',
   'settings.agentAccess.requireTaskPlanApproval.desc':
     'Jeda sebelum agen yang ditugaskan mengeksekusi suatu tugas singkat.',
+  'settings.agentAccess.timeout.label': 'Batas waktu tindakan',
+  'settings.agentAccess.timeout.desc':
+    'Berapa lama satu alat atau tindakan boleh berjalan sebelum dibatalkan. Tingkatkan nilai ini jika model lokal besar terhenti sebelum selesai merespons.',
+  'settings.agentAccess.timeout.unit': 'detik',
+  'settings.agentAccess.timeout.invalid':
+    'Masukkan bilangan bulat detik dalam rentang yang diizinkan',
+  'settings.agentAccess.timeout.envOverride':
+    'Variabel lingkungan OPENHUMAN_TOOL_TIMEOUT_SECS menggantikan pengaturan ini, sehingga perubahan di sini tidak berpengaruh hingga variabel tersebut dihapus.',
   'settings.agentAccess.grantedFolders': 'Folder yang diberikan',
   'settings.agentAccess.alwaysAllow': 'Selalu-diperbolehkan alat',
   'settings.agentAccess.alwaysAllowDesc':
@@ -3628,6 +3643,15 @@ const messages: TranslationMap = {
   'settings.agentAccess.add': 'Tambah',
   'settings.agentAccess.saving': 'Menyimpan...',
   'settings.agentAccess.changesApply': 'Perubahan pada pesan berikutnya.',
+  'settings.agentAccess.directories': 'Direktori',
+  'settings.agentAccess.actionSandbox': 'Sandbox aksi',
+  'settings.agentAccess.readWriteAccess': 'baca + tulis',
+  'settings.agentAccess.actionSandboxDesc':
+    'Direktori kerja default untuk alat shell, file, dan git.',
+  'settings.agentAccess.internalState': 'Status internal',
+  'settings.agentAccess.agentBlocked': 'diblokir untuk agen',
+  'settings.agentAccess.internalStateDesc':
+    'Database memori, sesi, token, dan data inti lainnya. Tidak dapat diakses oleh alat agen.',
   'settings.agentAccess.approvalHistory': 'Approval history',
   'settings.agentAccess.approvalHistoryDesc':
     'Review past Approve / Deny decisions the agent requested.',
@@ -4443,6 +4467,67 @@ const messages: TranslationMap = {
   'keyring.settings.revokeConsent': 'Tolak penyimpanan lokal',
   'pages.settings.account.security': 'Keamanan',
   'pages.settings.account.securityDesc': 'Mode penyimpanan rahasia dan status keychain',
+
+  // Agent activity level
+  'activityLevel.title': 'Tingkat aktivitas agen',
+  'activityLevel.description':
+    'Kendalikan seberapa proaktif agen Anda. Tingkat lebih tinggi menggunakan lebih banyak token.',
+  'activityLevel.off': 'Mati',
+  'activityLevel.offDesc':
+    'Tidak ada pemrosesan latar belakang. Hanya sinkronisasi saat tombol ditekan.',
+  'activityLevel.minimal': 'Minimal',
+  'activityLevel.minimalDesc': 'Sinkronisasi sumber sekali sehari. Tidak ada pesan proaktif.',
+  'activityLevel.moderate': 'Sedang',
+  'activityLevel.moderateDesc': 'Sinkronisasi setiap jam. Ringkasan harian. Menyarankan tindakan.',
+  'activityLevel.active': 'Aktif',
+  'activityLevel.activeDesc':
+    'Sinkronisasi setiap 10 menit. Memantau saluran, mengurutkan, dan menyusun balasan.',
+  'activityLevel.alwaysOn': 'Selalu aktif',
+  'activityLevel.alwaysOnDesc':
+    'Sinkronisasi real-time. Otonomi penuh dalam batas yang ditentukan.',
+  'activityLevel.currentMonth': 'Bulan ini: ${amount}',
+  'activityLevel.saved': 'Tingkat aktivitas diperbarui.',
+  'activityLevel.default': 'bawaan',
+  'activityLevel.costFree': '$0',
+  'activityLevel.costRange': '~${min}–${max}/bln',
+
+  // Sync budget dialog
+  'syncBudget.title': 'Anggaran sinkronisasi',
+  'syncBudget.maxTokens': 'Token maksimum per sinkronisasi',
+  'syncBudget.maxTokensHelp': 'Hentikan sinkronisasi setelah sejumlah token ini dikonsumsi.',
+  'syncBudget.maxCost': 'Biaya maksimum per sinkronisasi (USD)',
+  'syncBudget.maxCostHelp': 'Batas dolar mutlak per jalannya sinkronisasi.',
+  'syncBudget.syncDepth': 'Kedalaman sinkronisasi',
+  'syncBudget.syncDepthHelp': 'Hanya ambil item dari jendela waktu ini.',
+  'syncBudget.days7': '7 hari terakhir',
+  'syncBudget.days30': '30 hari terakhir',
+  'syncBudget.days90': '90 hari terakhir',
+  'syncBudget.allTime': 'Sepanjang waktu',
+  'syncBudget.unlimited': 'Tidak terbatas',
+  'syncBudget.saved': 'Anggaran disimpan.',
+
+  // Sync confirm dialog
+  'syncConfirm.title': 'Konfirmasi sinkronisasi',
+  'syncConfirm.message':
+    'Sinkronisasi ini akan memproses ~{items} item (~{tokens} token, est. ${cost}).',
+  'syncConfirm.budgetNote': 'Batas anggaran: ${max}',
+  'syncConfirm.proceed': 'Lanjutkan',
+  'syncConfirm.cancel': 'Batal',
+  'syncConfirm.estimating': 'Memperkirakan biaya...',
+
+  // Monthly cost badge
+  'monthlyCost.badge': '${amount} bulan ini',
+  'monthlyCost.noData': 'Tidak ada sinkronisasi bulan ini',
+
+  // Onboarding: Custom > Activity
+  'onboarding.custom.stepperActivity': 'Aktivitas',
+  'onboarding.custom.activity.title': 'Aktivitas agen',
+  'onboarding.custom.activity.subtitle':
+    'Seberapa proaktif agen Anda memantau dan bertindak di latar belakang.',
+  'onboarding.custom.activity.defaultDesc':
+    'Aktivitas sedang — sinkronisasi per jam, ringkasan harian.',
+  'onboarding.custom.activity.configureDesc':
+    'Pilih tingkat aktivitas Anda sendiri. Konfigurasi di Pengaturan › Tingkat aktivitas agen.',
 };
 
 export default messages;

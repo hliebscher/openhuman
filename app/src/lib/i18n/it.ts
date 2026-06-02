@@ -736,17 +736,17 @@ const messages: TranslationMap = {
   'privacy.sentTo': 'Inviato a',
   'privacy.leavesDevice': 'Esce dal dispositivo',
   'privacy.staysLocal': 'Rimane locale',
-  'privacy.anonymizedAnalytics': 'Analisi anonimizzate',
-  'privacy.shareAnonymizedData': 'Condividi dati di utilizzo anonimizzati',
+  'privacy.anonymizedAnalytics': 'Analisi del prodotto',
+  'privacy.shareAnonymizedData': 'Condividi analisi del prodotto e diagnostica',
   'privacy.shareAnonymizedDataDesc':
-    'Aiuta a migliorare OpenHuman condividendo report di crash anonimi e analisi di utilizzo. Tutti i dati sono completamente anonimizzati — nessun dato personale, messaggio, chiave wallet o informazione di sessione viene mai raccolto.',
+    'Aiuta a migliorare OpenHuman condividendo report di crash ed eventi di utilizzo limitati per la privacy, inclusi un ID account stabile e i metadati della versione dell’app. Messaggi, chiavi wallet, chiavi API e token di sessione non vengono mai raccolti.',
   'privacy.meetingFollowUps': 'Follow-up delle riunioni',
   'privacy.autoHandoffMeet':
     "Trasferimento automatico delle trascrizioni Google Meet all'orchestratore",
   'privacy.autoHandoffMeetDesc':
     "Quando termina una chiamata Google Meet, l'orchestratore di OpenHuman può leggere la trascrizione e svolgere azioni come redigere messaggi, pianificare follow-up o pubblicare riassunti nel tuo workspace Slack connesso. Disattivato di default.",
   'privacy.analyticsDisclaimer':
-    'Tutti i report analitici e bug sono completamente anonimi. Quando abilitati, raccogliamo solo informazioni sui crash, tipo di dispositivo e percorso file degli errori. Non accediamo mai ai tuoi messaggi, dati di sessione, chiavi del wallet, chiavi API o informazioni personali identificabili. Puoi cambiare questa impostazione in qualsiasi momento.',
+    'Quando abilitata, l’analisi del prodotto e la diagnostica possono includere report di crash ed eventi di utilizzo limitati per la privacy, un ID account stabile e metadati della versione dell’app. Messaggi, chiavi wallet, chiavi API e token di sessione non vengono mai raccolti. Puoi cambiare questa impostazione in qualsiasi momento.',
   'settings.about.version': 'Versione',
   'settings.about.updateAvailable': 'è disponibile',
   'settings.about.softwareUpdates': 'Aggiornamenti software',
@@ -2023,6 +2023,11 @@ const messages: TranslationMap = {
   'memorySources.pageUrl': 'Pagina URL',
   'memorySources.cssSelector': 'Selettore CSS (opzionale)',
   'memorySources.searchQuery': 'Query di ricerca',
+  'memorySources.build.title': 'Costruisci',
+  'memorySources.build.building': 'Costruzione…',
+  'memorySources.build.successTitle': 'Albero costruito',
+  'memorySources.build.failedTitle': 'Costruzione fallita',
+  'memorySources.build.sealsMessage': 'sigillatura completata',
   'backend.aiBackend': 'Backend AI',
   'backend.cloud': 'Cloud',
   'backend.recommended': 'Consigliato',
@@ -2841,7 +2846,9 @@ const messages: TranslationMap = {
   'settings.ai.workloadGroupChat': 'Gruppo carico di lavoro chat',
   'settings.ai.disconnectProvider': 'Disconnetti {label}',
   'settings.ai.connectProviderLabel': 'Connetti {label}',
+  'settings.ai.editProviderEndpoint': 'Modifica punto finale di {label}',
   'settings.ai.defaultLocalEndpoint': 'http://localhost:11434/v1',
+  'settings.ai.editEndpoint': "Modifica l'endpoint",
   'settings.ai.endpointUrlLabel': "URL dell'endpoint",
   'settings.ai.localRuntimeHelper':
     "Dove {label} è raggiungibile. Il valore predefinito è localhost; punta questo a un host remoto (per esempio, http://10.0.0.4:11434/v1) per utilizzare un'istanza condivisa.",
@@ -3656,6 +3663,14 @@ const messages: TranslationMap = {
     "Richiedere l'approvazione del piano di lavoro",
   'settings.agentAccess.requireTaskPlanApproval.desc':
     "Pausa prima che un agente assegnato esegua un brief del compito scritto dall'agente.",
+  'settings.agentAccess.timeout.label': "Timeout dell'azione",
+  'settings.agentAccess.timeout.desc':
+    'Per quanto tempo un singolo strumento o azione può essere eseguito prima di essere annullato. Aumenta questo valore se un modello locale di grandi dimensioni viene interrotto prima di completare la risposta.',
+  'settings.agentAccess.timeout.unit': 'secondi',
+  'settings.agentAccess.timeout.invalid':
+    "Inserisci un numero intero di secondi entro l'intervallo consentito",
+  'settings.agentAccess.timeout.envOverride':
+    "La variabile d'ambiente OPENHUMAN_TOOL_TIMEOUT_SECS sta sovrascrivendo questa impostazione, quindi le modifiche qui non avranno effetto finché non viene rimossa.",
   'settings.agentAccess.grantedFolders': 'Cartelle concesse',
   'settings.agentAccess.alwaysAllow': 'Strumenti sempre consentiti',
   'settings.agentAccess.alwaysAllowDesc':
@@ -3672,6 +3687,15 @@ const messages: TranslationMap = {
   'settings.agentAccess.add': 'Aggiungi',
   'settings.agentAccess.saving': 'Salvataggio…',
   'settings.agentAccess.changesApply': 'Le modifiche verranno applicate al tuo prossimo messaggio.',
+  'settings.agentAccess.directories': 'Directory',
+  'settings.agentAccess.actionSandbox': 'Sandbox azioni',
+  'settings.agentAccess.readWriteAccess': 'lettura + scrittura',
+  'settings.agentAccess.actionSandboxDesc':
+    'Directory di lavoro predefinita per gli strumenti shell, file e git.',
+  'settings.agentAccess.internalState': 'Stato interno',
+  'settings.agentAccess.agentBlocked': "bloccato per l'agente",
+  'settings.agentAccess.internalStateDesc':
+    "Database memoria, sessioni, token e altri dati fondamentali. Non accessibile dagli strumenti dell'agente.",
   'settings.agentAccess.approvalHistory': 'Approval history',
   'settings.agentAccess.approvalHistoryDesc':
     'Review past Approve / Deny decisions the agent requested.',
@@ -4501,6 +4525,69 @@ const messages: TranslationMap = {
   'keyring.settings.revokeConsent': 'Rifiuta archiviazione locale',
   'pages.settings.account.security': 'Sicurezza',
   'pages.settings.account.securityDesc': 'Modalità archiviazione segreti e stato del portachiavi',
+
+  // Agent activity level
+  'activityLevel.title': "Livello di attività dell'agente",
+  'activityLevel.description':
+    'Controlla quanto è proattivo il tuo agente. I livelli più alti usano più token.',
+  'activityLevel.off': 'Disattivato',
+  'activityLevel.offDesc':
+    'Nessuna elaborazione in background. Sincronizza solo alla pressione del pulsante.',
+  'activityLevel.minimal': 'Minimo',
+  'activityLevel.minimalDesc':
+    'Sincronizza le sorgenti una volta al giorno. Nessun messaggio proattivo.',
+  'activityLevel.moderate': 'Moderato',
+  'activityLevel.moderateDesc': 'Sincronizza ogni ora. Riepilogo giornaliero. Suggerisce azioni.',
+  'activityLevel.active': 'Attivo',
+  'activityLevel.activeDesc':
+    'Sincronizza ogni 10 min. Monitora i canali, ordina e redige risposte.',
+  'activityLevel.alwaysOn': 'Sempre attivo',
+  'activityLevel.alwaysOnDesc':
+    'Sincronizzazione in tempo reale. Piena autonomia entro i limiti definiti.',
+  'activityLevel.currentMonth': 'Questo mese: ${amount}',
+  'activityLevel.saved': 'Livello di attività aggiornato.',
+  'activityLevel.default': 'predefinito',
+  'activityLevel.costFree': '0 $',
+  'activityLevel.costRange': '~${min}–${max}/mese',
+
+  // Sync budget dialog
+  'syncBudget.title': 'Budget di sincronizzazione',
+  'syncBudget.maxTokens': 'Token massimi per sincronizzazione',
+  'syncBudget.maxTokensHelp':
+    'Ferma la sincronizzazione dopo aver consumato questo numero di token.',
+  'syncBudget.maxCost': 'Costo massimo per sincronizzazione (USD)',
+  'syncBudget.maxCostHelp': 'Limite assoluto in dollari per ogni esecuzione di sincronizzazione.',
+  'syncBudget.syncDepth': 'Profondità di sincronizzazione',
+  'syncBudget.syncDepthHelp': 'Recupera solo gli elementi di questa finestra temporale.',
+  'syncBudget.days7': 'Ultimi 7 giorni',
+  'syncBudget.days30': 'Ultimi 30 giorni',
+  'syncBudget.days90': 'Ultimi 90 giorni',
+  'syncBudget.allTime': 'Sempre',
+  'syncBudget.unlimited': 'Illimitato',
+  'syncBudget.saved': 'Budget salvato.',
+
+  // Sync confirm dialog
+  'syncConfirm.title': 'Conferma sincronizzazione',
+  'syncConfirm.message':
+    'Questa sincronizzazione elaborerà ~{items} elementi (~{tokens} token, stima ${cost}).',
+  'syncConfirm.budgetNote': 'Limite budget: ${max}',
+  'syncConfirm.proceed': 'Procedi',
+  'syncConfirm.cancel': 'Annulla',
+  'syncConfirm.estimating': 'Stima del costo in corso...',
+
+  // Monthly cost badge
+  'monthlyCost.badge': '${amount} questo mese',
+  'monthlyCost.noData': 'Nessuna sincronizzazione questo mese',
+
+  // Onboarding: Custom > Activity
+  'onboarding.custom.stepperActivity': 'Attività',
+  'onboarding.custom.activity.title': "Attività dell'agente",
+  'onboarding.custom.activity.subtitle':
+    'Quanto proattivamente il tuo agente monitora e agisce in background.',
+  'onboarding.custom.activity.defaultDesc':
+    'Attività moderata — sincronizzazione oraria, riepilogo giornaliero.',
+  'onboarding.custom.activity.configureDesc':
+    "Scegli il tuo livello di attività. Configura in Impostazioni › Livello di attività dell'agente.",
 };
 
 export default messages;

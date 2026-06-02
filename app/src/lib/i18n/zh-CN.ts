@@ -688,16 +688,16 @@ const messages: TranslationMap = {
   'privacy.sentTo': '发送至',
   'privacy.leavesDevice': '离开设备',
   'privacy.staysLocal': '留在本地',
-  'privacy.anonymizedAnalytics': '匿名分析',
-  'privacy.shareAnonymizedData': '分享匿名使用数据',
+  'privacy.anonymizedAnalytics': '产品分析',
+  'privacy.shareAnonymizedData': '分享产品分析和诊断数据',
   'privacy.shareAnonymizedDataDesc':
-    '通过分享匿名崩溃报告和使用分析来帮助改进 OpenHuman。所有数据完全匿名——不会收集任何个人数据、消息、钱包密钥或会话信息。',
+    '通过分享受隐私限制的崩溃报告和使用事件来帮助改进 OpenHuman，其中包括稳定的账号 ID 和应用版本元数据。我们绝不会收集消息、钱包密钥、API 密钥或会话令牌。',
   'privacy.meetingFollowUps': '会议跟进',
   'privacy.autoHandoffMeet': '自动将 Google Meet 转录交给编排器',
   'privacy.autoHandoffMeetDesc':
     '当 Google Meet 通话结束时，OpenHuman 的编排器可以阅读转录内容，并可能执行起草消息、安排跟进、或将摘要发布到已连接的 Slack 工作区等操作。默认关闭。',
   'privacy.analyticsDisclaimer':
-    '所有分析和错误报告完全匿名。启用后，我们仅收集崩溃信息、设备类型和错误的文件位置。我们永远不会访问你的消息、会话数据、钱包密钥、API 密钥或任何个人可识别信息。你可以随时更改此设置。',
+    '启用后，产品分析和诊断可能包括受隐私限制的崩溃报告和使用事件、稳定的账号 ID，以及应用版本元数据。我们绝不会收集消息、钱包密钥、API 密钥或会话令牌。你可以随时更改此设置。',
   'settings.about.version': '版本',
   'settings.about.updateAvailable': '可用',
   'settings.about.softwareUpdates': '软件更新',
@@ -1892,6 +1892,11 @@ const messages: TranslationMap = {
   'memorySources.pageUrl': '页面 URL',
   'memorySources.cssSelector': 'CSS 选择器（可选）',
   'memorySources.searchQuery': '搜索查询',
+  'memorySources.build.title': '构建',
+  'memorySources.build.building': '正在构建…',
+  'memorySources.build.successTitle': '树构建完成',
+  'memorySources.build.failedTitle': '构建失败',
+  'memorySources.build.sealsMessage': '密封完成',
   'backend.aiBackend': 'AI 后端',
   'backend.cloud': '云端',
   'backend.recommended': '推荐',
@@ -2669,7 +2674,9 @@ const messages: TranslationMap = {
   'settings.ai.workloadGroupChat': '对话工作负载',
   'settings.ai.disconnectProvider': '断开 {label}',
   'settings.ai.connectProviderLabel': '连接 {label}',
+  'settings.ai.editProviderEndpoint': '编辑 {label} 端点',
   'settings.ai.defaultLocalEndpoint': 'http://localhost:11434/v1',
+  'settings.ai.editEndpoint': '编辑端点',
   'settings.ai.endpointUrlLabel': '端点 URL',
   'settings.ai.localRuntimeHelper':
     '{label} 可访问的位置。默认是 localhost；如需使用共享实例，可指向远程主机（例如 http://10.0.0.4:11434/v1）。',
@@ -3427,6 +3434,13 @@ const messages: TranslationMap = {
   'settings.agentAccess.requireTaskPlanApproval.label': '要求批准任务计划',
   'settings.agentAccess.requireTaskPlanApproval.desc':
     '在指定智能体执行由智能体编写的任务简报前暂停。',
+  'settings.agentAccess.timeout.label': '操作超时',
+  'settings.agentAccess.timeout.desc':
+    '单个工具或操作在被取消前可运行的时长。如果大型本地模型在完成响应前被中断，请增大此值。',
+  'settings.agentAccess.timeout.unit': '秒',
+  'settings.agentAccess.timeout.invalid': '请输入允许范围内的整数秒数',
+  'settings.agentAccess.timeout.envOverride':
+    '环境变量 OPENHUMAN_TOOL_TIMEOUT_SECS 正在覆盖此设置，因此在取消该变量之前，此处的更改不会生效。',
   'settings.agentAccess.grantedFolders': '已授权文件夹',
   'settings.agentAccess.alwaysAllow': '始终允许的工具',
   'settings.agentAccess.alwaysAllowDesc':
@@ -3443,6 +3457,14 @@ const messages: TranslationMap = {
   'settings.agentAccess.add': '添加',
   'settings.agentAccess.saving': '保存中…',
   'settings.agentAccess.changesApply': '更改将在你的下一条消息后生效。',
+  'settings.agentAccess.directories': '目录',
+  'settings.agentAccess.actionSandbox': '操作沙箱',
+  'settings.agentAccess.readWriteAccess': '读取 + 写入',
+  'settings.agentAccess.actionSandboxDesc': 'Shell、文件和 git 工具的默认工作目录。',
+  'settings.agentAccess.internalState': '内部状态',
+  'settings.agentAccess.agentBlocked': '代理已阻止',
+  'settings.agentAccess.internalStateDesc':
+    '内存数据库、会话、令牌和其他核心数据。代理工具无法访问。',
   'settings.agentAccess.approvalHistory': 'Approval history',
   'settings.agentAccess.approvalHistoryDesc':
     'Review past Approve / Deny decisions the agent requested.',
@@ -4214,6 +4236,60 @@ const messages: TranslationMap = {
   'keyring.settings.revokeConsent': '拒绝本地存储',
   'pages.settings.account.security': '安全',
   'pages.settings.account.securityDesc': '密钥存储模式和密钥链状态',
+
+  // Agent activity level
+  'activityLevel.title': '智能体活动级别',
+  'activityLevel.description': '控制您的智能体的主动程度。级别越高，消耗的令牌越多。',
+  'activityLevel.off': '关闭',
+  'activityLevel.offDesc': '无后台处理。仅在按下按钮时同步。',
+  'activityLevel.minimal': '最低',
+  'activityLevel.minimalDesc': '每天同步一次来源。无主动消息。',
+  'activityLevel.moderate': '适中',
+  'activityLevel.moderateDesc': '每小时同步。每日摘要。建议操作。',
+  'activityLevel.active': '活跃',
+  'activityLevel.activeDesc': '每10分钟同步。监控频道、分类并起草回复。',
+  'activityLevel.alwaysOn': '始终开启',
+  'activityLevel.alwaysOnDesc': '实时同步。在规定范围内完全自主。',
+  'activityLevel.currentMonth': '本月：${amount}',
+  'activityLevel.saved': '活动级别已更新。',
+  'activityLevel.default': '默认',
+  'activityLevel.costFree': '$0',
+  'activityLevel.costRange': '~${min}–${max}/月',
+
+  // Sync budget dialog
+  'syncBudget.title': '同步预算',
+  'syncBudget.maxTokens': '每次同步最大令牌数',
+  'syncBudget.maxTokensHelp': '消耗此数量的令牌后停止同步。',
+  'syncBudget.maxCost': '每次同步最大费用（USD）',
+  'syncBudget.maxCostHelp': '每次同步运行的绝对美元上限。',
+  'syncBudget.syncDepth': '同步深度',
+  'syncBudget.syncDepthHelp': '仅获取此时间窗口内的项目。',
+  'syncBudget.days7': '最近7天',
+  'syncBudget.days30': '最近30天',
+  'syncBudget.days90': '最近90天',
+  'syncBudget.allTime': '所有时间',
+  'syncBudget.unlimited': '无限制',
+  'syncBudget.saved': '预算已保存。',
+
+  // Sync confirm dialog
+  'syncConfirm.title': '确认同步',
+  'syncConfirm.message': '此同步将处理约{items}个项目（约{tokens}个令牌，预计${cost}）。',
+  'syncConfirm.budgetNote': '预算上限：${max}',
+  'syncConfirm.proceed': '继续',
+  'syncConfirm.cancel': '取消',
+  'syncConfirm.estimating': '正在估算费用...',
+
+  // Monthly cost badge
+  'monthlyCost.badge': '本月${amount}',
+  'monthlyCost.noData': '本月无同步',
+
+  // Onboarding: Custom > Activity
+  'onboarding.custom.stepperActivity': '活动',
+  'onboarding.custom.activity.title': '智能体活动',
+  'onboarding.custom.activity.subtitle': '您的智能体在后台监控和行动的主动程度。',
+  'onboarding.custom.activity.defaultDesc': '适中活动——每小时同步，每日摘要。',
+  'onboarding.custom.activity.configureDesc':
+    '选择您自己的活动级别。在设置 › 智能体活动级别中配置。',
 };
 
 export default messages;
