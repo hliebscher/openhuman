@@ -218,6 +218,7 @@ const messages: TranslationMap = {
   'routines.notRunYet': 'Еще не запущен',
   'routines.runNow': 'Беги сейчас',
   'routines.running': 'Бег…',
+  'routines.runNowTimedOut': 'Время выполнения истекло — обновите страницу и попробуйте снова.',
   'routines.viewHistory': 'Посмотреть историю',
   'routines.loadingHistory': 'Загрузка…',
   'routines.noHistory': 'Истории запусков пока нет.',
@@ -230,7 +231,7 @@ const messages: TranslationMap = {
   'routines.typeCommand': 'Команда',
   'nav.routines': 'Routines',
   'chat.newThread': 'Новый чат',
-  'chat.typeMessage': 'Введи сообщение...',
+  'chat.typeMessage': 'Чем я могу помочь тебе сегодня?',
   'chat.send': 'Отправить сообщение',
   'chat.thinking': 'Думаю...',
   'chat.noMessages': 'Сообщений пока нет',
@@ -440,6 +441,11 @@ const messages: TranslationMap = {
   'memoryTree.status.hoursAgo': '{count} час назад',
   'memoryTree.status.dayAgo': '1 день назад',
   'memoryTree.status.daysAgo': '{count} дней назад',
+  'memoryTree.status.integrationsTitle': 'Состояние интеграций',
+  'memoryTree.status.integrationsEmpty': 'Нет подключённых интеграций',
+  'memoryTree.status.integrationActive': 'Активна',
+  'memoryTree.status.integrationStale': 'Устарела',
+  'memoryTree.status.integrationChunks': 'Куски: {count}',
   'alerts.title': 'Оповещения',
   'alerts.empty': 'Оповещений пока нет',
   'alerts.markAllRead': 'Отметить всё прочитанным',
@@ -1932,6 +1938,22 @@ const messages: TranslationMap = {
   'reflections.proposedAction': 'Предлагаемое действие',
   'reflections.act': 'Выполнить',
   'reflections.dismiss': 'Закрыть',
+  'reflections.viewConversation': 'Просмотр',
+  'subconscious.mode.label': 'Режим подсознания',
+  'subconscious.mode.off.title': 'Выкл',
+  'subconscious.mode.off.desc': 'Подсознание отключено.',
+  'subconscious.mode.simple.title': 'Простой',
+  'subconscious.mode.simple.desc': 'Наблюдение в режиме чтения. Только доступ к памяти и файлам.',
+  'subconscious.mode.aggressive.title': 'Агрессивный',
+  'subconscious.mode.aggressive.desc':
+    'Полный доступ к инструментам. Может писать, создавать агентов и делегировать задачи.',
+  'subconscious.mode.aggressiveWarning':
+    'Агрессивный режим даёт подсознанию полный доступ к инструментам, включая запись и создание подагентов.',
+  'subconscious.interval.label': 'Частота',
+  'subconscious.interval.minutes': '{n} мин',
+  'subconscious.interval.hours': '{n} ч',
+  'subconscious.interval.oneHour': '1 час',
+  'subconscious.interval.oneDay': '24 часа',
   'whatsapp.chatsSynced': 'чатов синхронизировано',
   'whatsapp.chatSynced': 'чат синхронизирован',
   'sync.active': 'Активно',
@@ -2257,6 +2279,9 @@ const messages: TranslationMap = {
   'app.openhumanLink.discord.perk2': 'Преимущество 2',
   'app.openhumanLink.discord.perk3': 'Преимущество 3',
   'app.openhumanLink.discord.perk4': 'Преимущество 4',
+  'app.openhumanLink.discordReport.intro':
+    'Приносим извинения — что-то пошло не так с нашей стороны. Мы стараемся фиксировать такие ошибки автоматически, но если вы поделитесь подробностями в Discord, мы исправим их быстрее.',
+  'app.openhumanLink.discordReport.openDiscord': 'Открыть Discord',
   'app.openhumanLink.done': 'Готово',
   'app.openhumanLink.loadingChannelSetup': 'Загрузка настроек канала',
   'app.openhumanLink.maybeLater': 'Может, потом',
@@ -2277,6 +2302,7 @@ const messages: TranslationMap = {
   'app.openhumanLink.title.accounts': 'Подключи свои приложения',
   'app.openhumanLink.title.billing': 'Оплата и кредиты',
   'app.openhumanLink.title.discord': 'Вступи в сообщество',
+  'app.openhumanLink.title.discordReport': 'Сообщить об ошибке',
   'app.openhumanLink.title.messaging': 'Подключи канал связи',
   'app.openhumanLink.title.notifications': 'Разрешить уведомления',
   'app.persistRehydration.body': 'Текст',
@@ -4168,14 +4194,6 @@ const messages: TranslationMap = {
   'memory.sourceFilterAria': 'Фильтровать по источнику',
   'calls.comingSoonDescription': 'Звонки с поддержкой ИИ скоро появятся. Следите за обновлениями.',
   'whatsapp.title': 'WhatsApp',
-  'subconscious.interval.fiveMinutes': '5 минут',
-  'subconscious.interval.tenMinutes': '10 минут',
-  'subconscious.interval.fifteenMinutes': '15 минут',
-  'subconscious.interval.thirtyMinutes': '30 минут',
-  'subconscious.interval.oneHour': '1 час',
-  'subconscious.interval.sixHours': '6 часов',
-  'subconscious.interval.twelveHours': '12 часов',
-  'subconscious.interval.oneDay': '1 день',
   'subconscious.priority.critical': 'критический',
   'subconscious.priority.important': 'важный',
   'subconscious.priority.normal': 'нормальный',
@@ -4405,6 +4423,38 @@ const messages: TranslationMap = {
   'settings.agents.editor.toolsDone': 'Done',
   'settings.agents.editor.builtInReadonly':
     'Встроенные агенты нельзя редактировать. Вы можете включить, отключить или сбросить их в списке агентов.',
+  // Chat — agent-generated artifacts (#2779)
+  'chat.artifact.aria': 'Артефакт: {title}',
+  'chat.artifact.generating': 'Создание {kind}…',
+  'chat.artifact.ready': 'Готово',
+  'chat.artifact.failed': 'Сбой генерации',
+  'chat.artifact.download': 'Скачать',
+  'chat.artifact.downloading': 'Скачивание…',
+  'chat.artifact.downloaded': 'Сохранено в {path}',
+  'chat.artifact.download_failed': 'Сбой скачивания: {reason}',
+  'chat.artifact.retry': 'Повторить',
+  'chat.artifact.reveal': 'Показать в папке',
+  'chat.artifact.show_more': 'Показать больше',
+  'chat.artifact.show_less': 'Свернуть',
+
+  // Chat — files panel (#3024)
+  'chat.files.chip.aria.one': '{count} файл в этом чате',
+  'chat.files.chip.aria.other': '{count} файлов в этом чате',
+  'chat.files.panel.aria': 'Файлы в этом чате',
+  'chat.files.panel.title': 'Файлы ({count})',
+  'chat.files.panel.empty': 'Файлов пока нет. Попросите агента создать один.',
+  'chat.files.panel.close': 'Закрыть панель файлов',
+  'chat.files.delete.aria': 'Удалить {title}',
+  'chat.files.delete.confirm': 'Удалить этот файл?',
+  'chat.files.delete.cancel': 'Отмена',
+  'chat.files.delete.action': 'Удалить',
+  'chat.files.delete.failed': 'Не удалось удалить файл. Попробуйте ещё раз.',
+  'chat.files.error.not_desktop': 'Загрузки доступны только в настольном приложении.',
+  'chat.files.error.missing_artifact_id': 'Отсутствует идентификатор артефакта.',
+  'chat.files.error.missing_artifact_path': 'В ответе ядра отсутствует путь к артефакту.',
+  'chat.files.error.resolve_failed': 'Не удалось получить артефакт. Попробуйте ещё раз.',
+  'chat.files.error.download_failed': 'Не удалось загрузить файл. Попробуйте ещё раз.',
+  'chat.files.error.delete_failed': 'Не удалось удалить файл. Попробуйте ещё раз.',
   'autocomplete.debounceMs': 'Задержка (мс)',
   'autocomplete.maxChars': 'Макс. символов контекста',
   'autocomplete.overlayTtlMs': 'Тайм-аут наложения (мс)',
@@ -4493,7 +4543,38 @@ const messages: TranslationMap = {
   'keyring.settings.revokeConsent': 'Отклонить локальное хранилище',
   'pages.settings.account.security': 'Безопасность',
   'pages.settings.account.securityDesc': 'Режим хранения секретов и статус связки ключей',
+  // #002 memory-pipeline-hardening: degraded badges + typed remediation.
+  'memoryTree.status.statusDegraded': 'Ухудшено',
+  'memoryTree.status.degradedRecall': 'Семантический поиск отключён',
+  'memoryTree.status.degradedStructure': 'Структура вики неполная',
+  'memoryTree.status.extractionCoverage': 'Охват извлечения: {pct}% фрагментов имеют структуру',
+  'memory.health.remediation.budget_exhausted':
+    'Эмбеддинги памяти исчерпали управляемый бюджет. Настройте локальные эмбеддинги Ollama (Настройки → ИИ → Эмбеддинги) или добавьте свой ключ API для эмбеддингов, чтобы продолжить построение памяти.',
+  'memory.health.remediation.auth_missing':
+    'Учётные данные для эмбеддингов не найдены. Войдите в OpenHuman или настройте локальные эмбеддинги Ollama в разделе Настройки → ИИ → Эмбеддинги.',
+  'memory.health.remediation.auth_invalid':
+    'Ваши учётные данные для эмбеддингов отклонены. Пройдите аутентификацию заново или переключитесь на локальные эмбеддинги Ollama в разделе Настройки → ИИ → Эмбеддинги.',
+  'memory.health.remediation.embeddings_unconfigured':
+    'Поставщик эмбеддингов не настроен, поэтому семантический поиск отключён. Настройте локальные эмбеддинги Ollama (рекомендуется) или добавьте ключ эмбеддингов в разделе Настройки → ИИ → Эмбеддинги.',
+  'memory.health.remediation.embedding_dim_mismatch':
+    'Модель эмбеддингов возвращает неверный размер вектора (память ожидает 1024 измерения). Выберите модель с 1024 измерениями или запросите 1024 измерения у своего поставщика.',
+  'memory.health.remediation.local_model_unavailable':
+    'Требуемая локальная модель недоступна. Установите/запустите Ollama и загрузите модель либо переключите эту задачу на облачного поставщика в разделе Настройки → ИИ.',
+  'memory.health.remediation.extraction_timeout':
+    'Модель извлечения памяти превышает время ожидания, поэтому в вики мало структуры. Выберите более быструю модель извлечения памяти в разделе Настройки → ИИ.',
+  'memory.health.remediation.summarizer_unavailable':
+    'Нет доступного поставщика суммаризации для «Построить деревья сводок». Включите локальный ИИ (Ollama) или включите облачную суммаризацию в разделе Настройки → ИИ → Память.',
+  'memory.health.remediation.transient':
+    'Временная ошибка прервала обработку памяти. Повтор произойдёт автоматически.',
+  'memory.health.remediation.unknown':
+    'При обработке памяти возникла проблема. Проверьте конфигурацию в разделе Настройки → ИИ.',
+  // Chat — agent-generated artifacts (#2779)
 
+  // Chat composer toolbar
+  'composer.attachFile': 'Прикрепить файл',
+  'composer.modelSelector': 'Модель',
+  'composer.voiceMode': 'Голосовой режим',
+  'composer.qualityHigh': 'Высокое',
   // Agent activity level
   'activityLevel.title': 'Уровень активности агента',
   'activityLevel.description':
@@ -4547,6 +4628,7 @@ const messages: TranslationMap = {
 
   // Onboarding: Custom > Activity
   'onboarding.custom.stepperActivity': 'Активность',
+  'onboarding.custom.stepperVault': 'Хранилище',
   'onboarding.custom.activity.title': 'Активность агента',
   'onboarding.custom.activity.subtitle':
     'Насколько проактивно агент отслеживает события и действует в фоне.',
@@ -4554,6 +4636,63 @@ const messages: TranslationMap = {
     'Умеренная активность — синхронизация каждый час, ежедневная сводка.',
   'onboarding.custom.activity.configureDesc':
     'Выберите свой уровень активности. Настройка в Параметры › Уровень активности агента.',
+  'onboarding.custom.vault.title': 'Настройка памяти и хранилища',
+  'onboarding.custom.vault.subtitle':
+    'Подтвердите, куда записываются заметки памяти, как считываются исходные данные и исправно ли работает конвейер хранилища.',
+  'onboarding.custom.vault.defaultDesc':
+    'Использовать настройки памяти по умолчанию, управляемые OpenHuman. Путь к хранилищу и состояние синхронизации можно проверить позже.',
+  'onboarding.custom.vault.configureDesc':
+    'Проверьте владельца хранилища, выполните проверки состояния и настройте параметры памяти прямо сейчас.',
+  'onboarding.custom.vault.localDisabledReason':
+    'Управляемая настройка требует входа в OpenHuman и недоступна в локальном режиме.',
+  'onboarding.custom.vault.exitError':
+    'Не удалось завершить настройку. Пожалуйста, попробуйте ещё раз.',
+  'vaultHealth.title': 'Контрольный список состояния хранилища',
+  'vaultHealth.setupTitle': 'Состояние настройки хранилища',
+  'vaultHealth.workspaceVault': 'Хранилище рабочего пространства:',
+  'vaultHealth.refresh': 'Обновить',
+  'vaultHealth.refreshing': 'Обновление…',
+  'vaultHealth.revealFolder': 'Показать папку',
+  'vaultHealth.openInObsidian': 'Открыть в Obsidian',
+  'vaultHealth.installObsidian': 'Установить Obsidian',
+  'vaultHealth.openObsidianError': 'Не удалось открыть Obsidian',
+  'vaultHealth.revealError': 'Не удалось показать папку хранилища',
+  'vaultHealth.downloadError': 'Не удалось открыть страницу загрузки Obsidian',
+  'vaultHealth.loadError': 'Не удалось загрузить состояние хранилища:',
+  'vaultHealth.lastSync': 'Последняя синхронизация:',
+  'vaultHealth.passed': 'Пройдено',
+  'vaultHealth.needsAttention': 'Требует внимания',
+  'vaultHealth.existsLabel': 'Путь к хранилищу рабочего пространства существует',
+  'vaultHealth.existsRecovery':
+    'Папка хранилища отсутствует. Запустите синхронизацию или создайте эту папку, затем обновите контрольный список.',
+  'vaultHealth.writableLabel': 'Хранилище доступно для записи OpenHuman',
+  'vaultHealth.writableRecovery':
+    'OpenHuman пока не может записывать в это хранилище. Предоставьте права на запись и обновите страницу.',
+  'vaultHealth.obsidianLabel': 'Хранилище зарегистрировано в Obsidian',
+  'vaultHealth.obsidianRecovery':
+    'В Obsidian выберите «Открыть папку как хранилище» для этого пути, затем обновите контрольный список.',
+  'vaultHealth.pipelineLabel': 'Конвейер памяти работает исправно',
+  'vaultHealth.pipelineRecovery':
+    'Конвейер памяти приостановлен или находится в состоянии ошибки. Повторно включите автосинхронизацию в статусе дерева памяти и повторите попытку.',
+  'vaultHealth.timeNever': 'Никогда',
+  'vaultHealth.timeJustNow': 'только что',
+  'vaultHealth.timeMinAgo': '{n} мин назад',
+  'vaultHealth.timeHrAgo': '{n} ч назад',
+  'vaultHealth.timeDayAgo': '{n} день назад',
+  'vaultHealth.timeDaysAgo': '{n} дн назад',
+  'memoryData.howItWorks': 'Как работает хранение памяти',
+  'memoryData.workspaceVault': 'Хранилище рабочего пространства · запись',
+  'memoryData.workspaceVaultDesc':
+    'OpenHuman записывает сгенерированные заметки памяти в memory_tree/content.',
+  'memoryData.connectedSources': 'Подключённые источники · чтение',
+  'memoryData.connectedSourcesDesc':
+    'Папки, почтовые ящики, чаты и репозитории импортируются для индексирования памяти — исходные файлы никогда не перезаписываются.',
+  'memoryData.internalFiles': 'Внутренние файлы дерева памяти',
+  'memoryData.internalFilesDesc':
+    'Индексы, состояние очереди и сводки управляются OpenHuman для поддержания исправного восстановления и синхронизации.',
+  'memoryData.windowError': 'Окно памяти',
+  'memoryData.windowUpdated': 'Окно памяти обновлено',
+  'memoryData.windowUpdatedMsg': 'Установлено значение {window}.',
 };
 
 export default messages;

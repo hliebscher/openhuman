@@ -224,6 +224,7 @@ const messages: TranslationMap = {
   'routines.notRunYet': 'Pas encore exécuté',
   'routines.runNow': 'Cours maintenant',
   'routines.running': 'Course…',
+  'routines.runNowTimedOut': 'Délai dépassé — veuillez rafraîchir et réessayer.',
   'routines.viewHistory': "Afficher l'historique",
   'routines.loadingHistory': 'Chargement…',
   'routines.noHistory': "Pas encore d'historique d'exécution.",
@@ -236,7 +237,7 @@ const messages: TranslationMap = {
   'routines.typeCommand': 'Commande',
   'nav.routines': 'Routines',
   'chat.newThread': 'Nouveau fil',
-  'chat.typeMessage': 'Écris un message…',
+  'chat.typeMessage': "Comment puis-je t'aider aujourd'hui ?",
   'chat.send': 'Envoyer le message',
   'chat.thinking': 'En train de réfléchir…',
   'chat.noMessages': "Aucun message pour l'instant",
@@ -447,6 +448,11 @@ const messages: TranslationMap = {
   'memoryTree.status.hoursAgo': '{count} il y a hr',
   'memoryTree.status.dayAgo': 'Il y a 1 jour',
   'memoryTree.status.daysAgo': '{count} il y a des jours',
+  'memoryTree.status.integrationsTitle': 'Santé par intégration',
+  'memoryTree.status.integrationsEmpty': 'Aucune intégration connectée',
+  'memoryTree.status.integrationActive': 'Active',
+  'memoryTree.status.integrationStale': 'Obsolète',
+  'memoryTree.status.integrationChunks': 'Morceaux : {count}',
   'alerts.title': 'Alertes',
   'alerts.empty': "Aucune alerte pour l'instant",
   'alerts.markAllRead': 'Tout marquer comme lu',
@@ -1965,6 +1971,23 @@ const messages: TranslationMap = {
   'reflections.proposedAction': 'Action proposée',
   'reflections.act': 'Agir',
   'reflections.dismiss': 'Ignorer',
+  'reflections.viewConversation': 'Voir',
+  'subconscious.mode.label': 'Mode subconscient',
+  'subconscious.mode.off.title': 'Désactivé',
+  'subconscious.mode.off.desc': 'Le subconscient est désactivé.',
+  'subconscious.mode.simple.title': 'Simple',
+  'subconscious.mode.simple.desc':
+    'Observation en lecture seule. Accès mémoire et fichiers uniquement.',
+  'subconscious.mode.aggressive.title': 'Agressif',
+  'subconscious.mode.aggressive.desc':
+    'Accès complet aux outils. Peut écrire, créer des agents et déléguer des tâches.',
+  'subconscious.mode.aggressiveWarning':
+    "Le mode agressif donne au subconscient un accès complet aux outils, y compris l'écriture et la création de sous-agents.",
+  'subconscious.interval.label': 'Fréquence',
+  'subconscious.interval.minutes': '{n} min',
+  'subconscious.interval.hours': '{n}h',
+  'subconscious.interval.oneHour': '1 heure',
+  'subconscious.interval.oneDay': '24 heures',
   'whatsapp.chatsSynced': 'conversations synchronisées',
   'whatsapp.chatSynced': 'conversation synchronisée',
   'sync.active': 'Actif',
@@ -2292,6 +2315,9 @@ const messages: TranslationMap = {
   'app.openhumanLink.discord.perk2': 'Avantage 2',
   'app.openhumanLink.discord.perk3': 'Avantage 3',
   'app.openhumanLink.discord.perk4': 'Avantage 4',
+  'app.openhumanLink.discordReport.intro':
+    "Désolé — quelque chose s'est mal passé de notre côté. Nous essayons de journaliser ces erreurs automatiquement, mais partager les détails sur Discord nous aide à les corriger plus vite.",
+  'app.openhumanLink.discordReport.openDiscord': 'Ouvrir Discord',
   'app.openhumanLink.done': 'Terminé',
   'app.openhumanLink.loadingChannelSetup': 'Chargement de la configuration du canal',
   'app.openhumanLink.maybeLater': 'Peut-être plus tard',
@@ -2312,6 +2338,7 @@ const messages: TranslationMap = {
   'app.openhumanLink.title.accounts': 'Connecte tes apps',
   'app.openhumanLink.title.billing': 'Facturation & crédits',
   'app.openhumanLink.title.discord': 'Rejoins la communauté',
+  'app.openhumanLink.title.discordReport': 'Signaler cette erreur',
   'app.openhumanLink.title.messaging': 'Connecter un canal de chat',
   'app.openhumanLink.title.notifications': 'Autoriser les notifications',
   'app.persistRehydration.body': 'Corps',
@@ -4223,14 +4250,6 @@ const messages: TranslationMap = {
   'memory.sourceFilterAria': 'Filtrer par source',
   'calls.comingSoonDescription': "Les appels assistés par IA arrivent bientôt. Restez à l'écoute.",
   'whatsapp.title': 'WhatsApp',
-  'subconscious.interval.fiveMinutes': '5 min',
-  'subconscious.interval.tenMinutes': '10 min',
-  'subconscious.interval.fifteenMinutes': '15 min',
-  'subconscious.interval.thirtyMinutes': '30 min',
-  'subconscious.interval.oneHour': '1 heure',
-  'subconscious.interval.sixHours': '6 heures',
-  'subconscious.interval.twelveHours': '12 heures',
-  'subconscious.interval.oneDay': '1 jour',
   'subconscious.priority.critical': 'critique',
   'subconscious.priority.important': 'important',
   'subconscious.priority.normal': 'normal',
@@ -4461,6 +4480,40 @@ const messages: TranslationMap = {
   'settings.agents.editor.toolsDone': 'Done',
   'settings.agents.editor.builtInReadonly':
     'Les agents intégrés ne peuvent pas être modifiés. Vous pouvez les activer, les désactiver ou les réinitialiser depuis la liste des agents.',
+  // Chat — agent-generated artifacts (#2779)
+  'chat.artifact.aria': 'Artefact : {title}',
+  'chat.artifact.generating': 'Génération de {kind}…',
+  'chat.artifact.ready': 'Prêt',
+  'chat.artifact.failed': 'Échec de la génération',
+  'chat.artifact.download': 'Télécharger',
+  'chat.artifact.downloading': 'Téléchargement…',
+  'chat.artifact.downloaded': 'Enregistré dans {path}',
+  'chat.artifact.download_failed': 'Échec du téléchargement : {reason}',
+  'chat.artifact.retry': 'Réessayer',
+  'chat.artifact.reveal': 'Afficher dans le dossier',
+  'chat.artifact.show_more': 'Voir plus',
+  'chat.artifact.show_less': 'Voir moins',
+
+  // Chat — files panel (#3024)
+  'chat.files.chip.aria.one': '{count} fichier dans cette discussion',
+  'chat.files.chip.aria.other': '{count} fichiers dans cette discussion',
+  'chat.files.panel.aria': 'Fichiers dans cette discussion',
+  'chat.files.panel.title': 'Fichiers ({count})',
+  'chat.files.panel.empty': 'Aucun fichier pour l’instant. Demandez à l’agent d’en générer un.',
+  'chat.files.panel.close': 'Fermer le panneau de fichiers',
+  'chat.files.delete.aria': 'Supprimer {title}',
+  'chat.files.delete.confirm': 'Supprimer ce fichier ?',
+  'chat.files.delete.cancel': 'Annuler',
+  'chat.files.delete.action': 'Supprimer',
+  'chat.files.delete.failed': 'Impossible de supprimer le fichier. Réessayez.',
+  'chat.files.error.not_desktop':
+    'Les téléchargements sont uniquement disponibles dans l’application bureau.',
+  'chat.files.error.missing_artifact_id': 'Identifiant d’artefact manquant.',
+  'chat.files.error.missing_artifact_path':
+    'Le chemin de l’artefact est absent de la réponse du cœur.',
+  'chat.files.error.resolve_failed': 'Impossible de résoudre l’artefact. Réessayez.',
+  'chat.files.error.download_failed': 'Échec du téléchargement. Réessayez.',
+  'chat.files.error.delete_failed': 'Impossible de supprimer le fichier. Réessayez.',
   'autocomplete.debounceMs': 'Anti-rebond (ms)',
   'autocomplete.maxChars': 'Caractères de contexte maximum',
   'autocomplete.overlayTtlMs': "Délai d'affichage (ms)",
@@ -4548,7 +4601,39 @@ const messages: TranslationMap = {
   'keyring.settings.revokeConsent': 'Refuser le stockage local',
   'pages.settings.account.security': 'Sécurité',
   'pages.settings.account.securityDesc': 'Mode de stockage des secrets et état du trousseau',
+  // #002 memory-pipeline-hardening: degraded badges + typed remediation.
+  'memoryTree.status.statusDegraded': 'Dégradé',
+  'memoryTree.status.degradedRecall': 'Rappel sémantique désactivé',
+  'memoryTree.status.degradedStructure': 'Structure du wiki incomplète',
+  'memoryTree.status.extractionCoverage':
+    "Couverture d'extraction : {pct}% des fragments ont une structure",
+  'memory.health.remediation.budget_exhausted':
+    "Les embeddings de mémoire ont atteint le budget géré. Configurez des embeddings Ollama locaux (Paramètres → IA → Encastrements) ou ajoutez votre propre clé d'API d'embeddings pour continuer à construire la mémoire.",
+  'memory.health.remediation.auth_missing':
+    "Aucune information d'identification d'embeddings trouvée. Connectez-vous à OpenHuman ou configurez des embeddings Ollama locaux dans Paramètres → IA → Encastrements.",
+  'memory.health.remediation.auth_invalid':
+    "Vos informations d'identification d'embeddings ont été rejetées. Authentifiez-vous à nouveau ou passez aux embeddings Ollama locaux dans Paramètres → IA → Encastrements.",
+  'memory.health.remediation.embeddings_unconfigured':
+    "Aucun fournisseur d'embeddings n'est configuré, le rappel sémantique est donc désactivé. Configurez des embeddings Ollama locaux (recommandé) ou ajoutez une clé d'embeddings dans Paramètres → IA → Encastrements.",
+  'memory.health.remediation.embedding_dim_mismatch':
+    "Le modèle d'embeddings renvoie une taille de vecteur incorrecte (la mémoire attend 1024 dimensions). Choisissez un modèle à 1024 dimensions ou demandez 1024 dimensions à votre fournisseur.",
+  'memory.health.remediation.local_model_unavailable':
+    "Un modèle local requis n'est pas disponible. Installez/lancez Ollama et téléchargez le modèle, ou basculez cette charge de travail vers un fournisseur cloud dans Paramètres → IA.",
+  'memory.health.remediation.extraction_timeout':
+    "Le modèle d'extraction de mémoire dépasse le délai imparti, le wiki a donc peu de structure. Choisissez un modèle d'extraction de mémoire plus rapide dans Paramètres → IA.",
+  'memory.health.remediation.summarizer_unavailable':
+    "Aucun fournisseur de résumé n'est disponible pour Créer des arbres de résumé. Activez l'IA locale (Ollama) ou activez la synthèse cloud dans Paramètres → IA → Mémoire.",
+  'memory.health.remediation.transient':
+    'Une erreur temporaire a interrompu le traitement de la mémoire. Une nouvelle tentative aura lieu automatiquement.',
+  'memory.health.remediation.unknown':
+    'Le traitement de la mémoire a rencontré un problème. Vérifiez Paramètres → IA pour la configuration.',
+  // Chat — agent-generated artifacts (#2779)
 
+  // Chat composer toolbar
+  'composer.attachFile': 'Joindre un fichier',
+  'composer.modelSelector': 'Modèle',
+  'composer.voiceMode': 'Mode vocal',
+  'composer.qualityHigh': 'Élevé',
   // Agent activity level
   'activityLevel.title': "Niveau d'activité de l'agent",
   'activityLevel.description':
@@ -4603,6 +4688,7 @@ const messages: TranslationMap = {
 
   // Onboarding: Custom > Activity
   'onboarding.custom.stepperActivity': 'Activité',
+  'onboarding.custom.stepperVault': 'Coffre',
   'onboarding.custom.activity.title': "Activité de l'agent",
   'onboarding.custom.activity.subtitle':
     'À quel point votre agent surveille et agit en arrière-plan.',
@@ -4610,6 +4696,68 @@ const messages: TranslationMap = {
     'Activité modérée — synchronisation horaire, résumé quotidien.',
   'onboarding.custom.activity.configureDesc':
     "Choisissez votre propre niveau d'activité. Configurer dans Paramètres › Niveau d'activité de l'agent.",
+
+  // Onboarding: Custom > Vault
+  'onboarding.custom.vault.title': 'Configuration de la mémoire et du coffre',
+  'onboarding.custom.vault.subtitle':
+    'Confirmez où les notes de mémoire sont écrites, comment les données sources sont lues et si votre pipeline de coffre est en bon état.',
+  'onboarding.custom.vault.defaultDesc':
+    "Utiliser les paramètres de mémoire gérés par OpenHuman. Le chemin du coffre et l'état de synchronisation peuvent encore être consultés ultérieurement.",
+  'onboarding.custom.vault.configureDesc':
+    'Vérifiez la propriété du coffre, exécutez des contrôles de santé et affinez les contrôles de mémoire maintenant.',
+  'onboarding.custom.vault.localDisabledReason':
+    "La configuration gérée nécessite une connexion à OpenHuman et n'est pas disponible en mode local.",
+  'onboarding.custom.vault.exitError': "Impossible de terminer l'intégration. Veuillez réessayer.",
+
+  // Vault Health
+  'vaultHealth.title': 'Liste de contrôle de santé du coffre',
+  'vaultHealth.setupTitle': 'Santé de la configuration du coffre',
+  'vaultHealth.workspaceVault': "Coffre de l'espace de travail :",
+  'vaultHealth.refresh': 'Actualiser',
+  'vaultHealth.refreshing': 'Actualisation…',
+  'vaultHealth.revealFolder': 'Afficher le dossier',
+  'vaultHealth.openInObsidian': 'Ouvrir dans Obsidian',
+  'vaultHealth.installObsidian': 'Installer Obsidian',
+  'vaultHealth.openObsidianError': "Impossible d'ouvrir Obsidian",
+  'vaultHealth.revealError': "Impossible d'afficher le dossier du coffre",
+  'vaultHealth.downloadError': "Impossible d'ouvrir la page de téléchargement d'Obsidian",
+  'vaultHealth.loadError': 'Impossible de charger la santé du coffre :',
+  'vaultHealth.lastSync': 'Dernière synchronisation :',
+  'vaultHealth.passed': 'Réussi',
+  'vaultHealth.needsAttention': 'Attention requise',
+  'vaultHealth.existsLabel': "Le chemin du coffre de l'espace de travail existe",
+  'vaultHealth.existsRecovery':
+    'Le dossier du coffre est manquant. Lancez une synchronisation ou créez ce dossier, puis actualisez cette liste de contrôle.',
+  'vaultHealth.writableLabel': 'Le coffre est accessible en écriture par OpenHuman',
+  'vaultHealth.writableRecovery':
+    "OpenHuman ne peut pas encore écrire dans ce coffre. Accordez les autorisations d'écriture et actualisez.",
+  'vaultHealth.obsidianLabel': 'Le coffre est enregistré dans Obsidian',
+  'vaultHealth.obsidianRecovery':
+    'Dans Obsidian, choisissez « Ouvrir le dossier comme coffre » pour ce chemin, puis actualisez cette liste de contrôle.',
+  'vaultHealth.pipelineLabel': 'Le pipeline de mémoire est en bon état',
+  'vaultHealth.pipelineRecovery':
+    "Le pipeline de mémoire est en pause ou en erreur. Réactivez la synchronisation automatique dans le statut de l'arbre de mémoire et réessayez.",
+  'vaultHealth.timeNever': 'Jamais',
+  'vaultHealth.timeJustNow': "à l'instant",
+  'vaultHealth.timeMinAgo': 'il y a {n} min',
+  'vaultHealth.timeHrAgo': 'il y a {n} h',
+  'vaultHealth.timeDayAgo': 'il y a {n} jour',
+  'vaultHealth.timeDaysAgo': 'il y a {n} jours',
+
+  // Memory Data
+  'memoryData.howItWorks': 'Fonctionnement du stockage de la mémoire',
+  'memoryData.workspaceVault': "Coffre de l'espace de travail · écriture",
+  'memoryData.workspaceVaultDesc':
+    'OpenHuman écrit les notes de mémoire générées dans memory_tree/content.',
+  'memoryData.connectedSources': 'Sources connectées · lecture',
+  'memoryData.connectedSourcesDesc':
+    "Les dossiers, boîtes mail, conversations et dépôts sont importés pour l'indexation de la mémoire — leurs fichiers originaux ne sont jamais réécrits.",
+  'memoryData.internalFiles': "Fichiers internes de l'arbre de mémoire",
+  'memoryData.internalFilesDesc':
+    "Les index, l'état de la file d'attente et les résumés sont gérés par OpenHuman pour maintenir la mémoire et la synchronisation en bon état.",
+  'memoryData.windowError': 'Fenêtre de mémoire',
+  'memoryData.windowUpdated': 'Fenêtre de mémoire mise à jour',
+  'memoryData.windowUpdatedMsg': 'Définie sur {window}.',
 };
 
 export default messages;

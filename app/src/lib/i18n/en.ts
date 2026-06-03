@@ -237,6 +237,7 @@ const en: TranslationMap = {
   'routines.notRunYet': 'Not run yet',
   'routines.runNow': 'Run Now',
   'routines.running': 'Running…',
+  'routines.runNowTimedOut': 'Run timed out — please refresh and try again.',
   'routines.viewHistory': 'View history',
   'routines.loadingHistory': 'Loading…',
   'routines.noHistory': 'No run history yet.',
@@ -251,7 +252,7 @@ const en: TranslationMap = {
 
   // Chat / Conversations
   'chat.newThread': 'New thread',
-  'chat.typeMessage': 'Type a message...',
+  'chat.typeMessage': 'How can I help you today?',
   'chat.send': 'Send message',
   'chat.thinking': 'Thinking...',
   'chat.noMessages': 'No messages yet',
@@ -503,7 +504,34 @@ const en: TranslationMap = {
   'memoryTree.status.statusSyncing': 'Syncing',
   'memoryTree.status.statusError': 'Error',
   'memoryTree.status.statusIdle': 'Idle',
+  'memoryTree.status.statusDegraded': 'Degraded',
   'memoryTree.status.never': 'Never',
+  // #002: degraded badges + typed remediation strings. The Rust core sends a
+  // `remediation_key` (one of memory.health.remediation.*) which the status
+  // panel resolves verbatim, so the cause + fix come from one source of truth.
+  'memoryTree.status.degradedRecall': 'Semantic recall disabled',
+  'memoryTree.status.degradedStructure': 'Wiki structure incomplete',
+  'memoryTree.status.extractionCoverage': 'Extraction coverage: {pct}% of chunks have structure',
+  'memory.health.remediation.budget_exhausted':
+    'Memory embeddings hit the managed budget. Set up local Ollama embeddings (Settings → AI → Embeddings) or add your own embeddings API key to keep building memory.',
+  'memory.health.remediation.auth_missing':
+    'No embeddings credentials found. Log in to OpenHuman, or set up local Ollama embeddings in Settings → AI → Embeddings.',
+  'memory.health.remediation.auth_invalid':
+    'Your embeddings credentials were rejected. Re-authenticate, or switch to local Ollama embeddings in Settings → AI → Embeddings.',
+  'memory.health.remediation.embeddings_unconfigured':
+    'No embeddings provider is configured, so semantic recall is off. Set up local Ollama embeddings (recommended) or add an embeddings key in Settings → AI → Embeddings.',
+  'memory.health.remediation.embedding_dim_mismatch':
+    'The embedding model returns the wrong vector size (memory expects 1024 dimensions). Pick a 1024-dim model, or request 1024 dimensions for your provider.',
+  'memory.health.remediation.local_model_unavailable':
+    'A required local model is not available. Install/run Ollama and pull the model, or switch this workload to a cloud provider in Settings → AI.',
+  'memory.health.remediation.extraction_timeout':
+    'The memory extraction model is timing out, so the wiki has little structure. Switch the Memory extraction model to a faster one in Settings → AI.',
+  'memory.health.remediation.summarizer_unavailable':
+    'No summarization provider is available for Build Summary Trees. Enable local AI (Ollama), or enable cloud summarization in Settings → AI → Memory.',
+  'memory.health.remediation.transient':
+    'A temporary error interrupted memory processing. It will retry automatically.',
+  'memory.health.remediation.unknown':
+    'Memory processing encountered an issue. Check Settings → AI for configuration.',
   'memoryTree.status.fetchError': "Couldn't fetch Memory Tree status",
   'memoryTree.status.retry': 'Retry',
   'memoryTree.status.toggleFailed': "Couldn't toggle auto-sync",
@@ -518,6 +546,13 @@ const en: TranslationMap = {
   'memoryTree.status.hoursAgo': '{count} hr ago',
   'memoryTree.status.dayAgo': '1 day ago',
   'memoryTree.status.daysAgo': '{count} days ago',
+  // Per-integration health strip (#2763) — rendered between the 4-tile grid
+  // and the auto-sync toggle in MemoryTreeStatusPanel.
+  'memoryTree.status.integrationsTitle': 'Per-integration health',
+  'memoryTree.status.integrationsEmpty': 'No integrations connected',
+  'memoryTree.status.integrationActive': 'Active',
+  'memoryTree.status.integrationStale': 'Stale',
+  'memoryTree.status.integrationChunks': 'Chunks: {count}',
 
   // Notifications / Alerts
   'alerts.title': 'Alerts',
@@ -608,13 +643,14 @@ const en: TranslationMap = {
   'onboarding.apiKeys.continue': 'Save and continue',
   'onboarding.apiKeys.saving': 'Saving…',
 
-  // Onboarding: Custom wizard (Inference / Voice / OAuth / Search / Activity / Memory)
+  // Onboarding: Custom wizard (Inference / Voice / OAuth / Search / Activity / Vault / Memory)
   'onboarding.custom.stepperInference': 'Inference',
   'onboarding.custom.stepperVoice': 'Voice',
   'onboarding.custom.stepperOAuth': 'OAuth',
   'onboarding.custom.stepperSearch': 'Search',
   'onboarding.custom.stepperEmbeddings': 'Embeddings',
   'onboarding.custom.stepperActivity': 'Activity',
+  'onboarding.custom.stepperVault': 'Vault',
   'onboarding.custom.stepperMemory': 'Memory',
   'onboarding.custom.stepCounter': 'Step {n} of {total}',
   'onboarding.custom.defaultTitle': 'Default',
@@ -680,6 +716,18 @@ const en: TranslationMap = {
     'Moderate activity — syncs every hour, sends a daily digest. Balanced cost and responsiveness.',
   'onboarding.custom.activity.configureDesc':
     'Pick your own activity level. Configure in Settings › Agent activity level.',
+
+  // Onboarding: Custom > Vault
+  'onboarding.custom.vault.title': 'Memory & Vault Setup',
+  'onboarding.custom.vault.subtitle':
+    'Confirm where memory notes are written, how source data is read, and whether your vault pipeline is healthy.',
+  'onboarding.custom.vault.defaultDesc':
+    'Use OpenHuman-managed memory defaults. Vault path and sync health can still be reviewed later.',
+  'onboarding.custom.vault.configureDesc':
+    'Review vault ownership, run health checks, and tune memory controls now.',
+  'onboarding.custom.vault.localDisabledReason':
+    'Managed setup requires OpenHuman sign-in and is unavailable in local mode.',
+  'onboarding.custom.vault.exitError': 'Could not finish onboarding. Please try again.',
 
   // Onboarding: Custom > Memory
   'onboarding.custom.memory.title': 'Memory',
@@ -2121,6 +2169,56 @@ const en: TranslationMap = {
   'workspace.trees': 'Trees',
   'workspace.contacts': 'Contacts',
 
+  // Vault health checklist
+  'vaultHealth.title': 'Vault Health Checklist',
+  'vaultHealth.setupTitle': 'Vault setup health',
+  'vaultHealth.workspaceVault': 'Workspace vault:',
+  'vaultHealth.refresh': 'Refresh',
+  'vaultHealth.refreshing': 'Refreshing…',
+  'vaultHealth.revealFolder': 'Reveal Folder',
+  'vaultHealth.openInObsidian': 'Open in Obsidian',
+  'vaultHealth.installObsidian': 'Install Obsidian',
+  'vaultHealth.openObsidianError': 'Could not open Obsidian',
+  'vaultHealth.revealError': 'Could not reveal vault folder',
+  'vaultHealth.downloadError': 'Could not open Obsidian download page',
+  'vaultHealth.loadError': 'Could not load vault health:',
+  'vaultHealth.lastSync': 'Last sync:',
+  'vaultHealth.passed': 'Passed',
+  'vaultHealth.needsAttention': 'Needs attention',
+  'vaultHealth.existsLabel': 'Workspace vault path exists',
+  'vaultHealth.existsRecovery':
+    'Vault folder is missing. Start a sync or create this folder, then refresh this checklist.',
+  'vaultHealth.writableLabel': 'Vault is writable by OpenHuman',
+  'vaultHealth.writableRecovery':
+    'OpenHuman cannot write to this vault yet. Grant write permissions and refresh.',
+  'vaultHealth.obsidianLabel': 'Vault is registered in Obsidian',
+  'vaultHealth.obsidianRecovery':
+    'In Obsidian, choose "Open folder as vault" for this path, then refresh this checklist.',
+  'vaultHealth.pipelineLabel': 'Memory pipeline is healthy',
+  'vaultHealth.pipelineRecovery':
+    'Memory pipeline is paused or in error. Re-enable Auto-sync in Memory Tree status and retry.',
+  'vaultHealth.timeNever': 'Never',
+  'vaultHealth.timeJustNow': 'just now',
+  'vaultHealth.timeMinAgo': '{n} min ago',
+  'vaultHealth.timeHrAgo': '{n} hr ago',
+  'vaultHealth.timeDayAgo': '{n} day ago',
+  'vaultHealth.timeDaysAgo': '{n} days ago',
+
+  // Memory data panel (storage explainer)
+  'memoryData.howItWorks': 'How memory storage works',
+  'memoryData.workspaceVault': 'Workspace vault · write',
+  'memoryData.workspaceVaultDesc':
+    'OpenHuman writes generated memory notes to memory_tree/content.',
+  'memoryData.connectedSources': 'Connected sources · read',
+  'memoryData.connectedSourcesDesc':
+    'Folders, mailboxes, chats, and repos are imported for memory indexing — their original files are never rewritten.',
+  'memoryData.internalFiles': 'Internal memory-tree files',
+  'memoryData.internalFilesDesc':
+    'Indexes, queue state, and summaries are managed by OpenHuman to keep recall and sync healthy.',
+  'memoryData.windowError': 'Memory window',
+  'memoryData.windowUpdated': 'Memory window updated',
+  'memoryData.windowUpdatedMsg': 'Set to {window}.',
+
   // Graph
   'graph.noContactMentions': 'No contact mentions',
   'graph.noMemory': 'No memory',
@@ -2149,6 +2247,24 @@ const en: TranslationMap = {
   'reflections.proposedAction': 'Proposed Action',
   'reflections.act': 'Act',
   'reflections.dismiss': 'Dismiss',
+  'reflections.viewConversation': 'View',
+
+  // Subconscious mode selector
+  'subconscious.mode.label': 'Subconscious Mode',
+  'subconscious.mode.off.title': 'Off',
+  'subconscious.mode.off.desc': 'Subconscious is disabled.',
+  'subconscious.mode.simple.title': 'Simple',
+  'subconscious.mode.simple.desc': 'Read-only observation. Memory and file access only.',
+  'subconscious.mode.aggressive.title': 'Aggressive',
+  'subconscious.mode.aggressive.desc':
+    'Full tool access. Can write, spawn agents, and delegate tasks.',
+  'subconscious.mode.aggressiveWarning':
+    'Aggressive mode gives the subconscious full tool access including writes and sub-agent spawning.',
+  'subconscious.interval.label': 'Frequency',
+  'subconscious.interval.minutes': '{n} min',
+  'subconscious.interval.hours': '{n}h',
+  'subconscious.interval.oneHour': '1 hour',
+  'subconscious.interval.oneDay': '24 hours',
 
   // WhatsApp
   'whatsapp.chatsSynced': 'chats synced',
@@ -2521,6 +2637,9 @@ const en: TranslationMap = {
   'app.openhumanLink.discord.perk2': 'Connect with other OpenHuman users',
   'app.openhumanLink.discord.perk3': 'Share feedback directly with the team',
   'app.openhumanLink.discord.perk4': 'Community help and support',
+  'app.openhumanLink.discordReport.intro':
+    'Sorry — something broke on our end. We try to log these automatically, but sharing the details on Discord helps us fix it faster.',
+  'app.openhumanLink.discordReport.openDiscord': 'Open Discord',
   'app.openhumanLink.done': 'Done',
   'app.openhumanLink.loadingChannelSetup': 'Loading channel setup',
   'app.openhumanLink.maybeLater': 'Maybe later',
@@ -2541,6 +2660,7 @@ const en: TranslationMap = {
   'app.openhumanLink.title.accounts': 'Connect your apps',
   'app.openhumanLink.title.billing': 'Billing & credits',
   'app.openhumanLink.title.discord': 'Join the community',
+  'app.openhumanLink.title.discordReport': 'Report this error',
   'app.openhumanLink.title.messaging': 'Connect a chat channel',
   'app.openhumanLink.title.notifications': 'Allow notifications',
   'app.persistRehydration.body': 'Loading your saved settings…',
@@ -4428,14 +4548,6 @@ const en: TranslationMap = {
   'memory.sourceFilterAria': 'Filter by source',
   'calls.comingSoonDescription': 'AI-assisted calls are coming soon. Stay tuned.',
   'whatsapp.title': 'WhatsApp',
-  'subconscious.interval.fiveMinutes': '5 min',
-  'subconscious.interval.tenMinutes': '10 min',
-  'subconscious.interval.fifteenMinutes': '15 min',
-  'subconscious.interval.thirtyMinutes': '30 min',
-  'subconscious.interval.oneHour': '1 hour',
-  'subconscious.interval.sixHours': '6 hours',
-  'subconscious.interval.twelveHours': '12 hours',
-  'subconscious.interval.oneDay': '1 day',
   'subconscious.priority.critical': 'critical',
   'subconscious.priority.important': 'important',
   'subconscious.priority.normal': 'normal',
@@ -4674,6 +4786,41 @@ const en: TranslationMap = {
   'settings.agents.editor.builtInReadonly':
     "Built-in agents can't be edited. You can enable, disable, or reset them from the agents list.",
 
+  // Chat — agent-generated artifacts (#2779)
+  'chat.artifact.aria': 'Artifact: {title}',
+  'chat.artifact.generating': 'Generating {kind}…',
+  'chat.artifact.ready': 'Ready',
+  'chat.artifact.failed': 'Generation failed',
+  'chat.artifact.download': 'Download',
+  'chat.artifact.downloading': 'Downloading…',
+  'chat.artifact.downloaded': 'Saved to {path}',
+  'chat.artifact.download_failed': 'Download failed: {reason}',
+  'chat.artifact.retry': 'Retry',
+  'chat.artifact.reveal': 'Show in folder',
+  'chat.artifact.show_more': 'Show more',
+  'chat.artifact.show_less': 'Show less',
+
+  // Chat — files panel (#3024)
+  'chat.files.chip.aria.one': '{count} file in this chat',
+  'chat.files.chip.aria.other': '{count} files in this chat',
+  'chat.files.panel.aria': 'Files in this chat',
+  'chat.files.panel.title': 'Files ({count})',
+  'chat.files.panel.empty': 'No files yet. Ask the agent to generate one.',
+  'chat.files.panel.close': 'Close files panel',
+  'chat.files.delete.aria': 'Delete {title}',
+  'chat.files.delete.confirm': 'Delete this file?',
+  'chat.files.delete.cancel': 'Cancel',
+  'chat.files.delete.action': 'Delete',
+  'chat.files.delete.failed': 'Couldn’t delete the file. Try again.',
+  // Error labels for download/delete outcomes (#3024). Keyed off
+  // `ArtifactErrorCode` returned by artifactDownloadService.
+  'chat.files.error.not_desktop': 'Downloads are only available in the desktop app.',
+  'chat.files.error.missing_artifact_id': 'Missing artifact id.',
+  'chat.files.error.missing_artifact_path': 'The artifact path is missing from the core response.',
+  'chat.files.error.resolve_failed': 'Couldn’t resolve the artifact. Please try again.',
+  'chat.files.error.download_failed': 'Download failed. Please try again.',
+  'chat.files.error.delete_failed': 'Couldn’t delete the file. Please try again.',
+
   // Keyring consent & security
   'keyring.consent.title': 'Secure Storage Unavailable',
   'keyring.consent.description':
@@ -4710,6 +4857,12 @@ const en: TranslationMap = {
   'pages.settings.account.security': 'Security',
   'pages.settings.account.securityDesc': 'Secret storage mode and keychain status',
 
+  // Chat — agent-generated artifacts (#2779)
+  // Chat composer toolbar
+  'composer.attachFile': 'Attach file',
+  'composer.modelSelector': 'Model',
+  'composer.voiceMode': 'Voice mode',
+  'composer.qualityHigh': 'High',
   // Sync budget dialog
   'syncBudget.title': 'Sync budget',
   'syncBudget.maxTokens': 'Max tokens per sync',

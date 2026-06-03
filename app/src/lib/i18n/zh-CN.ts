@@ -206,6 +206,7 @@ const messages: TranslationMap = {
   'routines.notRunYet': '尚未运行',
   'routines.runNow': '立即运行',
   'routines.running': '运行中…',
+  'routines.runNowTimedOut': '运行超时，请刷新后重试。',
   'routines.viewHistory': '查看历史',
   'routines.loadingHistory': '加载中…',
   'routines.noHistory': '暂无运行历史。',
@@ -218,7 +219,7 @@ const messages: TranslationMap = {
   'routines.typeCommand': '命令',
   'nav.routines': 'Routines',
   'chat.newThread': '新对话',
-  'chat.typeMessage': '输入消息...',
+  'chat.typeMessage': '今天我能帮您做什么？',
   'chat.send': '发送',
   'chat.thinking': '思考中...',
   'chat.noMessages': '暂无消息',
@@ -423,6 +424,11 @@ const messages: TranslationMap = {
   'memoryTree.status.hoursAgo': '{count} 小时前',
   'memoryTree.status.dayAgo': '1 天前',
   'memoryTree.status.daysAgo': '{count} 天前',
+  'memoryTree.status.integrationsTitle': '各集成状态',
+  'memoryTree.status.integrationsEmpty': '未连接任何集成',
+  'memoryTree.status.integrationActive': '活跃',
+  'memoryTree.status.integrationStale': '过期',
+  'memoryTree.status.integrationChunks': '分块: {count}',
   'alerts.title': '通知',
   'alerts.empty': '暂无通知',
   'alerts.markAllRead': '全部标记为已读',
@@ -1822,6 +1828,21 @@ const messages: TranslationMap = {
   'reflections.proposedAction': '建议操作',
   'reflections.act': '执行',
   'reflections.dismiss': '忽略',
+  'reflections.viewConversation': '查看',
+  'subconscious.mode.label': '潜意识模式',
+  'subconscious.mode.off.title': '关闭',
+  'subconscious.mode.off.desc': '潜意识已禁用。',
+  'subconscious.mode.simple.title': '简单',
+  'subconscious.mode.simple.desc': '只读观察。仅可访问记忆和文件。',
+  'subconscious.mode.aggressive.title': '积极',
+  'subconscious.mode.aggressive.desc': '完整工具访问。可写入、创建代理和委派任务。',
+  'subconscious.mode.aggressiveWarning':
+    '积极模式赋予潜意识完整的工具访问权限，包括写入和创建子代理。',
+  'subconscious.interval.label': '频率',
+  'subconscious.interval.minutes': '{n}分钟',
+  'subconscious.interval.hours': '{n}小时',
+  'subconscious.interval.oneHour': '1小时',
+  'subconscious.interval.oneDay': '24小时',
   'whatsapp.chatsSynced': '个对话已同步',
   'whatsapp.chatSynced': '个对话已同步',
   'sync.active': '活跃',
@@ -2133,6 +2154,9 @@ const messages: TranslationMap = {
   'app.openhumanLink.discord.perk2': '福利 2',
   'app.openhumanLink.discord.perk3': '福利 3',
   'app.openhumanLink.discord.perk4': '福利 4',
+  'app.openhumanLink.discordReport.intro':
+    '抱歉 — 我们这边出错了。我们会尝试自动记录这些错误，但在 Discord 上分享详情能帮助我们更快地修复问题。',
+  'app.openhumanLink.discordReport.openDiscord': '打开 Discord',
   'app.openhumanLink.done': '完成',
   'app.openhumanLink.loadingChannelSetup': '正在加载渠道设置',
   'app.openhumanLink.maybeLater': '稍后再说',
@@ -2153,6 +2177,7 @@ const messages: TranslationMap = {
   'app.openhumanLink.title.accounts': '连接你的应用',
   'app.openhumanLink.title.billing': '账单与配额',
   'app.openhumanLink.title.discord': '加入社区',
+  'app.openhumanLink.title.discordReport': '报告此错误',
   'app.openhumanLink.title.messaging': '连接聊天渠道',
   'app.openhumanLink.title.notifications': '允许通知',
   'app.persistRehydration.body': '正在恢复应用状态',
@@ -3933,14 +3958,6 @@ const messages: TranslationMap = {
   'memory.sourceFilterAria': '按来源过滤',
   'calls.comingSoonDescription': '人工智能辅助通话即将推出。敬请关注。',
   'whatsapp.title': 'WhatsApp',
-  'subconscious.interval.fiveMinutes': '5分钟',
-  'subconscious.interval.tenMinutes': '10分钟',
-  'subconscious.interval.fifteenMinutes': '15分钟',
-  'subconscious.interval.thirtyMinutes': '30分钟',
-  'subconscious.interval.oneHour': '1小时',
-  'subconscious.interval.sixHours': '6小时',
-  'subconscious.interval.twelveHours': '12小时',
-  'subconscious.interval.oneDay': '1天',
   'subconscious.priority.critical': '批评的',
   'subconscious.priority.important': '重要的',
   'subconscious.priority.normal': '正常',
@@ -4152,6 +4169,38 @@ const messages: TranslationMap = {
   'settings.agents.editor.toolsDone': 'Done',
   'settings.agents.editor.builtInReadonly':
     '内置智能体不可编辑。您可以在智能体列表中启用、禁用或重置它们。',
+  // Chat — agent-generated artifacts (#2779)
+  'chat.artifact.aria': '工件：{title}',
+  'chat.artifact.generating': '正在生成{kind}…',
+  'chat.artifact.ready': '已就绪',
+  'chat.artifact.failed': '生成失败',
+  'chat.artifact.download': '下载',
+  'chat.artifact.downloading': '下载中…',
+  'chat.artifact.downloaded': '已保存到 {path}',
+  'chat.artifact.download_failed': '下载失败：{reason}',
+  'chat.artifact.retry': '重试',
+  'chat.artifact.reveal': '在文件夹中显示',
+  'chat.artifact.show_more': '显示更多',
+  'chat.artifact.show_less': '收起',
+
+  // Chat — files panel (#3024)
+  'chat.files.chip.aria.one': '本聊天中有 {count} 个文件',
+  'chat.files.chip.aria.other': '本聊天中有 {count} 个文件',
+  'chat.files.panel.aria': '本聊天中的文件',
+  'chat.files.panel.title': '文件 ({count})',
+  'chat.files.panel.empty': '暂无文件。请让智能体生成一个。',
+  'chat.files.panel.close': '关闭文件面板',
+  'chat.files.delete.aria': '删除 {title}',
+  'chat.files.delete.confirm': '要删除此文件吗？',
+  'chat.files.delete.cancel': '取消',
+  'chat.files.delete.action': '删除',
+  'chat.files.delete.failed': '无法删除文件。请重试。',
+  'chat.files.error.not_desktop': '下载仅在桌面应用中可用。',
+  'chat.files.error.missing_artifact_id': '缺少 artifact id。',
+  'chat.files.error.missing_artifact_path': '核心响应中缺少 artifact 路径。',
+  'chat.files.error.resolve_failed': '无法解析 artifact。请重试。',
+  'chat.files.error.download_failed': '下载失败。请重试。',
+  'chat.files.error.delete_failed': '无法删除文件。请重试。',
   'autocomplete.debounceMs': '防抖 (毫秒)',
   'autocomplete.maxChars': '最大上下文字符数',
   'autocomplete.overlayTtlMs': '覆盖层超时 (ms)',
@@ -4236,7 +4285,36 @@ const messages: TranslationMap = {
   'keyring.settings.revokeConsent': '拒绝本地存储',
   'pages.settings.account.security': '安全',
   'pages.settings.account.securityDesc': '密钥存储模式和密钥链状态',
+  // #002 memory-pipeline-hardening: degraded badges + typed remediation.
+  'memoryTree.status.statusDegraded': '已降级',
+  'memoryTree.status.degradedRecall': '语义召回已禁用',
+  'memoryTree.status.degradedStructure': 'Wiki 结构不完整',
+  'memoryTree.status.extractionCoverage': '提取覆盖率：{pct}% 的片段具有结构',
+  'memory.health.remediation.budget_exhausted':
+    '记忆嵌入已达到托管预算上限。请设置本地 Ollama 嵌入（设置 → AI → 向量嵌入），或添加你自己的嵌入 API 密钥以继续构建记忆。',
+  'memory.health.remediation.auth_missing':
+    '未找到嵌入凭据。请登录 OpenHuman，或在设置 → AI → 向量嵌入 中设置本地 Ollama 嵌入。',
+  'memory.health.remediation.auth_invalid':
+    '你的嵌入凭据被拒绝。请重新进行身份验证，或在设置 → AI → 向量嵌入 中切换到本地 Ollama 嵌入。',
+  'memory.health.remediation.embeddings_unconfigured':
+    '未配置嵌入提供方，因此语义召回已关闭。请设置本地 Ollama 嵌入（推荐），或在设置 → AI → 向量嵌入 中添加嵌入密钥。',
+  'memory.health.remediation.embedding_dim_mismatch':
+    '嵌入模型返回的向量大小不正确（记忆需要 1024 维）。请选择 1024 维的模型，或向你的提供方请求 1024 维。',
+  'memory.health.remediation.local_model_unavailable':
+    '所需的本地模型不可用。请安装/运行 Ollama 并拉取模型，或在设置 → AI 中将此工作负载切换到云提供方。',
+  'memory.health.remediation.extraction_timeout':
+    '记忆提取模型超时，因此 Wiki 结构很少。请在设置 → AI 中将记忆提取模型更换为更快的模型。',
+  'memory.health.remediation.summarizer_unavailable':
+    '没有可用于构建摘要树的摘要提供方。请启用本地 AI（Ollama），或在设置 → AI → 记忆中启用云端摘要。',
+  'memory.health.remediation.transient': '临时错误中断了记忆处理。将自动重试。',
+  'memory.health.remediation.unknown': '记忆处理遇到问题。请在设置 → AI 中检查配置。',
+  // Chat — agent-generated artifacts (#2779)
 
+  // Chat composer toolbar
+  'composer.attachFile': '附加文件',
+  'composer.modelSelector': '模型',
+  'composer.voiceMode': '语音模式',
+  'composer.qualityHigh': '高',
   // Agent activity level
   'activityLevel.title': '智能体活动级别',
   'activityLevel.description': '控制您的智能体的主动程度。级别越高，消耗的令牌越多。',
@@ -4285,11 +4363,69 @@ const messages: TranslationMap = {
 
   // Onboarding: Custom > Activity
   'onboarding.custom.stepperActivity': '活动',
+  'onboarding.custom.stepperVault': '保险库',
   'onboarding.custom.activity.title': '智能体活动',
   'onboarding.custom.activity.subtitle': '您的智能体在后台监控和行动的主动程度。',
   'onboarding.custom.activity.defaultDesc': '适中活动——每小时同步，每日摘要。',
   'onboarding.custom.activity.configureDesc':
     '选择您自己的活动级别。在设置 › 智能体活动级别中配置。',
+
+  // Onboarding: Custom > Vault
+  'onboarding.custom.vault.title': '记忆与保险库设置',
+  'onboarding.custom.vault.subtitle':
+    '确认记忆笔记的写入位置、源数据的读取方式，以及保险库管道是否正常运行。',
+  'onboarding.custom.vault.defaultDesc':
+    '使用 OpenHuman 托管的记忆默认设置。保险库路径和同步健康状态仍可稍后查看。',
+  'onboarding.custom.vault.configureDesc': '立即查看保险库所有权、运行健康检查并调整记忆控制。',
+  'onboarding.custom.vault.localDisabledReason': '托管设置需要登录 OpenHuman，在本地模式下不可用。',
+  'onboarding.custom.vault.exitError': '无法完成引导流程，请重试。',
+
+  // Vault Health
+  'vaultHealth.title': '保险库健康检查清单',
+  'vaultHealth.setupTitle': '保险库设置健康状态',
+  'vaultHealth.workspaceVault': '工作区保险库：',
+  'vaultHealth.refresh': '刷新',
+  'vaultHealth.refreshing': '刷新中…',
+  'vaultHealth.revealFolder': '显示文件夹',
+  'vaultHealth.openInObsidian': '在 Obsidian 中打开',
+  'vaultHealth.installObsidian': '安装 Obsidian',
+  'vaultHealth.openObsidianError': '无法打开 Obsidian',
+  'vaultHealth.revealError': '无法显示保险库文件夹',
+  'vaultHealth.downloadError': '无法打开 Obsidian 下载页面',
+  'vaultHealth.loadError': '无法加载保险库健康状态：',
+  'vaultHealth.lastSync': '上次同步：',
+  'vaultHealth.passed': '通过',
+  'vaultHealth.needsAttention': '需要关注',
+  'vaultHealth.existsLabel': '工作区保险库路径存在',
+  'vaultHealth.existsRecovery': '保险库文件夹缺失。请启动同步或创建该文件夹，然后刷新此检查清单。',
+  'vaultHealth.writableLabel': 'OpenHuman 可写入保险库',
+  'vaultHealth.writableRecovery': 'OpenHuman 暂时无法写入此保险库。请授予写入权限后刷新。',
+  'vaultHealth.obsidianLabel': '保险库已在 Obsidian 中注册',
+  'vaultHealth.obsidianRecovery':
+    '请在 Obsidian 中选择"将文件夹作为保险库打开"，然后刷新此检查清单。',
+  'vaultHealth.pipelineLabel': '记忆管道运行正常',
+  'vaultHealth.pipelineRecovery':
+    '记忆管道已暂停或出现错误。请在记忆树状态中重新启用自动同步并重试。',
+  'vaultHealth.timeNever': '从未',
+  'vaultHealth.timeJustNow': '刚刚',
+  'vaultHealth.timeMinAgo': '{n} 分钟前',
+  'vaultHealth.timeHrAgo': '{n} 小时前',
+  'vaultHealth.timeDayAgo': '{n} 天前',
+  'vaultHealth.timeDaysAgo': '{n} 天前',
+
+  // Memory Data
+  'memoryData.howItWorks': '记忆存储原理',
+  'memoryData.workspaceVault': '工作区保险库 · 写入',
+  'memoryData.workspaceVaultDesc': 'OpenHuman 将生成的记忆笔记写入 memory_tree/content。',
+  'memoryData.connectedSources': '已连接来源 · 读取',
+  'memoryData.connectedSourcesDesc':
+    '文件夹、邮箱、聊天记录和代码仓库会导入用于记忆索引——其原始文件不会被改写。',
+  'memoryData.internalFiles': '内部记忆树文件',
+  'memoryData.internalFilesDesc':
+    '索引、队列状态和摘要由 OpenHuman 管理，以保持召回和同步的正常运行。',
+  'memoryData.windowError': '记忆时间窗口',
+  'memoryData.windowUpdated': '记忆时间窗口已更新',
+  'memoryData.windowUpdatedMsg': '已设置为 {window}。',
 };
 
 export default messages;

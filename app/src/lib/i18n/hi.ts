@@ -216,6 +216,7 @@ const messages: TranslationMap = {
   'routines.notRunYet': 'अभी तक नहीं चला',
   'routines.runNow': 'अब चलायें',
   'routines.running': 'दौड़ना...',
+  'routines.runNowTimedOut': 'चलाने में समय समाप्त — कृपया रिफ्रेश करें और पुनः प्रयास करें।',
   'routines.viewHistory': 'इतिहास देखें',
   'routines.loadingHistory': 'लोड...',
   'routines.noHistory': 'अभी तक कोई रन इतिहास नहीं है।',
@@ -228,7 +229,7 @@ const messages: TranslationMap = {
   'routines.typeCommand': 'कमान',
   'nav.routines': 'Routines',
   'chat.newThread': 'नई थ्रेड',
-  'chat.typeMessage': 'मैसेज टाइप करें...',
+  'chat.typeMessage': 'आज मैं आपकी कैसे मदद कर सकता हूँ?',
   'chat.send': 'मैसेज भेजें',
   'chat.thinking': 'सोच रहा है...',
   'chat.noMessages': 'अभी कोई मैसेज नहीं',
@@ -437,6 +438,11 @@ const messages: TranslationMap = {
   'memoryTree.status.hoursAgo': '{count} hr पहले',
   'memoryTree.status.dayAgo': '1 दिन पहले',
   'memoryTree.status.daysAgo': '{count} दिन पहले',
+  'memoryTree.status.integrationsTitle': 'प्रति-एकीकरण स्थिति',
+  'memoryTree.status.integrationsEmpty': 'कोई एकीकरण कनेक्ट नहीं है',
+  'memoryTree.status.integrationActive': 'सक्रिय',
+  'memoryTree.status.integrationStale': 'पुराना',
+  'memoryTree.status.integrationChunks': 'चंक्स: {count}',
   'alerts.title': 'अलर्ट',
   'alerts.empty': 'अभी कोई अलर्ट नहीं',
   'alerts.markAllRead': 'सभी पढ़ा हुआ मार्क करें',
@@ -1919,6 +1925,22 @@ const messages: TranslationMap = {
   'reflections.proposedAction': 'प्रस्तावित एक्शन',
   'reflections.act': 'करें',
   'reflections.dismiss': 'हटाएं',
+  'reflections.viewConversation': 'देखें',
+  'subconscious.mode.label': 'अवचेतन मोड',
+  'subconscious.mode.off.title': 'बंद',
+  'subconscious.mode.off.desc': 'अवचेतन अक्षम है।',
+  'subconscious.mode.simple.title': 'सरल',
+  'subconscious.mode.simple.desc': 'केवल-पठन अवलोकन। केवल मेमोरी और फ़ाइल एक्सेस।',
+  'subconscious.mode.aggressive.title': 'आक्रामक',
+  'subconscious.mode.aggressive.desc':
+    'पूर्ण टूल एक्सेस। लिख सकता है, एजेंट बना सकता है और कार्य सौंप सकता है।',
+  'subconscious.mode.aggressiveWarning':
+    'आक्रामक मोड अवचेतन को लेखन और उप-एजेंट निर्माण सहित पूर्ण टूल एक्सेस देता है।',
+  'subconscious.interval.label': 'आवृत्ति',
+  'subconscious.interval.minutes': '{n} मि',
+  'subconscious.interval.hours': '{n} घं',
+  'subconscious.interval.oneHour': '1 घंटा',
+  'subconscious.interval.oneDay': '24 घंटे',
   'whatsapp.chatsSynced': 'चैट्स सिंक हुईं',
   'whatsapp.chatSynced': 'चैट सिंक हुई',
   'sync.active': 'एक्टिव',
@@ -2243,6 +2265,9 @@ const messages: TranslationMap = {
   'app.openhumanLink.discord.perk2': 'लाभ 2',
   'app.openhumanLink.discord.perk3': 'लाभ 3',
   'app.openhumanLink.discord.perk4': 'लाभ 4',
+  'app.openhumanLink.discordReport.intro':
+    'माफ करें — हमारी तरफ से कुछ गड़बड़ हुई। हम इन्हें स्वचालित रूप से लॉग करने की कोशिश करते हैं, लेकिन Discord पर विवरण साझा करने से हमें इसे जल्दी ठीक करने में मदद मिलती है।',
+  'app.openhumanLink.discordReport.openDiscord': 'Discord खोलें',
   'app.openhumanLink.done': 'हो गया',
   'app.openhumanLink.loadingChannelSetup': 'चैनल सेटअप लोड हो रहा है',
   'app.openhumanLink.maybeLater': 'शायद बाद में',
@@ -2263,6 +2288,7 @@ const messages: TranslationMap = {
   'app.openhumanLink.title.accounts': 'अपने ऐप्स कनेक्ट करें',
   'app.openhumanLink.title.billing': 'बिलिंग और क्रेडिट',
   'app.openhumanLink.title.discord': 'कम्युनिटी जॉइन करें',
+  'app.openhumanLink.title.discordReport': 'इस त्रुटि की रिपोर्ट करें',
   'app.openhumanLink.title.messaging': 'चैट चैनल कनेक्ट करें',
   'app.openhumanLink.title.notifications': 'नोटिफिकेशन की अनुमति दें',
   'app.persistRehydration.body': 'विवरण',
@@ -4137,14 +4163,6 @@ const messages: TranslationMap = {
   'memory.sourceFilterAria': 'स्रोत के अनुसार फ़िल्टर करें',
   'calls.comingSoonDescription': 'एआई-सहायक कॉल जल्द ही आ रही हैं। बने रहें।',
   'whatsapp.title': 'WhatsApp',
-  'subconscious.interval.fiveMinutes': '5 मिनट',
-  'subconscious.interval.tenMinutes': '10 मिनट',
-  'subconscious.interval.fifteenMinutes': '15 मि',
-  'subconscious.interval.thirtyMinutes': '30 मि',
-  'subconscious.interval.oneHour': '1 घंटा',
-  'subconscious.interval.sixHours': '6 घंटे',
-  'subconscious.interval.twelveHours': '12 घंटे',
-  'subconscious.interval.oneDay': '1 दिन',
   'subconscious.priority.critical': 'आलोचनात्मक',
   'subconscious.priority.important': 'महत्वपूर्ण',
   'subconscious.priority.normal': 'सामान्य',
@@ -4370,6 +4388,38 @@ const messages: TranslationMap = {
   'settings.agents.editor.toolsDone': 'Done',
   'settings.agents.editor.builtInReadonly':
     'बिल्ट-इन एजेंट संपादित नहीं किए जा सकते। आप एजेंट सूची से उन्हें सक्षम, अक्षम या रीसेट कर सकते हैं।',
+  // Chat — agent-generated artifacts (#2779)
+  'chat.artifact.aria': 'आर्टिफैक्ट: {title}',
+  'chat.artifact.generating': '{kind} बना रहा है…',
+  'chat.artifact.ready': 'तैयार',
+  'chat.artifact.failed': 'निर्माण विफल',
+  'chat.artifact.download': 'डाउनलोड',
+  'chat.artifact.downloading': 'डाउनलोड हो रहा है…',
+  'chat.artifact.downloaded': '{path} में सहेजा गया',
+  'chat.artifact.download_failed': 'डाउनलोड विफल: {reason}',
+  'chat.artifact.retry': 'पुनः प्रयास',
+  'chat.artifact.reveal': 'फ़ोल्डर में दिखाएं',
+  'chat.artifact.show_more': 'और दिखाएं',
+  'chat.artifact.show_less': 'कम दिखाएं',
+
+  // Chat — files panel (#3024)
+  'chat.files.chip.aria.one': 'इस चैट में {count} फ़ाइल',
+  'chat.files.chip.aria.other': 'इस चैट में {count} फ़ाइलें',
+  'chat.files.panel.aria': 'इस चैट की फ़ाइलें',
+  'chat.files.panel.title': 'फ़ाइलें ({count})',
+  'chat.files.panel.empty': 'अभी कोई फ़ाइल नहीं। एजेंट से एक बनाने को कहें।',
+  'chat.files.panel.close': 'फ़ाइल पैनल बंद करें',
+  'chat.files.delete.aria': '{title} हटाएं',
+  'chat.files.delete.confirm': 'यह फ़ाइल हटाएं?',
+  'chat.files.delete.cancel': 'रद्द करें',
+  'chat.files.delete.action': 'हटाएं',
+  'chat.files.delete.failed': 'फ़ाइल हटाई नहीं जा सकी। पुनः प्रयास करें।',
+  'chat.files.error.not_desktop': 'डाउनलोड केवल डेस्कटॉप ऐप में उपलब्ध हैं।',
+  'chat.files.error.missing_artifact_id': 'आर्टिफैक्ट आईडी अनुपस्थित है।',
+  'chat.files.error.missing_artifact_path': 'कोर प्रतिक्रिया से आर्टिफैक्ट पथ गायब है।',
+  'chat.files.error.resolve_failed': 'आर्टिफैक्ट को हल नहीं किया जा सका। पुनः प्रयास करें।',
+  'chat.files.error.download_failed': 'डाउनलोड विफल रहा। पुनः प्रयास करें।',
+  'chat.files.error.delete_failed': 'फ़ाइल हटाई नहीं जा सकी। पुनः प्रयास करें।',
   'autocomplete.debounceMs': 'डिबाउंस (ms)',
   'autocomplete.maxChars': 'अधिकतम संदर्भ वर्ण',
   'autocomplete.overlayTtlMs': 'ओवरले समय-समाप्ति (ms)',
@@ -4457,7 +4507,38 @@ const messages: TranslationMap = {
   'keyring.settings.revokeConsent': 'स्थानीय भंडारण अस्वीकार करें',
   'pages.settings.account.security': 'सुरक्षा',
   'pages.settings.account.securityDesc': 'रहस्य भंडारण मोड और कीचेन स्थिति',
+  // #002 memory-pipeline-hardening: degraded badges + typed remediation.
+  'memoryTree.status.statusDegraded': 'अवक्रमित',
+  'memoryTree.status.degradedRecall': 'सिमेंटिक रिकॉल अक्षम',
+  'memoryTree.status.degradedStructure': 'विकी संरचना अधूरी',
+  'memoryTree.status.extractionCoverage': 'एक्सट्रैक्शन कवरेज: {pct}% खंडों में संरचना है',
+  'memory.health.remediation.budget_exhausted':
+    'मेमोरी एम्बेडिंग प्रबंधित बजट तक पहुँच गई। स्थानीय Ollama एम्बेडिंग सेट करें (सेटिंग्स → AI → एम्बेडिंग्स) या मेमोरी बनाना जारी रखने के लिए अपनी स्वयं की एम्बेडिंग API कुंजी जोड़ें।',
+  'memory.health.remediation.auth_missing':
+    'कोई एम्बेडिंग क्रेडेंशियल नहीं मिला। OpenHuman में लॉग इन करें, या सेटिंग्स → AI → एम्बेडिंग्स में स्थानीय Ollama एम्बेडिंग सेट करें।',
+  'memory.health.remediation.auth_invalid':
+    'आपके एम्बेडिंग क्रेडेंशियल अस्वीकार कर दिए गए। फिर से प्रमाणित करें, या सेटिंग्स → AI → एम्बेडिंग्स में स्थानीय Ollama एम्बेडिंग पर स्विच करें।',
+  'memory.health.remediation.embeddings_unconfigured':
+    'कोई एम्बेडिंग प्रदाता कॉन्फ़िगर नहीं किया गया है, इसलिए सिमेंटिक रिकॉल बंद है। स्थानीय Ollama एम्बेडिंग सेट करें (अनुशंसित) या सेटिंग्स → AI → एम्बेडिंग्स में एम्बेडिंग कुंजी जोड़ें।',
+  'memory.health.remediation.embedding_dim_mismatch':
+    'एम्बेडिंग मॉडल गलत वेक्टर आकार लौटाता है (मेमोरी को 1024 आयाम अपेक्षित हैं)। 1024-आयाम वाला मॉडल चुनें, या अपने प्रदाता से 1024 आयाम का अनुरोध करें।',
+  'memory.health.remediation.local_model_unavailable':
+    'एक आवश्यक स्थानीय मॉडल उपलब्ध नहीं है। Ollama इंस्टॉल/चलाएँ और मॉडल डाउनलोड करें, या सेटिंग्स → AI में इस वर्कलोड को क्लाउड प्रदाता पर स्विच करें।',
+  'memory.health.remediation.extraction_timeout':
+    'मेमोरी एक्सट्रैक्शन मॉडल टाइम आउट हो रहा है, इसलिए विकी में बहुत कम संरचना है। सेटिंग्स → AI में मेमोरी एक्सट्रैक्शन मॉडल को तेज़ मॉडल में बदलें।',
+  'memory.health.remediation.summarizer_unavailable':
+    'सारांश ट्री बनाएँ के लिए कोई सारांश प्रदाता उपलब्ध नहीं है। स्थानीय AI (Ollama) सक्षम करें, या सेटिंग्स → AI → मेमोरी में क्लाउड सारांश सक्षम करें।',
+  'memory.health.remediation.transient':
+    'एक अस्थायी त्रुटि ने मेमोरी प्रोसेसिंग को बाधित किया। स्वचालित रूप से पुनः प्रयास किया जाएगा।',
+  'memory.health.remediation.unknown':
+    'मेमोरी प्रोसेसिंग में एक समस्या आई। कॉन्फ़िगरेशन के लिए सेटिंग्स → AI जाँचें।',
+  // Chat — agent-generated artifacts (#2779)
 
+  // Chat composer toolbar
+  'composer.attachFile': 'फ़ाइल संलग्न करें',
+  'composer.modelSelector': 'मॉडल',
+  'composer.voiceMode': 'वॉइस मोड',
+  'composer.qualityHigh': 'उच्च',
   // Agent activity level
   'activityLevel.title': 'एजेंट गतिविधि स्तर',
   'activityLevel.description':
@@ -4508,12 +4589,69 @@ const messages: TranslationMap = {
 
   // Onboarding: Custom > Activity
   'onboarding.custom.stepperActivity': 'गतिविधि',
+  'onboarding.custom.stepperVault': 'वॉल्ट',
   'onboarding.custom.activity.title': 'एजेंट गतिविधि',
   'onboarding.custom.activity.subtitle':
     'आपका एजेंट पृष्ठभूमि में कितनी सक्रियता से निगरानी और कार्य करता है।',
   'onboarding.custom.activity.defaultDesc': 'मध्यम गतिविधि — प्रति घंटे सिंक, दैनिक सारांश।',
   'onboarding.custom.activity.configureDesc':
     'अपना गतिविधि स्तर चुनें। सेटिंग्स › एजेंट गतिविधि स्तर में कॉन्फ़िगर करें।',
+  'onboarding.custom.vault.title': 'मेमोरी और वॉल्ट सेटअप',
+  'onboarding.custom.vault.subtitle':
+    'पुष्टि करें कि मेमोरी नोट्स कहाँ लिखे जाते हैं, स्रोत डेटा कैसे पढ़ा जाता है, और आपका वॉल्ट पाइपलाइन स्वस्थ है या नहीं।',
+  'onboarding.custom.vault.defaultDesc':
+    'OpenHuman-प्रबंधित मेमोरी डिफ़ॉल्ट का उपयोग करें। वॉल्ट पाथ और सिंक स्वास्थ्य बाद में भी देखे जा सकते हैं।',
+  'onboarding.custom.vault.configureDesc':
+    'वॉल्ट स्वामित्व की समीक्षा करें, स्वास्थ्य जाँच चलाएँ और अभी मेमोरी नियंत्रण ठीक करें।',
+  'onboarding.custom.vault.localDisabledReason':
+    'प्रबंधित सेटअप के लिए OpenHuman साइन-इन आवश्यक है और लोकल मोड में उपलब्ध नहीं है।',
+  'onboarding.custom.vault.exitError': 'ऑनबोर्डिंग पूरी नहीं हो सकी। कृपया पुनः प्रयास करें।',
+  'vaultHealth.title': 'वॉल्ट स्वास्थ्य चेकलिस्ट',
+  'vaultHealth.setupTitle': 'वॉल्ट सेटअप स्वास्थ्य',
+  'vaultHealth.workspaceVault': 'वर्कस्पेस वॉल्ट:',
+  'vaultHealth.refresh': 'रिफ्रेश',
+  'vaultHealth.refreshing': 'रिफ्रेश हो रहा है…',
+  'vaultHealth.revealFolder': 'फ़ोल्डर दिखाएँ',
+  'vaultHealth.openInObsidian': 'Obsidian में खोलें',
+  'vaultHealth.installObsidian': 'Obsidian इंस्टॉल करें',
+  'vaultHealth.openObsidianError': 'Obsidian नहीं खोला जा सका',
+  'vaultHealth.revealError': 'वॉल्ट फ़ोल्डर नहीं दिखाया जा सका',
+  'vaultHealth.downloadError': 'Obsidian डाउनलोड पृष्ठ नहीं खोला जा सका',
+  'vaultHealth.loadError': 'वॉल्ट स्वास्थ्य लोड नहीं हो सका:',
+  'vaultHealth.lastSync': 'अंतिम सिंक:',
+  'vaultHealth.passed': 'पास',
+  'vaultHealth.needsAttention': 'ध्यान आवश्यक',
+  'vaultHealth.existsLabel': 'वर्कस्पेस वॉल्ट पाथ मौजूद है',
+  'vaultHealth.existsRecovery':
+    'वॉल्ट फ़ोल्डर गायब है। एक सिंक शुरू करें या यह फ़ोल्डर बनाएँ, फिर इस चेकलिस्ट को रिफ्रेश करें।',
+  'vaultHealth.writableLabel': 'वॉल्ट OpenHuman द्वारा लिखने योग्य है',
+  'vaultHealth.writableRecovery':
+    'OpenHuman अभी इस वॉल्ट में नहीं लिख सकता। लिखने की अनुमति दें और रिफ्रेश करें।',
+  'vaultHealth.obsidianLabel': 'वॉल्ट Obsidian में पंजीकृत है',
+  'vaultHealth.obsidianRecovery':
+    'Obsidian में इस पाथ के लिए "फ़ोल्डर को वॉल्ट के रूप में खोलें" चुनें, फिर इस चेकलिस्ट को रिफ्रेश करें।',
+  'vaultHealth.pipelineLabel': 'मेमोरी पाइपलाइन स्वस्थ है',
+  'vaultHealth.pipelineRecovery':
+    'मेमोरी पाइपलाइन रुकी हुई है या त्रुटि में है। मेमोरी ट्री स्थिति में ऑटो-सिंक पुनः सक्षम करें और पुनः प्रयास करें।',
+  'vaultHealth.timeNever': 'कभी नहीं',
+  'vaultHealth.timeJustNow': 'अभी-अभी',
+  'vaultHealth.timeMinAgo': '{n} मिनट पहले',
+  'vaultHealth.timeHrAgo': '{n} घंटे पहले',
+  'vaultHealth.timeDayAgo': '{n} दिन पहले',
+  'vaultHealth.timeDaysAgo': '{n} दिन पहले',
+  'memoryData.howItWorks': 'मेमोरी स्टोरेज कैसे काम करता है',
+  'memoryData.workspaceVault': 'वर्कस्पेस वॉल्ट · लिखना',
+  'memoryData.workspaceVaultDesc':
+    'OpenHuman जनरेट किए गए मेमोरी नोट्स को memory_tree/content में लिखता है।',
+  'memoryData.connectedSources': 'कनेक्टेड स्रोत · पढ़ना',
+  'memoryData.connectedSourcesDesc':
+    'फ़ोल्डर, मेलबॉक्स, चैट और रेपो मेमोरी इंडेक्सिंग के लिए आयात किए जाते हैं — उनकी मूल फ़ाइलें कभी नहीं बदली जातीं।',
+  'memoryData.internalFiles': 'आंतरिक मेमोरी-ट्रि फ़ाइलें',
+  'memoryData.internalFilesDesc':
+    'इंडेक्स, क्यू स्थिति और सारांश OpenHuman द्वारा प्रबंधित किए जाते हैं ताकि रिकॉल और सिंक स्वस्थ रहे।',
+  'memoryData.windowError': 'मेमोरी विंडो',
+  'memoryData.windowUpdated': 'मेमोरी विंडो अपडेट हुई',
+  'memoryData.windowUpdatedMsg': '{window} पर सेट किया गया।',
 };
 
 export default messages;

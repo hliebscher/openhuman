@@ -214,6 +214,7 @@ const messages: TranslationMap = {
   'routines.notRunYet': 'لم يهرب بعد',
   'routines.runNow': 'اركض الآن',
   'routines.running': 'تشغيل...',
+  'routines.runNowTimedOut': 'انتهت مهلة التشغيل — يرجى التحديث والمحاولة مرة أخرى.',
   'routines.viewHistory': 'تاريخ الرؤية',
   'routines.loadingHistory': 'التعبئة...',
   'routines.noHistory': 'لا يوجد تاريخ بعد',
@@ -226,7 +227,7 @@ const messages: TranslationMap = {
   'routines.typeCommand': 'القيادة',
   'nav.routines': 'Routines',
   'chat.newThread': 'محادثة جديدة',
-  'chat.typeMessage': 'اكتب رسالة...',
+  'chat.typeMessage': 'كيف يمكنني مساعدتك اليوم؟',
   'chat.send': 'إرسال الرسالة',
   'chat.thinking': 'جارٍ التفكير...',
   'chat.noMessages': 'لا توجد رسائل بعد',
@@ -431,6 +432,11 @@ const messages: TranslationMap = {
   'memoryTree.status.hoursAgo': 'قبل شهر',
   'memoryTree.status.dayAgo': 'قبل يوم واحد',
   'memoryTree.status.daysAgo': 'قبل أيام',
+  'memoryTree.status.integrationsTitle': 'حالة التكاملات',
+  'memoryTree.status.integrationsEmpty': 'لا توجد تكاملات متصلة',
+  'memoryTree.status.integrationActive': 'نشط',
+  'memoryTree.status.integrationStale': 'قديم',
+  'memoryTree.status.integrationChunks': 'الشرائح: {count}',
   'alerts.title': 'التنبيهات',
   'alerts.empty': 'لا توجد تنبيهات بعد',
   'alerts.markAllRead': 'تحديد الكل كمقروء',
@@ -1881,6 +1887,22 @@ const messages: TranslationMap = {
   'reflections.proposedAction': 'الإجراء المقترح',
   'reflections.act': 'تنفيذ',
   'reflections.dismiss': 'تجاهل',
+  'reflections.viewConversation': 'عرض',
+  'subconscious.mode.label': 'وضع اللاوعي',
+  'subconscious.mode.off.title': 'إيقاف',
+  'subconscious.mode.off.desc': 'اللاوعي معطل.',
+  'subconscious.mode.simple.title': 'بسيط',
+  'subconscious.mode.simple.desc': 'مراقبة للقراءة فقط. الوصول للذاكرة والملفات فقط.',
+  'subconscious.mode.aggressive.title': 'مكثف',
+  'subconscious.mode.aggressive.desc':
+    'وصول كامل للأدوات. يمكنه الكتابة وإنشاء وكلاء وتفويض المهام.',
+  'subconscious.mode.aggressiveWarning':
+    'الوضع المكثف يمنح اللاوعي وصولاً كاملاً للأدوات بما في ذلك الكتابة وإنشاء الوكلاء الفرعيين.',
+  'subconscious.interval.label': 'التردد',
+  'subconscious.interval.minutes': '{n} د',
+  'subconscious.interval.hours': '{n} س',
+  'subconscious.interval.oneHour': 'ساعة واحدة',
+  'subconscious.interval.oneDay': '24 ساعة',
   'whatsapp.chatsSynced': 'محادثات مزامنة',
   'whatsapp.chatSynced': 'محادثة مزامنة',
   'sync.active': 'نشط',
@@ -2200,6 +2222,9 @@ const messages: TranslationMap = {
   'app.openhumanLink.discord.perk2': 'ميزة 2',
   'app.openhumanLink.discord.perk3': 'ميزة 3',
   'app.openhumanLink.discord.perk4': 'ميزة 4',
+  'app.openhumanLink.discordReport.intro':
+    'نعتذر — حدث خطأ من جانبنا. نحاول تسجيل هذه الأخطاء تلقائيًا، لكن مشاركة التفاصيل على Discord تساعدنا على إصلاحها بشكل أسرع.',
+  'app.openhumanLink.discordReport.openDiscord': 'فتح Discord',
   'app.openhumanLink.done': 'تم',
   'app.openhumanLink.loadingChannelSetup': 'جارٍ تحميل إعداد القناة',
   'app.openhumanLink.maybeLater': 'ربما لاحقًا',
@@ -2220,6 +2245,7 @@ const messages: TranslationMap = {
   'app.openhumanLink.title.accounts': 'ربط تطبيقاتك',
   'app.openhumanLink.title.billing': 'الفوترة والرصيد',
   'app.openhumanLink.title.discord': 'الانضمام إلى المجتمع',
+  'app.openhumanLink.title.discordReport': 'الإبلاغ عن هذا الخطأ',
   'app.openhumanLink.title.messaging': 'ربط قناة محادثة',
   'app.openhumanLink.title.notifications': 'السماح بالإشعارات',
   'app.persistRehydration.body': 'المحتوى',
@@ -4060,14 +4086,6 @@ const messages: TranslationMap = {
   'memory.sourceFilterAria': 'التصفية حسب المصدر',
   'calls.comingSoonDescription': 'المكالمات بمساعدة الذكاء الاصطناعي قادمة قريباً. ابقَ على اطلاع.',
   'whatsapp.title': 'WhatsApp',
-  'subconscious.interval.fiveMinutes': '5 دقائق',
-  'subconscious.interval.tenMinutes': '10 دقائق',
-  'subconscious.interval.fifteenMinutes': '15 دقيقة',
-  'subconscious.interval.thirtyMinutes': '30 دقيقة',
-  'subconscious.interval.oneHour': 'ساعة واحدة',
-  'subconscious.interval.sixHours': '6 ساعات',
-  'subconscious.interval.twelveHours': '12 ساعة',
-  'subconscious.interval.oneDay': 'يوم واحد',
   'subconscious.priority.critical': 'حرجة',
   'subconscious.priority.important': 'مهم',
   'subconscious.priority.normal': 'عادي',
@@ -4286,6 +4304,38 @@ const messages: TranslationMap = {
   'settings.agents.editor.toolsDone': 'Done',
   'settings.agents.editor.builtInReadonly':
     'لا يمكن تعديل العوامل المدمجة. يمكنك تفعيلها أو تعطيلها أو إعادة ضبطها من قائمة العوامل.',
+  // Chat — agent-generated artifacts (#2779)
+  'chat.artifact.aria': 'الملف: {title}',
+  'chat.artifact.generating': 'جارٍ إنشاء {kind}…',
+  'chat.artifact.ready': 'جاهز',
+  'chat.artifact.failed': 'فشل الإنشاء',
+  'chat.artifact.download': 'تنزيل',
+  'chat.artifact.downloading': 'جارٍ التنزيل…',
+  'chat.artifact.downloaded': 'تم الحفظ في {path}',
+  'chat.artifact.download_failed': 'فشل التنزيل: {reason}',
+  'chat.artifact.retry': 'إعادة المحاولة',
+  'chat.artifact.reveal': 'عرض في المجلد',
+  'chat.artifact.show_more': 'عرض المزيد',
+  'chat.artifact.show_less': 'عرض أقل',
+
+  // Chat — files panel (#3024)
+  'chat.files.chip.aria.one': 'ملف واحد في هذه المحادثة',
+  'chat.files.chip.aria.other': '{count} ملفات في هذه المحادثة',
+  'chat.files.panel.aria': 'ملفات في هذه المحادثة',
+  'chat.files.panel.title': 'الملفات ({count})',
+  'chat.files.panel.empty': 'لا توجد ملفات بعد. اطلب من الوكيل إنشاء واحد.',
+  'chat.files.panel.close': 'إغلاق لوحة الملفات',
+  'chat.files.delete.aria': 'حذف {title}',
+  'chat.files.delete.confirm': 'هل تريد حذف هذا الملف؟',
+  'chat.files.delete.cancel': 'إلغاء',
+  'chat.files.delete.action': 'حذف',
+  'chat.files.delete.failed': 'تعذّر حذف الملف. حاول مرة أخرى.',
+  'chat.files.error.not_desktop': 'التنزيلات متاحة فقط في تطبيق سطح المكتب.',
+  'chat.files.error.missing_artifact_id': 'معرّف الملف مفقود.',
+  'chat.files.error.missing_artifact_path': 'مسار الملف مفقود من استجابة النظام.',
+  'chat.files.error.resolve_failed': 'تعذّر تحديد الملف. حاول مرة أخرى.',
+  'chat.files.error.download_failed': 'فشل التنزيل. حاول مرة أخرى.',
+  'chat.files.error.delete_failed': 'تعذّر حذف الملف. حاول مرة أخرى.',
   'autocomplete.debounceMs': 'مهلة الإدخال (مللي ثانية)',
   'autocomplete.maxChars': 'أقصى عدد لأحرف السياق',
   'autocomplete.overlayTtlMs': 'مهلة الطبقة (مللي ثانية)',
@@ -4372,7 +4422,38 @@ const messages: TranslationMap = {
   'keyring.settings.revokeConsent': 'رفض التخزين المحلي',
   'pages.settings.account.security': 'الأمان',
   'pages.settings.account.securityDesc': 'وضع تخزين الأسرار وحالة سلسلة المفاتيح',
+  // #002 memory-pipeline-hardening: degraded badges + typed remediation.
+  'memoryTree.status.statusDegraded': 'متدهور',
+  'memoryTree.status.degradedRecall': 'الاسترجاع الدلالي معطّل',
+  'memoryTree.status.degradedStructure': 'بنية الويكي غير مكتملة',
+  'memoryTree.status.extractionCoverage': 'تغطية الاستخراج: {pct}% من الأجزاء لها بنية',
+  'memory.health.remediation.budget_exhausted':
+    'استنفدت تضمينات الذاكرة الميزانية المُدارة. أعدّ تضمينات Ollama المحلية (الإعدادات → الذكاء الاصطناعي → التضمينات) أو أضف مفتاح API الخاص بك للتضمينات لمواصلة بناء الذاكرة.',
+  'memory.health.remediation.auth_missing':
+    'لم يتم العثور على بيانات اعتماد التضمينات. سجّل الدخول إلى OpenHuman، أو أعدّ تضمينات Ollama المحلية في الإعدادات → الذكاء الاصطناعي → التضمينات.',
+  'memory.health.remediation.auth_invalid':
+    'تم رفض بيانات اعتماد التضمينات الخاصة بك. أعد المصادقة، أو بدّل إلى تضمينات Ollama المحلية في الإعدادات → الذكاء الاصطناعي → التضمينات.',
+  'memory.health.remediation.embeddings_unconfigured':
+    'لم يتم تكوين أي مزوّد تضمينات، لذا فإن الاسترجاع الدلالي معطّل. أعدّ تضمينات Ollama المحلية (موصى به) أو أضف مفتاح تضمينات في الإعدادات → الذكاء الاصطناعي → التضمينات.',
+  'memory.health.remediation.embedding_dim_mismatch':
+    'يعيد نموذج التضمين حجم متجه خاطئًا (تتوقع الذاكرة 1024 بُعدًا). اختر نموذجًا بـ 1024 بُعدًا، أو اطلب 1024 بُعدًا من مزوّدك.',
+  'memory.health.remediation.local_model_unavailable':
+    'نموذج محلي مطلوب غير متوفر. ثبّت/شغّل Ollama ونزّل النموذج، أو بدّل هذا الحِمل إلى مزوّد سحابي في الإعدادات → الذكاء الاصطناعي.',
+  'memory.health.remediation.extraction_timeout':
+    'يتجاوز نموذج استخراج الذاكرة المهلة الزمنية، لذا فإن بنية الويكي قليلة. بدّل نموذج استخراج الذاكرة إلى نموذج أسرع في الإعدادات → الذكاء الاصطناعي.',
+  'memory.health.remediation.summarizer_unavailable':
+    'لا يتوفر مزوّد تلخيص لميزة إنشاء أشجار التلخيص. فعّل الذكاء الاصطناعي المحلي (Ollama)، أو فعّل تلخيص السحابة في الإعدادات → الذكاء الاصطناعي → الذاكرة.',
+  'memory.health.remediation.transient':
+    'حدث خطأ مؤقت أدى إلى مقاطعة معالجة الذاكرة. ستتم إعادة المحاولة تلقائيًا.',
+  'memory.health.remediation.unknown':
+    'واجهت معالجة الذاكرة مشكلة. تحقق من الإعدادات → الذكاء الاصطناعي للتكوين.',
+  // Chat — agent-generated artifacts (#2779)
 
+  // Chat composer toolbar
+  'composer.attachFile': 'إرفاق ملف',
+  'composer.modelSelector': 'النموذج',
+  'composer.voiceMode': 'وضع الصوت',
+  'composer.qualityHigh': 'عالٍ',
   // Agent activity level
   'activityLevel.title': 'مستوى نشاط الوكيل',
   'activityLevel.description':
@@ -4422,11 +4503,68 @@ const messages: TranslationMap = {
 
   // Onboarding: Custom > Activity
   'onboarding.custom.stepperActivity': 'النشاط',
+  'onboarding.custom.stepperVault': 'الخزينة',
   'onboarding.custom.activity.title': 'نشاط الوكيل',
   'onboarding.custom.activity.subtitle': 'مدى استباقية وكيلك في المراقبة والتصرف في الخلفية.',
   'onboarding.custom.activity.defaultDesc': 'نشاط متوسط — مزامنة كل ساعة، ملخص يومي.',
   'onboarding.custom.activity.configureDesc':
     'اختر مستوى نشاطك الخاص. الإعداد في الإعدادات › مستوى نشاط الوكيل.',
+  'onboarding.custom.vault.title': 'إعداد الذاكرة والخزينة',
+  'onboarding.custom.vault.subtitle':
+    'تأكيد موضع كتابة ملاحظات الذاكرة، وكيفية قراءة البيانات المصدر، وسلامة مسار الخزينة.',
+  'onboarding.custom.vault.defaultDesc':
+    'استخدم الإعدادات الافتراضية لذاكرة OpenHuman المُدارة. يمكن مراجعة مسار الخزينة وصحة المزامنة لاحقًا.',
+  'onboarding.custom.vault.configureDesc':
+    'راجع ملكية الخزينة، وشغّل فحوصات الصحة، واضبط عناصر التحكم في الذاكرة الآن.',
+  'onboarding.custom.vault.localDisabledReason':
+    'يتطلب الإعداد المُدار تسجيل الدخول إلى OpenHuman وغير متاح في الوضع المحلي.',
+  'onboarding.custom.vault.exitError': 'تعذّر إتمام الإعداد. يُرجى المحاولة مجددًا.',
+  'vaultHealth.title': 'قائمة فحص صحة الخزينة',
+  'vaultHealth.setupTitle': 'صحة إعداد الخزينة',
+  'vaultHealth.workspaceVault': 'خزينة مساحة العمل:',
+  'vaultHealth.refresh': 'تحديث',
+  'vaultHealth.refreshing': 'جارٍ التحديث…',
+  'vaultHealth.revealFolder': 'إظهار المجلد',
+  'vaultHealth.openInObsidian': 'فتح في Obsidian',
+  'vaultHealth.installObsidian': 'تثبيت Obsidian',
+  'vaultHealth.openObsidianError': 'تعذّر فتح Obsidian',
+  'vaultHealth.revealError': 'تعذّر إظهار مجلد الخزينة',
+  'vaultHealth.downloadError': 'تعذّر فتح صفحة تنزيل Obsidian',
+  'vaultHealth.loadError': 'تعذّر تحميل صحة الخزينة:',
+  'vaultHealth.lastSync': 'آخر مزامنة:',
+  'vaultHealth.passed': 'ناجح',
+  'vaultHealth.needsAttention': 'يحتاج إلى انتباه',
+  'vaultHealth.existsLabel': 'مسار خزينة مساحة العمل موجود',
+  'vaultHealth.existsRecovery':
+    'مجلد الخزينة مفقود. ابدأ مزامنة أو أنشئ هذا المجلد، ثم حدّث هذه القائمة.',
+  'vaultHealth.writableLabel': 'الخزينة قابلة للكتابة بواسطة OpenHuman',
+  'vaultHealth.writableRecovery':
+    'لا يستطيع OpenHuman الكتابة في هذه الخزينة بعد. امنح أذونات الكتابة ثم حدّث.',
+  'vaultHealth.obsidianLabel': 'الخزينة مسجّلة في Obsidian',
+  'vaultHealth.obsidianRecovery':
+    'في Obsidian، اختر "فتح المجلد كخزينة" لهذا المسار، ثم حدّث هذه القائمة.',
+  'vaultHealth.pipelineLabel': 'مسار الذاكرة سليم',
+  'vaultHealth.pipelineRecovery':
+    'مسار الذاكرة متوقف أو في حالة خطأ. أعد تفعيل المزامنة التلقائية في حالة شجرة الذاكرة وأعد المحاولة.',
+  'vaultHealth.timeNever': 'قط',
+  'vaultHealth.timeJustNow': 'الآن',
+  'vaultHealth.timeMinAgo': 'منذ {n} دقيقة',
+  'vaultHealth.timeHrAgo': 'منذ {n} ساعة',
+  'vaultHealth.timeDayAgo': 'منذ {n} يوم',
+  'vaultHealth.timeDaysAgo': 'منذ {n} أيام',
+  'memoryData.howItWorks': 'كيف يعمل تخزين الذاكرة',
+  'memoryData.workspaceVault': 'خزينة مساحة العمل · كتابة',
+  'memoryData.workspaceVaultDesc':
+    'يكتب OpenHuman ملاحظات الذاكرة المُولَّدة إلى memory_tree/content.',
+  'memoryData.connectedSources': 'المصادر المتصلة · قراءة',
+  'memoryData.connectedSourcesDesc':
+    'تُستورد المجلدات وصناديق البريد والمحادثات والمستودعات لفهرسة الذاكرة — ولا تُعاد كتابة ملفاتها الأصلية أبدًا.',
+  'memoryData.internalFiles': 'ملفات شجرة الذاكرة الداخلية',
+  'memoryData.internalFilesDesc':
+    'تُدار الفهارس وحالة قائمة الانتظار والملخصات بواسطة OpenHuman للحفاظ على سلامة الاسترجاع والمزامنة.',
+  'memoryData.windowError': 'نافذة الذاكرة',
+  'memoryData.windowUpdated': 'تم تحديث نافذة الذاكرة',
+  'memoryData.windowUpdatedMsg': 'تم الضبط على {window}.',
 };
 
 export default messages;

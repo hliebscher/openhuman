@@ -216,6 +216,7 @@ const messages: TranslationMap = {
   'routines.notRunYet': '아직 실행되지 않음',
   'routines.runNow': '지금 실행',
   'routines.running': '실행 중…',
+  'routines.runNowTimedOut': '실행 시간 초과 — 새로고침 후 다시 시도하세요.',
   'routines.viewHistory': '기록 보기',
   'routines.loadingHistory': '로딩 중…',
   'routines.noHistory': '아직 실행 기록이 없습니다.',
@@ -228,7 +229,7 @@ const messages: TranslationMap = {
   'routines.typeCommand': '명령',
   'nav.routines': 'Routines',
   'chat.newThread': '새 스레드',
-  'chat.typeMessage': '메시지를 입력하세요...',
+  'chat.typeMessage': '오늘 무엇을 도와드릴까요?',
   'chat.send': '메시지 보내기',
   'chat.thinking': '생각 중...',
   'chat.noMessages': '아직 메시지가 없습니다',
@@ -437,6 +438,11 @@ const messages: TranslationMap = {
   'memoryTree.status.hoursAgo': '{count}시간 전',
   'memoryTree.status.dayAgo': '1일 전',
   'memoryTree.status.daysAgo': '{count}일 전',
+  'memoryTree.status.integrationsTitle': '통합별 상태',
+  'memoryTree.status.integrationsEmpty': '연결된 통합이 없습니다',
+  'memoryTree.status.integrationActive': '활성',
+  'memoryTree.status.integrationStale': '오래됨',
+  'memoryTree.status.integrationChunks': '청크: {count}개',
   'alerts.title': '알림',
   'alerts.empty': '아직 알림이 없습니다',
   'alerts.markAllRead': '모두 읽음으로 표시',
@@ -1899,6 +1905,21 @@ const messages: TranslationMap = {
   'reflections.proposedAction': '제안된 작업',
   'reflections.act': '실행',
   'reflections.dismiss': '닫기',
+  'reflections.viewConversation': '보기',
+  'subconscious.mode.label': '잠재의식 모드',
+  'subconscious.mode.off.title': '끔',
+  'subconscious.mode.off.desc': '잠재의식이 비활성화되었습니다.',
+  'subconscious.mode.simple.title': '심플',
+  'subconscious.mode.simple.desc': '읽기 전용 관찰. 메모리 및 파일 접근만 가능.',
+  'subconscious.mode.aggressive.title': '적극적',
+  'subconscious.mode.aggressive.desc': '전체 도구 접근. 쓰기, 에이전트 생성, 작업 위임 가능.',
+  'subconscious.mode.aggressiveWarning':
+    '적극적 모드는 잠재의식에 쓰기 및 하위 에이전트 생성을 포함한 전체 도구 접근 권한을 부여합니다.',
+  'subconscious.interval.label': '빈도',
+  'subconscious.interval.minutes': '{n}분',
+  'subconscious.interval.hours': '{n}시간',
+  'subconscious.interval.oneHour': '1시간',
+  'subconscious.interval.oneDay': '24시간',
   'whatsapp.chatsSynced': '채팅 동기화됨',
   'whatsapp.chatSynced': '채팅 동기화됨',
   'sync.active': '활성',
@@ -2220,6 +2241,9 @@ const messages: TranslationMap = {
   'app.openhumanLink.discord.perk2': '혜택2',
   'app.openhumanLink.discord.perk3': '혜택3',
   'app.openhumanLink.discord.perk4': '혜택4',
+  'app.openhumanLink.discordReport.intro':
+    '죄송합니다 — 저희 측에서 오류가 발생했습니다. 이러한 오류를 자동으로 기록하려고 하지만, Discord에 세부 정보를 공유해 주시면 더 빠르게 해결할 수 있습니다.',
+  'app.openhumanLink.discordReport.openDiscord': 'Discord 열기',
   'app.openhumanLink.done': '완료',
   'app.openhumanLink.loadingChannelSetup': '채널 설정 불러오는 중',
   'app.openhumanLink.maybeLater': '나중에',
@@ -2240,6 +2264,7 @@ const messages: TranslationMap = {
   'app.openhumanLink.title.accounts': '앱 연결',
   'app.openhumanLink.title.billing': '결제 및 크레딧',
   'app.openhumanLink.title.discord': '커뮤니티 참여',
+  'app.openhumanLink.title.discordReport': '이 오류 신고',
   'app.openhumanLink.title.messaging': '채팅 채널 연결',
   'app.openhumanLink.title.notifications': '알림 허용',
   'app.persistRehydration.body': '본문',
@@ -4096,14 +4121,6 @@ const messages: TranslationMap = {
   'memory.sourceFilterAria': '소스별 필터링',
   'calls.comingSoonDescription': 'AI 지원 통화가 곧 제공됩니다. 기대해 주세요.',
   'whatsapp.title': 'WhatsApp',
-  'subconscious.interval.fiveMinutes': '5분',
-  'subconscious.interval.tenMinutes': '10분',
-  'subconscious.interval.fifteenMinutes': '15분',
-  'subconscious.interval.thirtyMinutes': '30분',
-  'subconscious.interval.oneHour': '1시간',
-  'subconscious.interval.sixHours': '6시간',
-  'subconscious.interval.twelveHours': '12시간',
-  'subconscious.interval.oneDay': '1일',
   'subconscious.priority.critical': '심각',
   'subconscious.priority.important': '중요',
   'subconscious.priority.normal': '정상',
@@ -4328,6 +4345,38 @@ const messages: TranslationMap = {
   'settings.agents.editor.toolsDone': 'Done',
   'settings.agents.editor.builtInReadonly':
     '기본 제공 에이전트는 편집할 수 없습니다. 에이전트 목록에서 활성화, 비활성화 또는 초기화할 수 있습니다.',
+  // Chat — agent-generated artifacts (#2779)
+  'chat.artifact.aria': '아티팩트: {title}',
+  'chat.artifact.generating': '{kind} 생성 중…',
+  'chat.artifact.ready': '준비됨',
+  'chat.artifact.failed': '생성 실패',
+  'chat.artifact.download': '다운로드',
+  'chat.artifact.downloading': '다운로드 중…',
+  'chat.artifact.downloaded': '{path}에 저장됨',
+  'chat.artifact.download_failed': '다운로드 실패: {reason}',
+  'chat.artifact.retry': '다시 시도',
+  'chat.artifact.reveal': '폴더에서 보기',
+  'chat.artifact.show_more': '더 보기',
+  'chat.artifact.show_less': '간단히 보기',
+
+  // Chat — files panel (#3024)
+  'chat.files.chip.aria.one': '이 채팅의 파일 {count}개',
+  'chat.files.chip.aria.other': '이 채팅의 파일 {count}개',
+  'chat.files.panel.aria': '이 채팅의 파일',
+  'chat.files.panel.title': '파일 ({count})',
+  'chat.files.panel.empty': '아직 파일이 없습니다. 에이전트에 생성을 요청하세요.',
+  'chat.files.panel.close': '파일 패널 닫기',
+  'chat.files.delete.aria': '{title} 삭제',
+  'chat.files.delete.confirm': '이 파일을 삭제할까요?',
+  'chat.files.delete.cancel': '취소',
+  'chat.files.delete.action': '삭제',
+  'chat.files.delete.failed': '파일을 삭제하지 못했습니다. 다시 시도해주세요.',
+  'chat.files.error.not_desktop': '다운로드는 데스크톱 앱에서만 사용할 수 있습니다.',
+  'chat.files.error.missing_artifact_id': '아티팩트 ID가 없습니다.',
+  'chat.files.error.missing_artifact_path': '코어 응답에 아티팩트 경로가 없습니다.',
+  'chat.files.error.resolve_failed': '아티팩트를 해석할 수 없습니다. 다시 시도해주세요.',
+  'chat.files.error.download_failed': '다운로드에 실패했습니다. 다시 시도해주세요.',
+  'chat.files.error.delete_failed': '파일을 삭제하지 못했습니다. 다시 시도해주세요.',
   'autocomplete.debounceMs': '디바운스 (ms)',
   'autocomplete.maxChars': '최대 컨텍스트 문자 수',
   'autocomplete.overlayTtlMs': '오버레이 시간 초과 (ms)',
@@ -4415,7 +4464,38 @@ const messages: TranslationMap = {
   'keyring.settings.revokeConsent': '로컬 저장소 거부',
   'pages.settings.account.security': '보안',
   'pages.settings.account.securityDesc': '비밀 저장 모드 및 키체인 상태',
+  // #002 memory-pipeline-hardening: degraded badges + typed remediation.
+  'memoryTree.status.statusDegraded': '저하됨',
+  'memoryTree.status.degradedRecall': '의미 기반 검색 비활성화됨',
+  'memoryTree.status.degradedStructure': '위키 구조 불완전',
+  'memoryTree.status.extractionCoverage': '추출 범위: 청크의 {pct}%에 구조가 있음',
+  'memory.health.remediation.budget_exhausted':
+    '메모리 임베딩이 관리형 예산에 도달했습니다. 로컬 Ollama 임베딩을 설정하거나(설정 → AI → 임베딩) 메모리를 계속 구축하려면 자체 임베딩 API 키를 추가하세요.',
+  'memory.health.remediation.auth_missing':
+    '임베딩 자격 증명을 찾을 수 없습니다. OpenHuman에 로그인하거나 설정 → AI → 임베딩에서 로컬 Ollama 임베딩을 설정하세요.',
+  'memory.health.remediation.auth_invalid':
+    '임베딩 자격 증명이 거부되었습니다. 다시 인증하거나 설정 → AI → 임베딩에서 로컬 Ollama 임베딩으로 전환하세요.',
+  'memory.health.remediation.embeddings_unconfigured':
+    '구성된 임베딩 제공자가 없어 의미 기반 검색이 꺼져 있습니다. 로컬 Ollama 임베딩을 설정하거나(권장) 설정 → AI → 임베딩에서 임베딩 키를 추가하세요.',
+  'memory.health.remediation.embedding_dim_mismatch':
+    '임베딩 모델이 잘못된 벡터 크기를 반환합니다(메모리는 1024차원을 예상함). 1024차원 모델을 선택하거나 제공자에게 1024차원을 요청하세요.',
+  'memory.health.remediation.local_model_unavailable':
+    '필요한 로컬 모델을 사용할 수 없습니다. Ollama를 설치/실행하고 모델을 다운로드하거나, 설정 → AI에서 이 작업을 클라우드 제공자로 전환하세요.',
+  'memory.health.remediation.extraction_timeout':
+    '메모리 추출 모델이 시간 초과되어 위키 구조가 거의 없습니다. 설정 → AI에서 메모리 추출 모델을 더 빠른 것으로 변경하세요.',
+  'memory.health.remediation.summarizer_unavailable':
+    '요약 트리 만들기에 사용할 수 있는 요약 제공자가 없습니다. 로컬 AI(Ollama)를 활성화하거나, 설정 → AI → 메모리에서 클라우드 요약을 활성화하세요.',
+  'memory.health.remediation.transient':
+    '일시적인 오류로 메모리 처리가 중단되었습니다. 자동으로 다시 시도됩니다.',
+  'memory.health.remediation.unknown':
+    '메모리 처리 중 문제가 발생했습니다. 설정 → AI에서 구성을 확인하세요.',
+  // Chat — agent-generated artifacts (#2779)
 
+  // Chat composer toolbar
+  'composer.attachFile': '파일 첨부',
+  'composer.modelSelector': '모델',
+  'composer.voiceMode': '음성 모드',
+  'composer.qualityHigh': '높음',
   // Agent activity level
   'activityLevel.title': '에이전트 활동 수준',
   'activityLevel.description':
@@ -4465,12 +4545,69 @@ const messages: TranslationMap = {
 
   // Onboarding: Custom > Activity
   'onboarding.custom.stepperActivity': '활동',
+  'onboarding.custom.stepperVault': '볼트',
   'onboarding.custom.activity.title': '에이전트 활동',
   'onboarding.custom.activity.subtitle':
     '에이전트가 백그라운드에서 얼마나 능동적으로 모니터링하고 행동하는지.',
   'onboarding.custom.activity.defaultDesc': '보통 활동 — 매시간 동기화, 일일 요약.',
   'onboarding.custom.activity.configureDesc':
     '자신만의 활동 수준을 선택하세요. 설정 › 에이전트 활동 수준에서 구성하세요.',
+  'onboarding.custom.vault.title': '메모리 및 볼트 설정',
+  'onboarding.custom.vault.subtitle':
+    '메모리 노트가 기록되는 위치, 소스 데이터를 읽는 방법, 볼트 파이프라인이 정상인지 확인하세요.',
+  'onboarding.custom.vault.defaultDesc':
+    'OpenHuman 관리형 메모리 기본값을 사용합니다. 볼트 경로와 동기화 상태는 나중에 검토할 수 있습니다.',
+  'onboarding.custom.vault.configureDesc':
+    '볼트 소유권을 검토하고 상태 검사를 실행하며 메모리 컨트롤을 지금 조정하세요.',
+  'onboarding.custom.vault.localDisabledReason':
+    '관리형 설정은 OpenHuman 로그인이 필요하며 로컬 모드에서는 사용할 수 없습니다.',
+  'onboarding.custom.vault.exitError': '온보딩을 완료할 수 없습니다. 다시 시도해 주세요.',
+  'vaultHealth.title': '볼트 상태 체크리스트',
+  'vaultHealth.setupTitle': '볼트 설정 상태',
+  'vaultHealth.workspaceVault': '워크스페이스 볼트:',
+  'vaultHealth.refresh': '새로 고침',
+  'vaultHealth.refreshing': '새로 고침 중…',
+  'vaultHealth.revealFolder': '폴더 표시',
+  'vaultHealth.openInObsidian': 'Obsidian에서 열기',
+  'vaultHealth.installObsidian': 'Obsidian 설치',
+  'vaultHealth.openObsidianError': 'Obsidian을 열 수 없습니다',
+  'vaultHealth.revealError': '볼트 폴더를 표시할 수 없습니다',
+  'vaultHealth.downloadError': 'Obsidian 다운로드 페이지를 열 수 없습니다',
+  'vaultHealth.loadError': '볼트 상태를 불러올 수 없습니다:',
+  'vaultHealth.lastSync': '마지막 동기화:',
+  'vaultHealth.passed': '통과',
+  'vaultHealth.needsAttention': '주의 필요',
+  'vaultHealth.existsLabel': '워크스페이스 볼트 경로가 존재합니다',
+  'vaultHealth.existsRecovery':
+    '볼트 폴더가 없습니다. 동기화를 시작하거나 이 폴더를 만든 후 체크리스트를 새로 고침하세요.',
+  'vaultHealth.writableLabel': 'OpenHuman이 볼트에 쓸 수 있습니다',
+  'vaultHealth.writableRecovery':
+    'OpenHuman이 아직 이 볼트에 쓸 수 없습니다. 쓰기 권한을 부여하고 새로 고침하세요.',
+  'vaultHealth.obsidianLabel': '볼트가 Obsidian에 등록되어 있습니다',
+  'vaultHealth.obsidianRecovery':
+    'Obsidian에서 이 경로에 대해 "폴더를 볼트로 열기"를 선택한 후 체크리스트를 새로 고침하세요.',
+  'vaultHealth.pipelineLabel': '메모리 파이프라인이 정상입니다',
+  'vaultHealth.pipelineRecovery':
+    '메모리 파이프라인이 일시 중지되었거나 오류 상태입니다. 메모리 트리 상태에서 자동 동기화를 다시 활성화하고 재시도하세요.',
+  'vaultHealth.timeNever': '없음',
+  'vaultHealth.timeJustNow': '방금 전',
+  'vaultHealth.timeMinAgo': '{n}분 전',
+  'vaultHealth.timeHrAgo': '{n}시간 전',
+  'vaultHealth.timeDayAgo': '{n}일 전',
+  'vaultHealth.timeDaysAgo': '{n}일 전',
+  'memoryData.howItWorks': '메모리 저장 방식',
+  'memoryData.workspaceVault': '워크스페이스 볼트 · 쓰기',
+  'memoryData.workspaceVaultDesc':
+    'OpenHuman이 생성된 메모리 노트를 memory_tree/content에 기록합니다.',
+  'memoryData.connectedSources': '연결된 소스 · 읽기',
+  'memoryData.connectedSourcesDesc':
+    '폴더, 사서함, 채팅, 저장소가 메모리 인덱싱을 위해 가져와집니다 — 원본 파일은 절대 수정되지 않습니다.',
+  'memoryData.internalFiles': '내부 메모리 트리 파일',
+  'memoryData.internalFilesDesc':
+    '인덱스, 큐 상태, 요약은 OpenHuman이 관리하여 회상과 동기화를 정상 상태로 유지합니다.',
+  'memoryData.windowError': '메모리 창',
+  'memoryData.windowUpdated': '메모리 창 업데이트됨',
+  'memoryData.windowUpdatedMsg': '{window}(으)로 설정되었습니다.',
 };
 
 export default messages;

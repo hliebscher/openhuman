@@ -218,6 +218,7 @@ const messages: TranslationMap = {
   'routines.notRunYet': 'Belum pernah dijalankan',
   'routines.runNow': 'Jalankan Sekarang',
   'routines.running': 'Berjalan...',
+  'routines.runNowTimedOut': 'Waktu habis — silakan muat ulang dan coba lagi.',
   'routines.viewHistory': 'Lihat riwayat',
   'routines.loadingHistory': 'Memuat…',
   'routines.noHistory': 'Belum ada riwayat eksekusi.',
@@ -230,7 +231,7 @@ const messages: TranslationMap = {
   'routines.typeCommand': 'Perintah',
   'nav.routines': 'Routines',
   'chat.newThread': 'Thread baru',
-  'chat.typeMessage': 'Ketik pesan...',
+  'chat.typeMessage': 'Apa yang bisa saya bantu hari ini?',
   'chat.send': 'Kirim pesan',
   'chat.thinking': 'Berpikir...',
   'chat.noMessages': 'Belum ada pesan',
@@ -440,6 +441,11 @@ const messages: TranslationMap = {
   'memoryTree.status.hoursAgo': '{count} jam lalu',
   'memoryTree.status.dayAgo': '1 hari lalu',
   'memoryTree.status.daysAgo': '{count} hari lalu',
+  'memoryTree.status.integrationsTitle': 'Kesehatan per integrasi',
+  'memoryTree.status.integrationsEmpty': 'Tidak ada integrasi tersambung',
+  'memoryTree.status.integrationActive': 'Aktif',
+  'memoryTree.status.integrationStale': 'Usang',
+  'memoryTree.status.integrationChunks': 'Potongan: {count}',
   'alerts.title': 'Peringatan',
   'alerts.empty': 'Belum ada peringatan',
   'alerts.markAllRead': 'Tandai semua sudah dibaca',
@@ -1922,6 +1928,22 @@ const messages: TranslationMap = {
   'reflections.proposedAction': 'Tindakan yang Diusulkan',
   'reflections.act': 'Tindakan',
   'reflections.dismiss': 'Abaikan',
+  'reflections.viewConversation': 'Lihat',
+  'subconscious.mode.label': 'Mode Alam Bawah Sadar',
+  'subconscious.mode.off.title': 'Mati',
+  'subconscious.mode.off.desc': 'Alam bawah sadar dinonaktifkan.',
+  'subconscious.mode.simple.title': 'Sederhana',
+  'subconscious.mode.simple.desc': 'Pengamatan hanya-baca. Hanya akses memori dan file.',
+  'subconscious.mode.aggressive.title': 'Agresif',
+  'subconscious.mode.aggressive.desc':
+    'Akses alat penuh. Dapat menulis, membuat agen, dan mendelegasikan tugas.',
+  'subconscious.mode.aggressiveWarning':
+    'Mode agresif memberikan alam bawah sadar akses alat penuh termasuk menulis dan membuat sub-agen.',
+  'subconscious.interval.label': 'Frekuensi',
+  'subconscious.interval.minutes': '{n} mnt',
+  'subconscious.interval.hours': '{n} jam',
+  'subconscious.interval.oneHour': '1 jam',
+  'subconscious.interval.oneDay': '24 jam',
   'whatsapp.chatsSynced': 'obrolan disinkronkan',
   'whatsapp.chatSynced': 'obrolan disinkronkan',
   'sync.active': 'Aktif',
@@ -2246,6 +2268,9 @@ const messages: TranslationMap = {
   'app.openhumanLink.discord.perk2': 'Keuntungan 2',
   'app.openhumanLink.discord.perk3': 'Keuntungan 3',
   'app.openhumanLink.discord.perk4': 'Keuntungan 4',
+  'app.openhumanLink.discordReport.intro':
+    'Mohon maaf — terjadi kesalahan di pihak kami. Kami berusaha mencatat error ini secara otomatis, tetapi membagikan detailnya di Discord membantu kami memperbaikinya lebih cepat.',
+  'app.openhumanLink.discordReport.openDiscord': 'Buka Discord',
   'app.openhumanLink.done': 'Selesai',
   'app.openhumanLink.loadingChannelSetup': 'Memuat pengaturan kanal',
   'app.openhumanLink.maybeLater': 'Mungkin nanti',
@@ -2266,6 +2291,7 @@ const messages: TranslationMap = {
   'app.openhumanLink.title.accounts': 'Hubungkan aplikasi Anda',
   'app.openhumanLink.title.billing': 'Tagihan & kredit',
   'app.openhumanLink.title.discord': 'Bergabung ke komunitas',
+  'app.openhumanLink.title.discordReport': 'Laporkan error ini',
   'app.openhumanLink.title.messaging': 'Hubungkan kanal chat',
   'app.openhumanLink.title.notifications': 'Izinkan notifikasi',
   'app.persistRehydration.body': 'Isi',
@@ -4148,14 +4174,6 @@ const messages: TranslationMap = {
   'memory.sourceFilterAria': 'Filter berdasarkan sumber',
   'calls.comingSoonDescription': 'Panggilan dengan bantuan AI akan segera hadir. Pantau terus.',
   'whatsapp.title': 'WhatsApp',
-  'subconscious.interval.fiveMinutes': '5 menit',
-  'subconscious.interval.tenMinutes': '10 menit',
-  'subconscious.interval.fifteenMinutes': '15 menit',
-  'subconscious.interval.thirtyMinutes': '30 menit',
-  'subconscious.interval.oneHour': '1 jam',
-  'subconscious.interval.sixHours': '6 jam',
-  'subconscious.interval.twelveHours': '12 jam',
-  'subconscious.interval.oneDay': '1 hari',
   'subconscious.priority.critical': 'kritis',
   'subconscious.priority.important': 'penting',
   'subconscious.priority.normal': 'normal',
@@ -4380,6 +4398,38 @@ const messages: TranslationMap = {
   'settings.agents.editor.toolsDone': 'Done',
   'settings.agents.editor.builtInReadonly':
     'Agen bawaan tidak dapat diedit. Anda dapat mengaktifkan, menonaktifkan, atau meresetnya dari daftar agen.',
+  // Chat — agent-generated artifacts (#2779)
+  'chat.artifact.aria': 'Artefak: {title}',
+  'chat.artifact.generating': 'Membuat {kind}…',
+  'chat.artifact.ready': 'Siap',
+  'chat.artifact.failed': 'Gagal dibuat',
+  'chat.artifact.download': 'Unduh',
+  'chat.artifact.downloading': 'Mengunduh…',
+  'chat.artifact.downloaded': 'Disimpan ke {path}',
+  'chat.artifact.download_failed': 'Unduhan gagal: {reason}',
+  'chat.artifact.retry': 'Coba lagi',
+  'chat.artifact.reveal': 'Tampilkan di folder',
+  'chat.artifact.show_more': 'Tampilkan selengkapnya',
+  'chat.artifact.show_less': 'Tampilkan lebih sedikit',
+
+  // Chat — files panel (#3024)
+  'chat.files.chip.aria.one': '{count} file di chat ini',
+  'chat.files.chip.aria.other': '{count} file di chat ini',
+  'chat.files.panel.aria': 'File di chat ini',
+  'chat.files.panel.title': 'File ({count})',
+  'chat.files.panel.empty': 'Belum ada file. Minta agen membuatnya.',
+  'chat.files.panel.close': 'Tutup panel file',
+  'chat.files.delete.aria': 'Hapus {title}',
+  'chat.files.delete.confirm': 'Hapus file ini?',
+  'chat.files.delete.cancel': 'Batal',
+  'chat.files.delete.action': 'Hapus',
+  'chat.files.delete.failed': 'Tidak bisa menghapus file. Coba lagi.',
+  'chat.files.error.not_desktop': 'Unduhan hanya tersedia di aplikasi desktop.',
+  'chat.files.error.missing_artifact_id': 'ID artefak tidak ada.',
+  'chat.files.error.missing_artifact_path': 'Jalur artefak tidak ada dalam respons core.',
+  'chat.files.error.resolve_failed': 'Tidak dapat memuat artefak. Coba lagi.',
+  'chat.files.error.download_failed': 'Unduhan gagal. Coba lagi.',
+  'chat.files.error.delete_failed': 'Tidak bisa menghapus file. Coba lagi.',
   'autocomplete.debounceMs': 'Debounce (md)',
   'autocomplete.maxChars': 'Karakter konteks maks',
   'autocomplete.overlayTtlMs': 'Batas waktu overlay (md)',
@@ -4467,7 +4517,38 @@ const messages: TranslationMap = {
   'keyring.settings.revokeConsent': 'Tolak penyimpanan lokal',
   'pages.settings.account.security': 'Keamanan',
   'pages.settings.account.securityDesc': 'Mode penyimpanan rahasia dan status keychain',
+  // #002 memory-pipeline-hardening: degraded badges + typed remediation.
+  'memoryTree.status.statusDegraded': 'Terdegradasi',
+  'memoryTree.status.degradedRecall': 'Recall semantik dinonaktifkan',
+  'memoryTree.status.degradedStructure': 'Struktur wiki tidak lengkap',
+  'memoryTree.status.extractionCoverage': 'Cakupan ekstraksi: {pct}% bagian memiliki struktur',
+  'memory.health.remediation.budget_exhausted':
+    'Embedding memori mencapai batas anggaran terkelola. Siapkan embedding Ollama lokal (Pengaturan → AI → Sematan) atau tambahkan kunci API embedding Anda sendiri untuk terus membangun memori.',
+  'memory.health.remediation.auth_missing':
+    'Kredensial embedding tidak ditemukan. Masuk ke OpenHuman, atau siapkan embedding Ollama lokal di Pengaturan → AI → Sematan.',
+  'memory.health.remediation.auth_invalid':
+    'Kredensial embedding Anda ditolak. Autentikasi ulang, atau beralih ke embedding Ollama lokal di Pengaturan → AI → Sematan.',
+  'memory.health.remediation.embeddings_unconfigured':
+    'Tidak ada penyedia embedding yang dikonfigurasi, sehingga recall semantik nonaktif. Siapkan embedding Ollama lokal (disarankan) atau tambahkan kunci embedding di Pengaturan → AI → Sematan.',
+  'memory.health.remediation.embedding_dim_mismatch':
+    'Model embedding mengembalikan ukuran vektor yang salah (memori mengharapkan 1024 dimensi). Pilih model 1024 dimensi, atau minta 1024 dimensi dari penyedia Anda.',
+  'memory.health.remediation.local_model_unavailable':
+    'Model lokal yang diperlukan tidak tersedia. Instal/jalankan Ollama dan unduh model, atau alihkan beban kerja ini ke penyedia cloud di Pengaturan → AI.',
+  'memory.health.remediation.extraction_timeout':
+    'Model ekstraksi memori kehabisan waktu, sehingga wiki memiliki sedikit struktur. Ganti model ekstraksi memori ke yang lebih cepat di Pengaturan → AI.',
+  'memory.health.remediation.summarizer_unavailable':
+    'Tidak ada penyedia ringkasan yang tersedia untuk Buat Pohon Ringkasan. Aktifkan AI lokal (Ollama), atau aktifkan ringkasan cloud di Pengaturan → AI → Memori.',
+  'memory.health.remediation.transient':
+    'Kesalahan sementara mengganggu pemrosesan memori. Akan dicoba lagi secara otomatis.',
+  'memory.health.remediation.unknown':
+    'Pemrosesan memori mengalami masalah. Periksa Pengaturan → AI untuk konfigurasi.',
+  // Chat — agent-generated artifacts (#2779)
 
+  // Chat composer toolbar
+  'composer.attachFile': 'Lampirkan file',
+  'composer.modelSelector': 'Model',
+  'composer.voiceMode': 'Mode suara',
+  'composer.qualityHigh': 'Tinggi',
   // Agent activity level
   'activityLevel.title': 'Tingkat aktivitas agen',
   'activityLevel.description':
@@ -4521,6 +4602,7 @@ const messages: TranslationMap = {
 
   // Onboarding: Custom > Activity
   'onboarding.custom.stepperActivity': 'Aktivitas',
+  'onboarding.custom.stepperVault': 'Vault',
   'onboarding.custom.activity.title': 'Aktivitas agen',
   'onboarding.custom.activity.subtitle':
     'Seberapa proaktif agen Anda memantau dan bertindak di latar belakang.',
@@ -4528,6 +4610,62 @@ const messages: TranslationMap = {
     'Aktivitas sedang — sinkronisasi per jam, ringkasan harian.',
   'onboarding.custom.activity.configureDesc':
     'Pilih tingkat aktivitas Anda sendiri. Konfigurasi di Pengaturan › Tingkat aktivitas agen.',
+  'onboarding.custom.vault.title': 'Pengaturan Memori & Vault',
+  'onboarding.custom.vault.subtitle':
+    'Konfirmasi di mana catatan memori ditulis, bagaimana data sumber dibaca, dan apakah pipeline vault Anda sehat.',
+  'onboarding.custom.vault.defaultDesc':
+    'Gunakan default memori yang dikelola OpenHuman. Jalur vault dan kondisi sinkronisasi tetap dapat ditinjau nanti.',
+  'onboarding.custom.vault.configureDesc':
+    'Tinjau kepemilikan vault, jalankan pemeriksaan kesehatan, dan sesuaikan kontrol memori sekarang.',
+  'onboarding.custom.vault.localDisabledReason':
+    'Pengaturan terkelola memerlukan masuk OpenHuman dan tidak tersedia dalam mode lokal.',
+  'onboarding.custom.vault.exitError': 'Tidak dapat menyelesaikan orientasi. Silakan coba lagi.',
+  'vaultHealth.title': 'Daftar Periksa Kesehatan Vault',
+  'vaultHealth.setupTitle': 'Kesehatan pengaturan vault',
+  'vaultHealth.workspaceVault': 'Vault ruang kerja:',
+  'vaultHealth.refresh': 'Segarkan',
+  'vaultHealth.refreshing': 'Menyegarkan…',
+  'vaultHealth.revealFolder': 'Tampilkan Folder',
+  'vaultHealth.openInObsidian': 'Buka di Obsidian',
+  'vaultHealth.installObsidian': 'Pasang Obsidian',
+  'vaultHealth.openObsidianError': 'Tidak dapat membuka Obsidian',
+  'vaultHealth.revealError': 'Tidak dapat menampilkan folder vault',
+  'vaultHealth.downloadError': 'Tidak dapat membuka halaman unduhan Obsidian',
+  'vaultHealth.loadError': 'Tidak dapat memuat kesehatan vault:',
+  'vaultHealth.lastSync': 'Sinkronisasi terakhir:',
+  'vaultHealth.passed': 'Lulus',
+  'vaultHealth.needsAttention': 'Perlu perhatian',
+  'vaultHealth.existsLabel': 'Jalur vault ruang kerja ada',
+  'vaultHealth.existsRecovery':
+    'Folder vault tidak ditemukan. Mulai sinkronisasi atau buat folder ini, lalu segarkan daftar periksa ini.',
+  'vaultHealth.writableLabel': 'Vault dapat ditulis oleh OpenHuman',
+  'vaultHealth.writableRecovery':
+    'OpenHuman belum dapat menulis ke vault ini. Berikan izin tulis dan segarkan.',
+  'vaultHealth.obsidianLabel': 'Vault terdaftar di Obsidian',
+  'vaultHealth.obsidianRecovery':
+    'Di Obsidian, pilih "Buka folder sebagai vault" untuk jalur ini, lalu segarkan daftar periksa ini.',
+  'vaultHealth.pipelineLabel': 'Pipeline memori sehat',
+  'vaultHealth.pipelineRecovery':
+    'Pipeline memori dijeda atau mengalami kesalahan. Aktifkan kembali Sinkronisasi Otomatis di status Pohon Memori dan coba lagi.',
+  'vaultHealth.timeNever': 'Tidak pernah',
+  'vaultHealth.timeJustNow': 'baru saja',
+  'vaultHealth.timeMinAgo': '{n} menit lalu',
+  'vaultHealth.timeHrAgo': '{n} jam lalu',
+  'vaultHealth.timeDayAgo': '{n} hari lalu',
+  'vaultHealth.timeDaysAgo': '{n} hari lalu',
+  'memoryData.howItWorks': 'Cara kerja penyimpanan memori',
+  'memoryData.workspaceVault': 'Vault ruang kerja · tulis',
+  'memoryData.workspaceVaultDesc':
+    'OpenHuman menulis catatan memori yang dihasilkan ke memory_tree/content.',
+  'memoryData.connectedSources': 'Sumber terhubung · baca',
+  'memoryData.connectedSourcesDesc':
+    'Folder, kotak surat, obrolan, dan repositori diimpor untuk pengindeksan memori — file aslinya tidak pernah ditulis ulang.',
+  'memoryData.internalFiles': 'File pohon memori internal',
+  'memoryData.internalFilesDesc':
+    'Indeks, status antrean, dan ringkasan dikelola oleh OpenHuman agar pemanggilan dan sinkronisasi tetap sehat.',
+  'memoryData.windowError': 'Jendela memori',
+  'memoryData.windowUpdated': 'Jendela memori diperbarui',
+  'memoryData.windowUpdatedMsg': 'Diatur ke {window}.',
 };
 
 export default messages;

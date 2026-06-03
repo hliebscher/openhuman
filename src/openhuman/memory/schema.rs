@@ -40,6 +40,7 @@ pub fn all_controller_schemas() -> Vec<ControllerSchema> {
         schemas("delete_chunk"),
         schemas("graph_export"),
         schemas("obsidian_vault_status"),
+        schemas("vault_health_check"),
         schemas("flush_now"),
         schemas("flush_source"),
         schemas("wipe_all"),
@@ -47,6 +48,8 @@ pub fn all_controller_schemas() -> Vec<ControllerSchema> {
         schemas("pipeline_status"),
         schemas("set_enabled"),
         schemas("smart_walk"),
+        schemas("doctor"),
+        schemas("retry_failed"),
     ]
 }
 
@@ -111,6 +114,10 @@ pub fn all_registered_controllers() -> Vec<RegisteredController> {
             handler: handle_obsidian_vault_status,
         },
         RegisteredController {
+            schema: schemas("vault_health_check"),
+            handler: handle_vault_health_check,
+        },
+        RegisteredController {
             schema: schemas("flush_now"),
             handler: handle_flush_now,
         },
@@ -137,6 +144,14 @@ pub fn all_registered_controllers() -> Vec<RegisteredController> {
         RegisteredController {
             schema: schemas("smart_walk"),
             handler: handle_smart_walk,
+        },
+        RegisteredController {
+            schema: schemas("doctor"),
+            handler: handle_doctor,
+        },
+        RegisteredController {
+            schema: schemas("retry_failed"),
+            handler: handle_retry_failed,
         },
     ]
 }
@@ -693,6 +708,66 @@ pub fn schemas(function: &str) -> ControllerSchema {
                 },
             ],
         },
+        "vault_health_check" => ControllerSchema {
+            namespace: NAMESPACE,
+            function: "vault_health_check",
+            description: "Consolidated workspace-vault health snapshot for onboarding and \
+                          settings. Checks whether <workspace>/memory_tree/content exists, is \
+                          readable, and is writable (via temp-file probe), whether Obsidian has \
+                          the vault registered, and whether the Memory Tree pipeline is healthy.",
+            inputs: vec![FieldSchema {
+                name: "obsidian_config_dir",
+                ty: TypeSchema::Option(Box::new(TypeSchema::String)),
+                comment: "Optional override for Obsidian's config directory (where \
+                          obsidian.json lives). Omitted ⇒ standard per-OS probe.",
+                required: false,
+            }],
+            outputs: vec![
+                FieldSchema {
+                    name: "content_root_abs",
+                    ty: TypeSchema::String,
+                    comment: "Absolute path to <workspace>/memory_tree/content/.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "exists",
+                    ty: TypeSchema::Bool,
+                    comment: "True when the workspace vault directory exists on disk.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "readable",
+                    ty: TypeSchema::Bool,
+                    comment: "True when the workspace vault directory can be read.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "writable",
+                    ty: TypeSchema::Bool,
+                    comment: "True when the vault accepts a create+delete temp-file probe.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "obsidian_registered",
+                    ty: TypeSchema::Bool,
+                    comment: "True when Obsidian has this folder (or an ancestor) registered \
+                              as a vault.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "pipeline_healthy",
+                    ty: TypeSchema::Bool,
+                    comment: "True when Memory Tree pipeline is not paused and not in error.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "last_sync_ms",
+                    ty: TypeSchema::I64,
+                    comment: "Epoch ms of the newest chunk timestamp; 0 when empty.",
+                    required: true,
+                },
+            ],
+        },
         "pipeline_status" => ControllerSchema {
             namespace: NAMESPACE,
             function: "pipeline_status",
@@ -707,10 +782,13 @@ pub fn schemas(function: &str) -> ControllerSchema {
                 FieldSchema {
                     name: "status",
                     ty: TypeSchema::Enum {
-                        variants: vec!["running", "paused", "syncing", "error", "idle"],
+                        variants: vec![
+                            "running", "paused", "syncing", "degraded", "error", "idle",
+                        ],
                     },
-                    comment: "Coarse, UI-shaped status. paused wins over error wins \
-                              over syncing wins over running wins over idle.",
+                    comment: "Coarse, UI-shaped status. Precedence: paused > error > \
+                              degraded > syncing > running > idle. `degraded` (#002) = \
+                              the pipeline runs but recall/structure is reduced.",
                     required: true,
                 },
                 FieldSchema {
@@ -759,6 +837,41 @@ pub fn schemas(function: &str) -> ControllerSchema {
                     comment: "True when scheduler-gate mode is `off`.",
                     required: true,
                 },
+                FieldSchema {
+                    name: "degraded",
+                    ty: TypeSchema::Json,
+                    comment: "#002 (FR-002/FR-004): object `{ semantic_recall: bool, \
+                              structure: bool, cause?: PipelineFailure }`. The pipeline \
+                              ran but output quality is reduced — `semantic_recall` when \
+                              embeddings were skipped, `structure` when extraction \
+                              yielded nothing. `cause` is the single precedence-resolved \
+                              failure (structure over semantic_recall) and is OMITTED \
+                              when no degradation is active; the recall/structure flags \
+                              are tracked independently behind it. The object itself is \
+                              always present (serde default). Distinct from a hard `error`.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "first_blocking_cause",
+                    ty: TypeSchema::Option(Box::new(TypeSchema::Json)),
+                    comment: "#002 (FR-004): the single most-urgent typed cause as a \
+                              `PipelineFailure` object `{ code, class, remediation_key }`. \
+                              A failed job's classified reason wins over a soft \
+                              degradation cause. null when healthy. The UI resolves \
+                              `remediation_key` and renders it verbatim.",
+                    required: false,
+                },
+                FieldSchema {
+                    name: "extraction_coverage",
+                    ty: TypeSchema::Option(Box::new(TypeSchema::F64)),
+                    comment: "#002 (FR-010): fraction [0.0, 1.0] of chunks with ≥1 \
+                              indexed entity. Near 0 with total_chunks > 0 means \
+                              extraction produces no structure. `null` when the metric \
+                              could not be measured (DB read error) — deliberately \
+                              distinct from a genuine `0.0` so a broken measurement is \
+                              never misreported as a structure failure.",
+                    required: false,
+                },
             ],
         },
         "set_enabled" => ControllerSchema {
@@ -798,6 +911,73 @@ pub fn schemas(function: &str) -> ControllerSchema {
                     required: true,
                 },
             ],
+        },
+        "doctor" => ControllerSchema {
+            namespace: NAMESPACE,
+            function: "doctor",
+            description: "One-shot Memory pipeline diagnostic (#002). Walks each \
+                stage (embeddings config, scheduler gate, job queue, extraction/recall \
+                degradation, summary-tree precondition) and returns per-stage health, \
+                the single first blocking cause (typed code + i18n remediation key), the \
+                degraded snapshot, and counters. Exposed for the agent's self-diagnosis \
+                and the CLI; cheap (config + queue counters + degraded flags, no live \
+                network probe).",
+            inputs: vec![],
+            outputs: vec![
+                FieldSchema {
+                    name: "healthy",
+                    ty: TypeSchema::Bool,
+                    comment: "True when no stage is blocking (first_blocking_cause is null).",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "stages",
+                    ty: TypeSchema::Json,
+                    comment: "Ordered array of { stage, ok, failure?, note } — pipeline \
+                              order, so the first non-ok stage is the first blocking cause.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "first_blocking_cause",
+                    ty: TypeSchema::Option(Box::new(TypeSchema::Json)),
+                    comment: "Typed { code, class, remediation_key, detail? } of the first \
+                              non-ok stage; null when healthy. Mirrors \
+                              pipeline_status.first_blocking_cause as an explicit Option.",
+                    required: false,
+                },
+                FieldSchema {
+                    name: "degraded",
+                    ty: TypeSchema::Json,
+                    comment: "{ semantic_recall, structure, cause? } degradation snapshot.",
+                    required: true,
+                },
+                FieldSchema {
+                    name: "counters",
+                    ty: TypeSchema::Json,
+                    comment: "{ total_chunks, jobs_ready, jobs_running, jobs_failed, \
+                              extraction_coverage: number|null }. extraction_coverage \
+                              is the fraction [0,1] of chunks with ≥1 indexed entity; \
+                              null when the metric could not be measured (DB error).",
+                    required: true,
+                },
+            ],
+        },
+        "retry_failed" => ControllerSchema {
+            namespace: NAMESPACE,
+            function: "retry_failed",
+            description: "Requeue every terminally-failed mem_tree_jobs row back to \
+                `ready` (#002 FR-011) so jobs that failed under a now-fixed config \
+                (e.g. after adding an embeddings key) re-run without re-ingesting \
+                source data. Resets the attempt budget and clears the typed failure \
+                reason. Manual, on-demand retry — there is no automatic \
+                requeue-on-sync yet.",
+            inputs: vec![],
+            outputs: vec![FieldSchema {
+                name: "requeued",
+                ty: TypeSchema::U64,
+                comment: "Number of failed jobs flipped back to ready for retry.",
+                required: true,
+            }],
         },
         "memory_backfill_status" => ControllerSchema {
             namespace: NAMESPACE,
@@ -1077,6 +1257,19 @@ fn handle_obsidian_vault_status(params: Map<String, Value>) -> ControllerFuture 
     })
 }
 
+fn handle_vault_health_check(params: Map<String, Value>) -> ControllerFuture {
+    Box::pin(async move {
+        #[derive(serde::Deserialize, Default)]
+        struct Req {
+            #[serde(default)]
+            obsidian_config_dir: Option<String>,
+        }
+        let config = config_rpc::load_config_with_timeout().await?;
+        let req = parse_value::<Req>(Value::Object(params)).unwrap_or_default();
+        to_json(read_rpc::vault_health_check_rpc(&config, req.obsidian_config_dir).await?)
+    })
+}
+
 fn handle_flush_source(params: Map<String, Value>) -> ControllerFuture {
     Box::pin(async move {
         #[derive(serde::Deserialize)]
@@ -1235,6 +1428,20 @@ fn handle_smart_walk(params: Map<String, Value>) -> ControllerFuture {
             })).collect::<Vec<_>>(),
         });
         to_json(RpcOutcome::new(result, vec![]))
+    })
+}
+
+fn handle_doctor(_params: Map<String, Value>) -> ControllerFuture {
+    Box::pin(async move {
+        let config = config_rpc::load_config_with_timeout().await?;
+        to_json(rpc::doctor_rpc(&config).await?)
+    })
+}
+
+fn handle_retry_failed(_params: Map<String, Value>) -> ControllerFuture {
+    Box::pin(async move {
+        let config = config_rpc::load_config_with_timeout().await?;
+        to_json(rpc::retry_failed_rpc(&config).await?)
     })
 }
 
