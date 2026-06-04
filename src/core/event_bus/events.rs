@@ -115,6 +115,32 @@ pub enum DomainEvent {
         reason: Option<String>,
     },
 
+    // ── Run Queue ──────────────────────────────────────────────────────
+    /// A message was queued into the active-run queue instead of interrupting.
+    RunQueueMessageQueued {
+        thread_id: String,
+        mode: String,
+        queue_depth: usize,
+    },
+    /// A queued steer/collect message was delivered to the engine at an
+    /// iteration boundary.
+    RunQueueMessageDelivered {
+        thread_id: String,
+        mode: String,
+        iteration: u32,
+    },
+    /// A queued followup message was dispatched as a fresh turn after the
+    /// current turn completed.
+    RunQueueFollowupDispatched {
+        thread_id: String,
+        followup_count: usize,
+    },
+    /// The active turn was interrupted by a new message (default behavior).
+    RunQueueInterrupted {
+        thread_id: String,
+        cancelled_request_id: String,
+    },
+
     // ── Memory ──────────────────────────────────────────────────────────
     /// The configured embedding provider is unreachable or the requested model
     /// is not installed, so the memory pipeline fell back to an alternative.
@@ -406,6 +432,40 @@ pub enum DomainEvent {
         /// producer (e.g. `PresentationError::truncate_stderr`).
         error: String,
         thread_id: Option<String>,
+        client_id: Option<String>,
+    },
+    /// An artifact record has been **created** (`ArtifactStatus::Pending`)
+    /// but no bytes are on disk yet — the producing tool has only just
+    /// reserved the row. Published by
+    /// [`crate::openhuman::artifacts::store::create_artifact`].
+    /// Bridged to the web channel as an `artifact_pending` socket event
+    /// so the frontend can render an in-progress / "Generating…" card the
+    /// moment the tool dispatches, instead of waiting until the file
+    /// arrives via [`Self::ArtifactReady`]. The pending card is replaced
+    /// in place when the matching `ArtifactReady` / `ArtifactFailed`
+    /// event with the same `artifact_id` arrives. Sub-task #3162 of #1535.
+    ArtifactPending {
+        /// UUID of the freshly-created artifact record.
+        artifact_id: String,
+        /// Lowercase variant of `ArtifactKind` (`presentation`,
+        /// `document`, `image`, `other`).
+        kind: String,
+        /// Human-readable title (also the on-disk filename stem).
+        title: String,
+        /// Absolute workspace root the artifact belongs to — see
+        /// [`Self::ArtifactReady::workspace_dir`] for rationale.
+        workspace_dir: String,
+        /// Relative path under `<workspace>/artifacts/` where the file
+        /// *will* land. The frontend uses it to render a stable card key
+        /// so subsequent `ArtifactReady` can swap the same surface in
+        /// place without flicker.
+        path: String,
+        /// Chat thread the artifact belongs to, when the producing turn
+        /// carried an `APPROVAL_CHAT_CONTEXT`. `None` for CLI / cron /
+        /// sub-agent paths — no client to fan out to.
+        thread_id: Option<String>,
+        /// Socket.IO client id (room) to surface the card to, when known.
+        /// `None` for non-chat callers.
         client_id: Option<String>,
     },
 
@@ -813,6 +873,14 @@ pub enum DomainEvent {
     /// deliberate follow-up; emitting the event now lets that bridge attach
     /// without a schema change.
     TaskPlanAwaitingApproval { card_id: String, thread_id: String },
+    /// A stale or wedged task run was reclaimed — the card moved back to
+    /// `todo` (re-dispatchable) or `blocked` (max reclaim count exceeded).
+    TaskRunReclaimed {
+        run_id: String,
+        card_id: String,
+        thread_id: String,
+        reason: String,
+    },
 
     // ── Backend Meet Bot ──────────────────────────────────────────────
     /// Backend gmeet bot successfully joined the meeting.
@@ -860,7 +928,11 @@ impl DomainEvent {
             | Self::AgentOrchestrationSpawned { .. }
             | Self::AgentOrchestrationCompleted { .. }
             | Self::AgentOrchestrationFailed { .. }
-            | Self::AgentOrchestrationClosed { .. } => "agent",
+            | Self::AgentOrchestrationClosed { .. }
+            | Self::RunQueueMessageQueued { .. }
+            | Self::RunQueueMessageDelivered { .. }
+            | Self::RunQueueFollowupDispatched { .. }
+            | Self::RunQueueInterrupted { .. } => "agent",
 
             Self::EmbeddingModelUnhealthy { .. }
             | Self::MemoryStored { .. }
@@ -944,11 +1016,13 @@ impl DomainEvent {
             | Self::TaskSourceTaskIngested { .. }
             | Self::TaskSourceFetchFailed { .. } => "task_sources",
 
-            Self::TaskPlanAwaitingApproval { .. } => "agent",
+            Self::TaskPlanAwaitingApproval { .. } | Self::TaskRunReclaimed { .. } => "agent",
 
             Self::ApprovalRequested { .. } | Self::ApprovalDecided { .. } => "approval",
 
-            Self::ArtifactReady { .. } | Self::ArtifactFailed { .. } => "artifact",
+            Self::ArtifactReady { .. }
+            | Self::ArtifactFailed { .. }
+            | Self::ArtifactPending { .. } => "artifact",
 
             Self::McpServerInstalled { .. }
             | Self::McpServerConnected { .. }
@@ -980,6 +1054,10 @@ impl DomainEvent {
             Self::AgentOrchestrationCompleted { .. } => "AgentOrchestrationCompleted",
             Self::AgentOrchestrationFailed { .. } => "AgentOrchestrationFailed",
             Self::AgentOrchestrationClosed { .. } => "AgentOrchestrationClosed",
+            Self::RunQueueMessageQueued { .. } => "RunQueueMessageQueued",
+            Self::RunQueueMessageDelivered { .. } => "RunQueueMessageDelivered",
+            Self::RunQueueFollowupDispatched { .. } => "RunQueueFollowupDispatched",
+            Self::RunQueueInterrupted { .. } => "RunQueueInterrupted",
             Self::MemoryStored { .. } => "MemoryStored",
             Self::MemoryRecalled { .. } => "MemoryRecalled",
             Self::MemorySyncRequested { .. } => "MemorySyncRequested",
@@ -1048,6 +1126,7 @@ impl DomainEvent {
             Self::ApprovalDecided { .. } => "ApprovalDecided",
             Self::ArtifactReady { .. } => "ArtifactReady",
             Self::ArtifactFailed { .. } => "ArtifactFailed",
+            Self::ArtifactPending { .. } => "ArtifactPending",
             Self::McpServerInstalled { .. } => "McpServerInstalled",
             Self::McpServerConnected { .. } => "McpServerConnected",
             Self::McpServerDisconnected { .. } => "McpServerDisconnected",
@@ -1059,6 +1138,7 @@ impl DomainEvent {
             Self::TaskSourceTaskIngested { .. } => "TaskSourceTaskIngested",
             Self::TaskSourceFetchFailed { .. } => "TaskSourceFetchFailed",
             Self::TaskPlanAwaitingApproval { .. } => "TaskPlanAwaitingApproval",
+            Self::TaskRunReclaimed { .. } => "TaskRunReclaimed",
             Self::BackendMeetJoined { .. } => "BackendMeetJoined",
             Self::BackendMeetLeft { .. } => "BackendMeetLeft",
             Self::BackendMeetReply { .. } => "BackendMeetReply",
