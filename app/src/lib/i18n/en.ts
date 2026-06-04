@@ -178,6 +178,7 @@ const en: TranslationMap = {
   'clearData.failedPersist': 'Failed to clear persisted app state. Please try again.',
 
   // Welcome page
+  'welcome.logoAlt': 'OpenHuman',
   'welcome.title': 'Welcome to OpenHuman',
   'welcome.subtitle':
     'Your personal AI super intelligence. Private, simple and extremely powerful.',
@@ -314,6 +315,33 @@ const en: TranslationMap = {
   'memory.tab.cohesion': 'Cohesion',
   'memory.tab.settings': 'Settings',
   'memory.tab.council': 'Council',
+  'intelligence.agents.title': 'Agents Library',
+  'intelligence.agents.subtitle':
+    'Inspect runnable specialists and send one task to a named agent.',
+  'intelligence.agents.refresh': 'Refresh',
+  'intelligence.agents.loading': 'Loading agents...',
+  'intelligence.agents.failedToLoad': 'Could not load agents',
+  'intelligence.agents.empty': 'No runnable agents are available.',
+  'intelligence.agents.readOnly': 'Read-only',
+  'intelligence.agents.writeCapable': 'Write-capable',
+  'intelligence.agents.allTools': 'All tools',
+  'intelligence.agents.toolCountOne': '{count} tool',
+  'intelligence.agents.toolCountOther': '{count} tools',
+  'intelligence.agents.subagentCountOne': '{count} subagent',
+  'intelligence.agents.subagentCountOther': '{count} subagents',
+  'intelligence.agents.startChat': 'Start chat',
+  'intelligence.agents.startChatPrompt':
+    'Start a chat with this agent. Introduce your specialty, ask what you need to know, and wait for my task.',
+  'intelligence.agents.copyId': 'Copy ID',
+  'intelligence.agents.copied': 'Copied',
+  'intelligence.agents.taskPlaceholder': 'Task for this agent',
+  'intelligence.agents.runTask': 'Run task',
+  'intelligence.agents.running': 'Running...',
+  'intelligence.agents.runFailed': 'Could not start the selected agent',
+  'intelligence.agents.model.inherit': 'Inherit',
+  'intelligence.agents.tier.chat': 'Chat',
+  'intelligence.agents.tier.reasoning': 'Reasoning',
+  'intelligence.agents.tier.worker': 'Worker',
   'modelCouncil.title': 'Model Council',
   'modelCouncil.intro':
     'Ask one question, get independent answers from several models in parallel, then a chair model synthesizes where they agree, where they disagree, and what each uniquely adds.',
@@ -1357,6 +1385,9 @@ const en: TranslationMap = {
   'mcp.detail.reconfigureSaving': 'Saving…',
   'mcp.detail.reconfigureSuccess': 'Environment updated and reconnected.',
   'mcp.detail.reconfigureReconnectFailed': 'Saved, but reconnecting with the new values failed.',
+  'mcp.detail.enable': 'Enable',
+  'mcp.detail.disable': 'Disable',
+  'mcp.status.disabled': 'Disabled',
   'mcp.detail.tools': 'Tools',
   'onboarding.skipForNow': 'Skip for Now',
   'onboarding.localAI.continueWithCloud': 'Continue with Cloud',
@@ -1635,6 +1666,9 @@ const en: TranslationMap = {
   'voice.debug.silenceThreshold': 'Silence Threshold (RMS)',
   'voice.debug.silenceThresholdDesc':
     'Recordings with energy below this are treated as silence and skipped. Lower = more sensitive.',
+  'voice.debug.alwaysOn': 'Always-on listening',
+  'voice.debug.alwaysOnDesc':
+    'Keep the microphone open and send what you say to the agent automatically, no hotkey. Pauses when the screen is locked.',
   'voice.providers.saved': 'Voice providers saved.',
   'voice.providers.failedToSave': 'Failed to save voice providers',
   'voice.providers.ellipsis': '…',
@@ -2297,6 +2331,7 @@ const en: TranslationMap = {
   'memorySources.loadingConnections': 'Loading connections…',
   'memorySources.noConnections':
     'No active Composio connections found. Connect an integration first.',
+  'memorySources.connectionAccount': 'Account',
   'memorySources.pickConnection': 'Pick a connection',
   'memorySources.selectConnection': '— Select a connection —',
   'memorySources.composioListFailed': 'Failed to load Composio connections.',
@@ -2349,6 +2384,32 @@ const en: TranslationMap = {
   'memorySources.build.successTitle': 'Tree built',
   'memorySources.build.failedTitle': 'Build failed',
   'memorySources.build.sealsMessage': 'seal(s) completed',
+  'memorySources.allIn.button': 'All In',
+  'memorySources.allIn.title': 'Go All In?',
+  'memorySources.allIn.message':
+    'This enables every memory source and removes all sync limits. It builds the richest memory graph, but may use more credits.',
+  'memorySources.allIn.confirm': 'Yes',
+  'memorySources.allIn.cancel': 'No',
+  'memorySources.allIn.success': 'All sources enabled with no limits. Syncing started.',
+  'memorySources.allIn.failed': 'Could not apply All In. Please try again.',
+  'memorySources.settings.button': 'Settings',
+  'memorySources.settings.title': 'Sync settings',
+  'memorySources.settings.maxPrs': 'Max pull requests',
+  'memorySources.settings.maxIssues': 'Max issues',
+  'memorySources.settings.maxCommits': 'Max commits',
+  'memorySources.settings.maxItems': 'Max items',
+  'memorySources.settings.sinceDays': 'Lookback (days)',
+  'memorySources.settings.syncDepthDays': 'Sync depth (days)',
+  'memorySources.settings.maxTokens': 'Max tokens per sync',
+  'memorySources.settings.maxCost': 'Max cost per sync (USD)',
+  'memorySources.settings.unlimited': 'Unlimited',
+  'memorySources.settings.unlimitedTooltip':
+    "You've opted in to sync the maximum for {toolkit}. You can change the caps here.",
+  'memorySources.settings.maxed': 'Maxed',
+  'memorySources.settings.save': 'Save',
+  'memorySources.settings.saving': 'Saving…',
+  'memorySources.settings.saved': 'Settings saved',
+  'memorySources.settings.saveFailed': 'Could not save settings',
 
   // Backend
   'backend.aiBackend': 'AI Backend',
@@ -2902,6 +2963,7 @@ const en: TranslationMap = {
   'conversations.taskKanban.saveChanges': 'Save changes',
   'conversations.taskKanban.deleteCard': 'Delete',
   'conversations.taskKanban.workTask': 'Work task',
+  'conversations.taskKanban.viewWork': 'View work',
   'conversations.taskKanban.startingTask': 'Starting…',
   'conversations.taskKanban.updateFailed': 'Could not update task; changes were not saved.',
   'conversations.taskKanban.sourcesButton': 'Sources',
@@ -3036,6 +3098,9 @@ const en: TranslationMap = {
   'intelligence.tasks.composer.create': 'Create task',
   'intelligence.tasks.composer.creating': 'Creating…',
   'intelligence.tasks.composer.createFailed': "Couldn't create the task",
+  'intelligence.tasks.composer.assignAgentLabel': 'Let an agent work on this automatically',
+  'intelligence.tasks.composer.assignAgentHint':
+    'The task board picks it up and runs it for you. Leave off for a plain personal to-do.',
   'intelligence.tasks.sourceList.subtitle': 'Source tasks waiting to become agent work.',
   'intelligence.tasks.sourceList.empty': 'No source tasks waiting.',
   'intelligence.tasks.sourceList.queued': 'Queued',
@@ -4102,10 +4167,27 @@ const en: TranslationMap = {
   'settings.agentAccess.readWriteAccess': 'read + write',
   'settings.agentAccess.actionSandboxDesc':
     'Default working directory for shell, file, and git tools.',
+  'settings.agentAccess.actionDir.edit': 'Edit',
+  'settings.agentAccess.actionDir.save': 'Save',
+  'settings.agentAccess.actionDir.cancel': 'Cancel',
+  'settings.agentAccess.actionDir.placeholder': 'Absolute path, e.g. /Users/you/Projects',
+  'settings.agentAccess.actionDir.envLocked':
+    'Set by OPENHUMAN_ACTION_DIR. Change the environment variable to override.',
+  'settings.agentAccess.actionDir.saved': 'Action directory updated.',
   'settings.agentAccess.internalState': 'Internal state',
   'settings.agentAccess.agentBlocked': 'agent-blocked',
   'settings.agentAccess.internalStateDesc':
     'Memory databases, sessions, tokens, and other core persistence. Not accessible to agent tools.',
+  'settings.agentAccess.actionDirInputLabel': 'Action sandbox path',
+  'settings.agentAccess.actionDirSave': 'Save',
+  'settings.agentAccess.actionDirSaving': 'Saving…',
+  'settings.agentAccess.actionDirSaved': 'Action sandbox updated.',
+  'settings.agentAccess.actionDirEmptyError': 'Path cannot be empty.',
+  'settings.agentAccess.actionDirSaveError': 'Could not update the action sandbox.',
+  'settings.agentAccess.actionDirEnvOverrideError':
+    'OPENHUMAN_ACTION_DIR is set — unset the env var to edit this from Settings.',
+  'settings.agentAccess.actionDirEnvOverrideNote':
+    'Overridden by OPENHUMAN_ACTION_DIR — unset the env var to manage from Settings.',
   'settings.agentAccess.approvalHistory': 'Approval history',
   'settings.agentAccess.approvalHistoryDesc':
     'Review past Approve / Deny decisions the agent requested.',
@@ -4579,6 +4661,8 @@ const en: TranslationMap = {
   'chat.agentProfile.defaultAgentLabel': 'Orchestrator',
   'chat.agentProfile.exists': 'Agent profile "{name}" already exists.',
   'chat.agentProfile.label': 'Agent profile',
+  'chat.agentProfile.quick': 'Quick',
+  'chat.agentProfile.reasoning': 'Reasoning',
   'chat.agentProfile.namePlaceholder': 'Profile name',
   'chat.agentProfile.promptStylePlaceholder': 'Prompt style',
   'chat.agentProfile.allowedToolsPlaceholder': 'Allowed tools',
@@ -4987,6 +5071,14 @@ const en: TranslationMap = {
   'monthlyCost.badge': '${amount} this month',
   'monthlyCost.noData': 'No syncs this month',
 
+  // Security banner (approval-gate host-aware boot state)
+  'security.approvalGateDisabled.title': 'Approval gate disabled',
+  'security.approvalGateDisabled.body':
+    'OPENHUMAN_APPROVAL_GATE=0 is set in your environment. External-effect tools will run without asking for confirmation.',
+  'security.approvalGateOverrideIgnored.title': 'Override blocked',
+  'security.approvalGateOverrideIgnored.body':
+    'An OPENHUMAN_APPROVAL_GATE=0 override was detected but ignored: the desktop app always keeps the approval gate on.',
+
   // Run queue
   'runQueue.mode.interrupt': 'Interrupt',
   'runQueue.mode.steer': 'Steer',
@@ -4998,6 +5090,13 @@ const en: TranslationMap = {
   'runQueue.collectHint': 'Add as extra context',
   'runQueue.status': '{total} queued',
   'runQueue.cleared': 'Queue cleared',
+  'notch.ready': 'Ready',
+  'notch.processing': 'Processing…',
+  'notch.listening': 'Listening…',
+  'notch.thinking': 'Thinking…',
+  'notch.speaking': 'Speaking…',
+  'notch.transcribing': 'Transcribing…',
+  'notch.executing': 'Executing…',
 };
 
 export default en;

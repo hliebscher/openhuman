@@ -644,7 +644,10 @@ pub async fn start_chat(
 
     {
         let mut in_flight = IN_FLIGHT.lock().await;
+
+        // Interrupt path: abort any in-flight turn (existing behavior).
         if let Some(existing) = in_flight.remove(&map_key) {
+            let cancelled_id = existing.request_id.clone();
             existing.handle.abort();
             log::info!(
                 "[web-channel] interrupted in-flight turn thread_id={} cancelled_request_id={}",
@@ -659,7 +662,7 @@ pub async fn start_chat(
                 event: "chat_error".to_string(),
                 client_id: client_id.clone(),
                 thread_id: thread_id.clone(),
-                request_id: existing.request_id,
+                request_id: cancelled_id,
                 full_response: None,
                 message: Some("Cancelled by newer request".to_string()),
                 error_type: Some("cancelled".to_string()),
@@ -1226,7 +1229,7 @@ async fn run_chat_task(
 /// agent turn loop and translates them into [`WebChannelEvent`]s tagged
 /// with the correct client/thread/request IDs. The task runs until the
 /// sender is dropped (i.e. when the agent turn finishes).
-fn spawn_progress_bridge(
+pub(crate) fn spawn_progress_bridge(
     mut rx: tokio::sync::mpsc::Receiver<crate::openhuman::agent::progress::AgentProgress>,
     client_id: String,
     thread_id: String,
@@ -2098,9 +2101,19 @@ pub async fn channel_web_cancel(
 ) -> Result<RpcOutcome<Value>, String> {
     let cancelled_request_id = cancel_chat(client_id, thread_id).await?;
 
+    // No web-channel turn for this thread → it may be an autonomous task run
+    // streaming into a task session. Those are detached dispatcher tasks (not in
+    // IN_FLIGHT), so cancel them via the dispatcher's registry instead — this is
+    // what makes the chat Cancel button work on task threads.
+    let cancelled = if cancelled_request_id.is_some() {
+        true
+    } else {
+        crate::openhuman::agent::task_dispatcher::cancel_session(thread_id.trim()).await
+    };
+
     Ok(RpcOutcome::single_log(
         json!({
-            "cancelled": cancelled_request_id.is_some(),
+            "cancelled": cancelled,
             "client_id": client_id.trim(),
             "thread_id": thread_id.trim(),
             "request_id": cancelled_request_id,

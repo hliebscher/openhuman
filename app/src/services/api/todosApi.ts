@@ -49,6 +49,11 @@ export interface AddTodoInput {
   status?: TaskBoardCardStatus;
   objective?: string | null;
   notes?: string | null;
+  assignedAgent?: string | null;
+  approvalMode?: TaskApprovalMode | null;
+  /** Originating task-source identifiers, stamped onto the promoted card so the
+   *  inbox can detect it was already picked up. */
+  sourceMetadata?: Record<string, unknown> | null;
 }
 
 /** Fields accepted when editing a card. Omitted fields are left unchanged. */
@@ -120,6 +125,9 @@ export const todosApi = {
         status: input.status,
         objective: input.objective,
         notes: input.notes,
+        assignedAgent: input.assignedAgent,
+        approvalMode: input.approvalMode,
+        sourceMetadata: input.sourceMetadata,
       }),
     });
     return snapshotToBoard(snap, input.threadId);
@@ -159,6 +167,21 @@ export const todosApi = {
     const snap = await callCoreRpc<TodosSnapshotWire>({
       method: 'openhuman.todos_update_status',
       params: { thread_id: threadId, id, status },
+    });
+    return snapshotToBoard(snap, threadId);
+  },
+
+  /** Link a card to its agent session's conversation thread (drives the board
+   *  "View session" jump). Pass `null` to clear the link. */
+  setSessionThread: async (
+    threadId: string,
+    id: string,
+    sessionThreadId: string | null
+  ): Promise<TaskBoard> => {
+    log('setSessionThread threadId=%s id=%s sessionThreadId=%s', threadId, id, sessionThreadId);
+    const snap = await callCoreRpc<TodosSnapshotWire>({
+      method: 'openhuman.todos_set_session_thread',
+      params: { thread_id: threadId, id, sessionThreadId },
     });
     return snapshotToBoard(snap, threadId);
   },

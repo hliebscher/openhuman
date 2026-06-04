@@ -13,13 +13,13 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { agentProfilesApi } from '../../services/api/agentProfilesApi';
 import { threadApi } from '../../services/api/threadApi';
 import { chatSend } from '../../services/chatService';
 import { CoreRpcError } from '../../services/coreRpcClient';
 import agentProfileReducer from '../../store/agentProfileSlice';
 import chatRuntimeReducer, {
   setInferenceStatusForThread,
+  setTaskBoardForThread,
   setToolTimelineForThread,
 } from '../../store/chatRuntimeSlice';
 import socketReducer from '../../store/socketSlice';
@@ -1028,76 +1028,6 @@ describe('Conversations — smoke render (#1123 welcome-lock removal)', () => {
     });
   });
 
-  it('creates a custom agent profile from the header draft form', async () => {
-    const thread = makeThread({ id: 'profile-thread', title: 'Profile Thread' });
-    mockGetThreads.mockResolvedValue({ threads: [thread], count: 1 });
-    mockGetThreadMessages.mockResolvedValue({ messages: [], count: 0 });
-    vi.mocked(agentProfilesApi.upsert).mockResolvedValueOnce({
-      activeProfileId: 'custom',
-      profiles: [
-        {
-          id: 'custom',
-          name: 'Custom',
-          description: 'Custom agent profile',
-          agentId: 'orchestrator',
-          builtIn: false,
-        },
-      ],
-    });
-    vi.mocked(agentProfilesApi.select).mockResolvedValueOnce({
-      activeProfileId: 'custom',
-      profiles: [
-        {
-          id: 'custom',
-          name: 'Custom',
-          description: 'Custom agent profile',
-          agentId: 'orchestrator',
-          builtIn: false,
-        },
-      ],
-    });
-
-    await act(async () => {
-      await renderConversations({
-        thread: selectedThreadState(thread),
-        socket: socketState('connected'),
-      });
-    });
-
-    fireEvent.click(await screen.findByLabelText('Create agent profile'));
-    fireEvent.change(screen.getByPlaceholderText('Profile name'), { target: { value: 'Custom' } });
-    fireEvent.change(screen.getByPlaceholderText('Prompt style'), {
-      target: { value: 'Be concise' },
-    });
-    fireEvent.change(screen.getByPlaceholderText('Allowed tools'), {
-      target: { value: 'todowrite, spawn_parallel_agents' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
-
-    await waitFor(() => expect(agentProfilesApi.upsert).toHaveBeenCalledTimes(1));
-    expect(agentProfilesApi.upsert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: 'Custom',
-        systemPromptSuffix: 'Be concise',
-        allowedTools: ['todowrite', 'spawn_parallel_agents'],
-      })
-    );
-    expect(agentProfilesApi.select).toHaveBeenCalled();
-  });
-
-  it('shows validation when creating a duplicate profile name', async () => {
-    await act(async () => {
-      await renderConversations({ thread: emptyThreadState, socket: socketState('connected') });
-    });
-
-    fireEvent.click(await screen.findByLabelText('Create agent profile'));
-    fireEvent.change(screen.getByPlaceholderText('Profile name'), { target: { value: 'Default' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
-
-    expect(await screen.findByText('Agent profile "Default" already exists.')).toBeInTheDocument();
-    expect(agentProfilesApi.upsert).not.toHaveBeenCalled();
-  });
-
   it('rolls back and shows feedback when task board move persistence fails', async () => {
     const thread = makeThread({ id: 'board-thread', title: 'Board Thread' });
     const board = {
@@ -1690,5 +1620,96 @@ describe('Conversations — thread title editing', () => {
     });
 
     expect(threadApi.updateTitle).not.toHaveBeenCalled();
+  });
+});
+
+describe('Conversations — open-session resume (View work)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockGetThreadMessages.mockResolvedValue({ messages: [], count: 0 });
+  });
+
+  it('honours location.state.openThreadId to open a task session on mount', async () => {
+    // A task-labelled session thread, reachable only via an explicit
+    // open-intent because it's hidden behind the default General tab.
+    const taskThread = makeThread({
+      id: 'task-open-1',
+      title: 'Autonomous run',
+      labels: ['tasks'],
+    });
+    mockGetThreads.mockResolvedValue({ threads: [taskThread], count: 1 });
+
+    const store = buildStore({ thread: emptyThreadState });
+    const { default: Conversations } = await import('../Conversations');
+
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <MemoryRouter
+            initialEntries={[
+              { pathname: '/conversations', state: { openThreadId: 'task-open-1' } },
+            ]}>
+            <Conversations />
+          </MemoryRouter>
+        </Provider>
+      );
+    });
+
+    // The open-intent selects the task session (bypassing the General-tab
+    // filter) and loads its messages.
+    await waitFor(() => expect(store.getState().thread.selectedThreadId).toBe('task-open-1'));
+    await waitFor(() => expect(mockGetThreadMessages).toHaveBeenCalled());
+  });
+
+  it("View work on a selected task board opens that card's session thread", async () => {
+    const thread = makeThread({ id: 'board-thread', title: 'Board thread' });
+    mockGetThreads.mockResolvedValue({ threads: [thread], count: 1 });
+
+    const store = buildStore({ thread: selectedThreadState(thread) });
+
+    const { default: Conversations } = await import('../Conversations');
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <MemoryRouter initialEntries={['/conversations']}>
+            <Conversations />
+          </MemoryRouter>
+        </Provider>
+      );
+    });
+    // Let the mount-resume effect settle, then seed the selected thread's task
+    // board with a card that has a live session (seeding before mount gets
+    // clobbered by turn-state hydration).
+    await screen.findByPlaceholderText('How can I help you today?');
+    const selectedId = store.getState().thread.selectedThreadId ?? 'board-thread';
+    await act(async () => {
+      store.dispatch(
+        setTaskBoardForThread({
+          threadId: selectedId,
+          board: {
+            threadId: selectedId,
+            updatedAt: '',
+            cards: [
+              {
+                id: 'tc1',
+                title: 'Worked card',
+                status: 'in_progress',
+                order: 0,
+                updatedAt: '',
+                sessionThreadId: 'sess-99',
+              },
+            ],
+          },
+        })
+      );
+    });
+
+    const viewBtn = await screen.findByTitle('View work');
+    await act(async () => {
+      fireEvent.click(viewBtn);
+    });
+
+    // onViewSession navigates the chat view to the card's session thread.
+    await waitFor(() => expect(store.getState().thread.selectedThreadId).toBe('sess-99'));
   });
 });

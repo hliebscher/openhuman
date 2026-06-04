@@ -168,6 +168,7 @@ const messages: TranslationMap = {
   'clearData.failed': "Échec de l'effacement des données et de la déconnexion. Réessaie.",
   'clearData.failedLogout': 'Échec de la déconnexion. Réessaie.',
   'clearData.failedPersist': "Échec de l'effacement de l'état persisté. Réessaie.",
+  'welcome.logoAlt': 'OpenHuman',
   'welcome.title': 'Bienvenue sur OpenHuman',
   'welcome.subtitle':
     'Ton assistant IA personnel super-intelligent. Privé, simple et extrêmement puissant.',
@@ -1191,6 +1192,9 @@ const messages: TranslationMap = {
   'mcp.detail.reconfigureSuccess': 'Environnement mis à jour et reconnecté.',
   'mcp.detail.reconfigureReconnectFailed':
     'Enregistré, mais la reconnexion avec les nouvelles valeurs a échoué.',
+  'mcp.detail.enable': 'Activer',
+  'mcp.detail.disable': 'Désactiver',
+  'mcp.status.disabled': 'Désactivé',
   'mcp.detail.tools': 'Outils',
   'onboarding.skipForNow': "Passer pour l'instant",
   'onboarding.localAI.continueWithCloud': 'Continuer avec Cloud',
@@ -1456,6 +1460,9 @@ const messages: TranslationMap = {
   'voice.debug.silenceThreshold': 'Seuil de silence (RMS)',
   'voice.debug.silenceThresholdDesc':
     "Les enregistrements dont l'énergie est inférieure à ce seuil sont traités comme du silence et ignorés. Plus bas = plus sensible.",
+  'voice.debug.alwaysOn': 'Écoute permanente',
+  'voice.debug.alwaysOnDesc':
+    'Garde le microphone ouvert et envoie automatiquement ce que vous dites à l’agent, sans raccourci. Se met en pause lorsque l’écran est verrouillé.',
   'voice.providers.saved': 'Fournisseurs de voix enregistrés.',
   'voice.providers.failedToSave': 'Échec de la sauvegarde des fournisseurs vocaux',
   'voice.providers.ellipsis': '…',
@@ -2016,6 +2023,7 @@ const messages: TranslationMap = {
   'memorySources.loadingConnections': 'Chargement des connexions…',
   'memorySources.noConnections':
     "Aucune connexion Composio active trouvée. Connectez d'abord une intégration.",
+  'memorySources.connectionAccount': 'Compte',
   'memorySources.pickConnection': 'Choisissez une connexion',
   'memorySources.selectConnection': '— Sélectionnez une connexion —',
   'memorySources.composioListFailed': 'Échec du chargement des connexions Composio.',
@@ -2068,6 +2076,32 @@ const messages: TranslationMap = {
   'memorySources.build.successTitle': 'Arbre construit',
   'memorySources.build.failedTitle': 'Échec de construction',
   'memorySources.build.sealsMessage': 'scellement(s) terminé(s)',
+  'memorySources.allIn.button': 'Tout activer',
+  'memorySources.allIn.title': 'Tout activer ?',
+  'memorySources.allIn.message':
+    'Cela activera toutes les sources de mémoire et supprimera toutes les limites de synchronisation. Cela construit le graphe de mémoire le plus riche, mais peut utiliser davantage de crédits.',
+  'memorySources.allIn.confirm': 'Oui',
+  'memorySources.allIn.cancel': 'Non',
+  'memorySources.allIn.success': 'Toutes les sources activées sans limite. Synchronisation lancée.',
+  'memorySources.allIn.failed': "Impossible d'appliquer tout activer. Veuillez réessayer.",
+  'memorySources.settings.button': 'Paramètres',
+  'memorySources.settings.title': 'Paramètres de synchronisation',
+  'memorySources.settings.maxPrs': 'Nombre maximal de pull requests',
+  'memorySources.settings.maxIssues': "Nombre maximal d'issues",
+  'memorySources.settings.maxCommits': 'Nombre maximal de commits',
+  'memorySources.settings.maxItems': "Nombre maximal d'éléments",
+  'memorySources.settings.sinceDays': 'Période de recherche (jours)',
+  'memorySources.settings.syncDepthDays': 'Profondeur de synchronisation (jours)',
+  'memorySources.settings.maxTokens': 'Tokens maximum par synchronisation',
+  'memorySources.settings.maxCost': 'Coût maximum par synchronisation (USD)',
+  'memorySources.settings.unlimited': 'Illimité',
+  'memorySources.settings.unlimitedTooltip':
+    'Vous avez choisi de synchroniser le maximum pour {toolkit}. Vous pouvez modifier les limites ici.',
+  'memorySources.settings.maxed': 'Plein',
+  'memorySources.settings.save': 'Enregistrer',
+  'memorySources.settings.saving': 'Enregistrement…',
+  'memorySources.settings.saved': 'Paramètres enregistrés',
+  'memorySources.settings.saveFailed': "Impossible d'enregistrer les paramètres",
   'backend.aiBackend': 'Backend IA',
   'backend.cloud': 'Cloud',
   'backend.recommended': 'Recommandé',
@@ -2576,6 +2610,7 @@ const messages: TranslationMap = {
   'conversations.taskKanban.saveChanges': 'Enregistrer les modifications',
   'conversations.taskKanban.deleteCard': 'Supprimer',
   'conversations.taskKanban.workTask': 'Travailler la tâche',
+  'conversations.taskKanban.viewWork': 'Voir le travail',
   'conversations.taskKanban.startingTask': 'Démarrage…',
   'conversations.taskKanban.updateFailed':
     "Impossible de mettre à jour la tâche; les modifications n'ont pas été enregistrées.",
@@ -2709,6 +2744,9 @@ const messages: TranslationMap = {
   'intelligence.tasks.composer.create': 'Créer une tâche',
   'intelligence.tasks.composer.creating': 'Création…',
   'intelligence.tasks.composer.createFailed': 'Impossible de créer la tâche',
+  'intelligence.tasks.composer.assignAgentLabel': "Laisser un agent s'en charger automatiquement",
+  'intelligence.tasks.composer.assignAgentHint':
+    "Le tableau des tâches la prend en charge et l'exécute pour vous. Laissez désactivé pour une simple tâche personnelle.",
   'intelligence.tasks.sourceList.subtitle':
     "Tâches de sources en attente de devenir du travail d'agent.",
   'intelligence.tasks.sourceList.empty': 'Aucune tâche de source en attente.',
@@ -3797,10 +3835,28 @@ const messages: TranslationMap = {
   'settings.agentAccess.readWriteAccess': 'lecture + écriture',
   'settings.agentAccess.actionSandboxDesc':
     'Répertoire de travail par défaut pour les outils shell, fichiers et git.',
+  'settings.agentAccess.actionDir.edit': 'Modifier',
+  'settings.agentAccess.actionDir.save': 'Enregistrer',
+  'settings.agentAccess.actionDir.cancel': 'Annuler',
+  'settings.agentAccess.actionDir.placeholder': 'Chemin absolu, par ex. /Users/you/Projects',
+  'settings.agentAccess.actionDir.envLocked':
+    'Défini par OPENHUMAN_ACTION_DIR. Modifiez la variable d’environnement pour le remplacer.',
+  'settings.agentAccess.actionDir.saved': 'Répertoire d’action mis à jour.',
   'settings.agentAccess.internalState': 'État interne',
   'settings.agentAccess.agentBlocked': "bloqué pour l'agent",
   'settings.agentAccess.internalStateDesc':
     "Bases de données mémoire, sessions, jetons et autres données essentielles. Non accessible aux outils de l'agent.",
+  'settings.agentAccess.actionDirInputLabel': "Chemin du bac à sable d'actions",
+  'settings.agentAccess.actionDirSave': 'Enregistrer',
+  'settings.agentAccess.actionDirSaving': 'Enregistrement…',
+  'settings.agentAccess.actionDirSaved': "Bac à sable d'actions mis à jour.",
+  'settings.agentAccess.actionDirEmptyError': 'Le chemin ne peut pas être vide.',
+  'settings.agentAccess.actionDirSaveError':
+    "Impossible de mettre à jour le bac à sable d'actions.",
+  'settings.agentAccess.actionDirEnvOverrideError':
+    "OPENHUMAN_ACTION_DIR est défini — désactivez la variable d'environnement pour modifier cela depuis les Paramètres.",
+  'settings.agentAccess.actionDirEnvOverrideNote':
+    "Remplacé par OPENHUMAN_ACTION_DIR — désactivez la variable d'environnement pour gérer cela depuis les Paramètres.",
   'settings.agentAccess.approvalHistory': 'Approval history',
   'settings.agentAccess.approvalHistoryDesc':
     'Review past Approve / Deny decisions the agent requested.',
@@ -4278,6 +4334,8 @@ const messages: TranslationMap = {
   'chat.agentProfile.defaultAgentLabel': 'Orchestrator',
   'chat.agentProfile.exists': "Le profil d'agent « {name} » existe déjà.",
   'chat.agentProfile.label': "Profil d'agent",
+  'chat.agentProfile.quick': 'Rapide',
+  'chat.agentProfile.reasoning': 'Raisonnement',
   'chat.agentProfile.namePlaceholder': 'Nom du profil',
   'chat.agentProfile.promptStylePlaceholder': 'Style de prompt',
   'chat.agentProfile.allowedToolsPlaceholder': 'Outils autorisés',
@@ -4617,6 +4675,33 @@ const messages: TranslationMap = {
   'autocomplete.maxChars': 'Caractères de contexte maximum',
   'autocomplete.overlayTtlMs': "Délai d'affichage (ms)",
   'memory.tab.council': 'Council',
+  'intelligence.agents.title': "Bibliothèque d'agents",
+  'intelligence.agents.subtitle':
+    'Inspectez les spécialistes exécutables et envoyez une tâche à un agent nommé.',
+  'intelligence.agents.refresh': 'Actualiser',
+  'intelligence.agents.loading': 'Chargement des agents…',
+  'intelligence.agents.failedToLoad': 'Impossible de charger les agents',
+  'intelligence.agents.empty': 'Aucun agent exécutable disponible.',
+  'intelligence.agents.readOnly': 'Lecture seule',
+  'intelligence.agents.writeCapable': 'Peut écrire',
+  'intelligence.agents.allTools': 'Tous les outils',
+  'intelligence.agents.toolCountOne': '{count} outil',
+  'intelligence.agents.toolCountOther': '{count} outils',
+  'intelligence.agents.subagentCountOne': '{count} sous-agent',
+  'intelligence.agents.subagentCountOther': '{count} sous-agents',
+  'intelligence.agents.startChat': 'Démarrer le chat',
+  'intelligence.agents.startChatPrompt':
+    'Démarre une conversation avec cet agent. Présente ta spécialité, demande le contexte nécessaire, puis attends ma tâche.',
+  'intelligence.agents.copyId': "Copier l'ID",
+  'intelligence.agents.copied': 'Copié',
+  'intelligence.agents.taskPlaceholder': 'Tâche pour cet agent',
+  'intelligence.agents.runTask': 'Exécuter la tâche',
+  'intelligence.agents.running': 'Exécution…',
+  'intelligence.agents.runFailed': "Impossible de démarrer l'agent sélectionné",
+  'intelligence.agents.model.inherit': 'Hériter',
+  'intelligence.agents.tier.chat': 'Chat',
+  'intelligence.agents.tier.reasoning': 'Raisonnement',
+  'intelligence.agents.tier.worker': 'Travailleur',
   'modelCouncil.title': 'Model Council',
   'modelCouncil.intro':
     'Ask one question, get independent answers from several models in parallel, then a chair model synthesizes where they agree, where they disagree, and what each uniquely adds.',
@@ -4857,6 +4942,13 @@ const messages: TranslationMap = {
   'memoryData.windowError': 'Fenêtre de mémoire',
   'memoryData.windowUpdated': 'Fenêtre de mémoire mise à jour',
   'memoryData.windowUpdatedMsg': 'Définie sur {window}.',
+  // Security banner (approval-gate host-aware boot state)
+  'security.approvalGateDisabled.title': "Porte d'approbation désactivée",
+  'security.approvalGateDisabled.body':
+    "OPENHUMAN_APPROVAL_GATE=0 est défini dans votre environnement. Les outils à effet externe s'exécuteront sans demander de confirmation.",
+  'security.approvalGateOverrideIgnored.title': 'Contournement bloqué',
+  'security.approvalGateOverrideIgnored.body':
+    "Un contournement OPENHUMAN_APPROVAL_GATE=0 a été détecté mais ignoré : l'application de bureau garde toujours la porte d'approbation activée.",
 
   // Run queue
   'runQueue.mode.interrupt': 'Interrompre',
@@ -4869,6 +4961,13 @@ const messages: TranslationMap = {
   'runQueue.collectHint': 'Ajouter comme contexte supplémentaire',
   'runQueue.status': '{total} en attente',
   'runQueue.cleared': "File d'attente vidée",
+  'notch.ready': 'Prêt',
+  'notch.processing': 'Traitement…',
+  'notch.listening': "J'écoute…",
+  'notch.thinking': 'Je réfléchis…',
+  'notch.speaking': 'Je parle…',
+  'notch.transcribing': 'Transcription…',
+  'notch.executing': "J'exécute…",
 };
 
 export default messages;
