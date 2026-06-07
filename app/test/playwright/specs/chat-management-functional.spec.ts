@@ -8,6 +8,7 @@ import {
 } from '../helpers/core-rpc';
 
 const MOCK_BASE = `http://127.0.0.1:${process.env.E2E_MOCK_PORT || '18473'}`;
+const MEMORY_TRIGGER_RESPONSE = { content: 'No relevant memory context.' };
 
 async function setMockBehavior(behavior: Record<string, unknown>): Promise<void> {
   await fetch(`${MOCK_BASE}/__admin/behavior`, {
@@ -23,6 +24,26 @@ async function resetMock(): Promise<void> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ keepBehavior: false, keepRequests: false }),
   });
+}
+
+interface MockRequest {
+  method?: string;
+  url?: string;
+  body?: string;
+}
+
+async function requests(): Promise<MockRequest[]> {
+  const response = await fetch(`${MOCK_BASE}/__admin/requests`);
+  const payload = (await response.json()) as unknown;
+  if (Array.isArray(payload)) return payload as MockRequest[];
+  if (
+    payload &&
+    typeof payload === 'object' &&
+    Array.isArray((payload as { data?: unknown }).data)
+  ) {
+    return (payload as { data: MockRequest[] }).data;
+  }
+  return [];
 }
 
 async function selectedThreadId(page: Page): Promise<string | null> {
@@ -52,12 +73,15 @@ async function newThread(page: Page): Promise<string> {
 }
 
 test.describe('Chat management functional coverage', () => {
-  test('attachment preview, remove, and attachment send path remain interactive', async ({
+  test('attachment preview, remove, and multimodal send path remain interactive', async ({
     page,
   }) => {
     await resetMock();
     await setMockBehavior({
-      llmForcedResponses: JSON.stringify([{ content: 'Attachment received by the assistant.' }]),
+      llmForcedResponses: JSON.stringify([
+        MEMORY_TRIGGER_RESPONSE,
+        { content: 'Attachment received by the assistant.' },
+      ]),
       llmStreamChunkDelayMs: '5',
     });
     await openChat(page, 'pw-chat-attachments');
@@ -78,20 +102,56 @@ test.describe('Chat management functional coverage', () => {
     await page.getByRole('button', { name: /Remove pixel\.png/ }).click();
     await expect(page.getByText('pixel.png')).toHaveCount(0);
 
+    const pngBuffer = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=',
+      'base64'
+    );
+    await fileInput.setInputFiles({ name: 'pixel.png', mimeType: 'image/png', buffer: pngBuffer });
+    await expect(page.getByText('pixel.png')).toBeVisible();
+
     await fileInput.setInputFiles({
-      name: 'pixel.png',
-      mimeType: 'image/png',
-      buffer: Buffer.from(
-        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=',
-        'base64'
-      ),
+      name: 'notes.txt',
+      mimeType: 'text/plain',
+      buffer: Buffer.from('renderer uploaded text document', 'utf8'),
     });
+    await expect(page.getByText('notes.txt')).toBeVisible();
+
     await page.getByPlaceholder('How can I help you today?').fill('Describe this image');
     await page.getByTestId('send-message-button').click();
-    await expect(page.getByText("This model can't process images.")).toBeVisible({
+    await expect(page.getByText('Attachment received by the assistant.')).toBeVisible({
       timeout: 30_000,
     });
     await expect(page.getByPlaceholder('How can I help you today?')).toBeEnabled();
+
+    await expect
+      .poll(
+        async () => {
+          const log = await requests();
+          const completion = log.find(
+            request =>
+              request.method === 'POST' &&
+              request.url?.includes('/chat/completions') &&
+              typeof request.body === 'string' &&
+              request.body.includes('Describe this image')
+          );
+          return completion?.body ?? '';
+        },
+        { timeout: 10_000 }
+      )
+      .toContain('image_url');
+
+    const log = await requests();
+    const completionBody =
+      log.find(
+        request =>
+          request.method === 'POST' &&
+          request.url?.includes('/chat/completions') &&
+          typeof request.body === 'string' &&
+          request.body.includes('Describe this image')
+      )?.body ?? '';
+    expect(completionBody).toContain('reasoning');
+    expect(completionBody).toContain('[FILE-EXTRACTED:');
+    expect(completionBody).toContain('renderer uploaded text document');
   });
 
   test('thread rename and delete remain usable from the conversation UI', async ({ page }) => {
