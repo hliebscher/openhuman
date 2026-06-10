@@ -7,7 +7,6 @@ use futures_util::{stream, StreamExt};
 
 use super::compatible_dump::{dump_prompt_if_enabled, dump_response_if_enabled, reserve_dump_seq};
 use super::compatible_parse::normalize_function_arguments;
-use super::compatible_repeat::CHAT_FREQUENCY_PENALTY;
 use super::compatible_stream::sse_bytes_to_chunks;
 use super::compatible_types::{
     ApiChatRequest, ApiChatResponse, Message, MessageContent, NativeChatRequest,
@@ -439,6 +438,9 @@ impl Provider for OpenAiCompatibleProvider {
                     id: tc.id.unwrap_or_else(|| uuid::Uuid::new_v4().to_string()),
                     name,
                     arguments,
+                    // Non-streaming response: preserve Gemini's thought_signature
+                    // so it round-trips on the next turn (TAURI-RUST-4PK).
+                    extra_content: tc.extra_content,
                 })
             })
             .collect::<Vec<_>>();
@@ -512,7 +514,10 @@ impl Provider for OpenAiCompatibleProvider {
                     include_usage: true,
                 }),
                 options: self.build_ollama_options(),
-                frequency_penalty: Some(CHAT_FREQUENCY_PENALTY),
+                // Omitted for endpoints whose OpenAI-compat surface 400s on the
+                // field (Google Gemini shim — TAURI-RUST-4PJ); the reactive
+                // retry below stays as defense-in-depth for unknown providers.
+                frequency_penalty: self.effective_frequency_penalty(),
             };
             let stream_dump_seq = reserve_dump_seq();
             dump_prompt_if_enabled(&self.name, model, stream_dump_seq, &native_request);
@@ -1181,5 +1186,89 @@ impl Provider for OpenAiCompatibleProvider {
                 .await?;
         }
         Ok(())
+    }
+
+    /// Resolve the effective context window for pre-dispatch trimming.
+    ///
+    /// For cloud (non-local) providers this is the static model table. For
+    /// local providers the trained-maximum table over-estimates the window
+    /// the runtime actually enforces — LM Studio lets the user load a model
+    /// with a smaller `n_ctx`, and budgeting against the max overflows it
+    /// (#3550 / Sentry TAURI-RUST-6V0). So for LM Studio we query the native
+    /// `/api/v0/models` endpoint for the model's loaded context window, and
+    /// fall back to the provider-profile default when it's unavailable.
+    async fn effective_context_window(&self, model: &str) -> Option<u64> {
+        use crate::openhuman::inference::local::profile::LocalProviderKind;
+        let Some(kind) = self.local_provider_kind else {
+            return crate::openhuman::inference::context_window_for_model(model);
+        };
+        // LM Studio: the OpenAI-compat /v1/models hides the context window, but
+        // the native /api/v0/models reports the loaded n_ctx. Prefer it.
+        if kind == LocalProviderKind::LmStudio {
+            if let Some(window) = self.lm_studio_loaded_context_window(model).await {
+                return Some(window);
+            }
+        }
+        // Local fallback: pattern table → provider-profile default. Ensures
+        // unknown local models still get trimmed instead of skipped.
+        crate::openhuman::inference::model_context::context_window_for_model_with_local_fallback(
+            model,
+            Some(kind),
+        )
+    }
+}
+
+impl OpenAiCompatibleProvider {
+    /// Best-effort fetch of the model's loaded context window from LM Studio's
+    /// native `/api/v0/models` endpoint. Returns `None` on any transport /
+    /// parse error or when the model reports no window — callers then fall
+    /// back to the profile default. Never panics, never propagates errors.
+    async fn lm_studio_loaded_context_window(&self, model: &str) -> Option<u64> {
+        use crate::openhuman::inference::local::lm_studio;
+        let url = lm_studio::lm_studio_native_models_url(&self.base_url);
+        let resp = match self
+            .apply_auth_header(self.http_client().get(&url), self.credential.as_deref())
+            .send()
+            .await
+        {
+            Ok(resp) => resp,
+            Err(err) => {
+                tracing::debug!(
+                    provider = %self.name,
+                    model,
+                    error = %err,
+                    "[lm-studio] native models probe transport error; using profile default context window"
+                );
+                return None;
+            }
+        };
+        if !resp.status().is_success() {
+            tracing::debug!(
+                provider = %self.name,
+                status = resp.status().as_u16(),
+                "[lm-studio] native models probe non-success; using profile default context window"
+            );
+            return None;
+        }
+        let parsed: lm_studio::LmStudioNativeModelsResponse = match resp.json().await {
+            Ok(parsed) => parsed,
+            Err(err) => {
+                tracing::debug!(
+                    provider = %self.name,
+                    model,
+                    error = %err,
+                    "[lm-studio] native models probe parse error; using profile default context window"
+                );
+                return None;
+            }
+        };
+        let window = lm_studio::lm_studio_context_window_for(&parsed, model);
+        tracing::debug!(
+            provider = %self.name,
+            model,
+            loaded_context_window = window.unwrap_or(0),
+            "[lm-studio] resolved loaded context window for pre-dispatch trimming"
+        );
+        window
     }
 }

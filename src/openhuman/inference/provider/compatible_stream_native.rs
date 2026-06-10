@@ -94,6 +94,18 @@ impl OpenAiCompatibleProvider {
                     self.name,
                     status,
                 );
+            } else if Self::err_indicates_frequency_penalty_unsupported(&body) {
+                // Endpoint rejects `frequency_penalty` (e.g. an unknown strict
+                // provider not yet covered by `effective_frequency_penalty`).
+                // The caller retries without the field and succeeds, so this is
+                // a self-healed recoverable condition — log, don't page
+                // (TAURI-RUST-4PJ). Defense-in-depth behind the prevent-at-source
+                // omission; the bail! below still drives the retry path.
+                log::info!(
+                    "[stream] {} rejected frequency_penalty (status={}) — caller will retry without it",
+                    self.name,
+                    status,
+                );
             } else if super::super::is_backend_error_code_owned(self.name.as_str(), &body) {
                 // F4/F2: managed-backend errorCode (#870) — backend-owned, FE
                 // must not double-report. Malformed BAD_REQUEST is excluded and
@@ -242,6 +254,16 @@ impl OpenAiCompatibleProvider {
                                 let idx = tc.index.unwrap_or(0);
                                 let entry = tool_accum.entry(idx).or_default();
 
+                                // Capture the first non-null extra_content seen for
+                                // this index (Gemini's thought_signature, TAURI-RUST-4PK).
+                                if entry.extra_content.is_none() {
+                                    if let Some(ec) = tc.extra_content.as_ref() {
+                                        if !ec.is_null() {
+                                            entry.extra_content = Some(ec.clone());
+                                        }
+                                    }
+                                }
+
                                 if let Some(id) = tc.id.as_ref() {
                                     if entry.id.is_none() {
                                         log::debug!(
@@ -368,6 +390,9 @@ impl OpenAiCompatibleProvider {
                         )
                     },
                 }),
+                // Carry Gemini's thought_signature through to parse_native_response
+                // so it lands on the harness ToolCall (TAURI-RUST-4PK).
+                extra_content: c.extra_content,
             })
             .collect();
 

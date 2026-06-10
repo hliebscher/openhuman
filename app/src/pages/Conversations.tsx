@@ -102,12 +102,12 @@ import {
 import {
   GENERAL_TAB_VALUE,
   isThreadVisibleInTab,
+  MEETINGS_TAB_VALUE,
   SUBCONSCIOUS_TAB_VALUE,
   TASKS_TAB_VALUE,
 } from './conversations/utils/threadFilter';
 
 const CHAT_MODEL_HINT = 'hint:chat';
-const MULTIMODAL_MODEL_HINT = 'hint:reasoning';
 /** Maximum trailing characters rendered in the live-streaming assistant
  *  preview bubble. The full response is revealed via `addInferenceResponse`
  *  on `chat_done` — this is purely a ticker-tape affordance to signal
@@ -280,10 +280,12 @@ const Conversations = ({
     (async () => {
       try {
         const profile = agentProfiles.find(p => p.id === selectedAgentProfileId);
-        const hint =
-          attachments.length > 0
-            ? MULTIMODAL_MODEL_HINT
-            : (profile?.modelOverride ?? CHAT_MODEL_HINT);
+        // Resolve the actually-selected profile's model so `modelSupportsVision`
+        // reflects the real tier. Attachments never override the model: images
+        // are rejected up-front on non-vision profiles (validateAndReadFile →
+        // image_not_supported), and documents are text-extracted so any model
+        // handles them.
+        const hint = profile?.modelOverride ?? CHAT_MODEL_HINT;
         const res = await callCoreRpc<{ model: string; vision?: boolean }>({
           method: 'openhuman.inference_resolve_model',
           params: { hint },
@@ -302,7 +304,7 @@ const Conversations = ({
     return () => {
       cancelled = true;
     };
-  }, [agentProfiles, attachments.length, selectedAgentProfileId]);
+  }, [agentProfiles, selectedAgentProfileId]);
 
   const textInputRef = useRef<HTMLTextAreaElement>(null);
   const isComposingTextRef = useRef(false);
@@ -410,9 +412,11 @@ const Conversations = ({
           setSelectedLabel(
             isThreadVisibleInTab(openThread, TASKS_TAB_VALUE)
               ? TASKS_TAB_VALUE
-              : isThreadVisibleInTab(openThread, SUBCONSCIOUS_TAB_VALUE)
-                ? SUBCONSCIOUS_TAB_VALUE
-                : GENERAL_TAB_VALUE
+              : isThreadVisibleInTab(openThread, MEETINGS_TAB_VALUE)
+                ? MEETINGS_TAB_VALUE
+                : isThreadVisibleInTab(openThread, SUBCONSCIOUS_TAB_VALUE)
+                  ? SUBCONSCIOUS_TAB_VALUE
+                  : GENERAL_TAB_VALUE
           );
           dispatch(setSelectedThread(openThread.id));
           void dispatch(loadThreadMessages(openThread.id));
@@ -728,10 +732,6 @@ const Conversations = ({
       } else {
         acceptedFileCount++;
       }
-      if (selectedAgentProfileId !== 'reasoning') {
-        debug('attachment accepted; switching chat profile to reasoning for multimodal send');
-        void handleSelectAgentProfile('reasoning');
-      }
       setAttachments(prev => [...prev, result.attachment]);
     }
   };
@@ -785,10 +785,7 @@ const Conversations = ({
     setPendingSendingThreadId(sendingThreadId);
     const pendingAttachments = attachments.slice();
     const modelOverride =
-      pendingAttachments.length > 0
-        ? MULTIMODAL_MODEL_HINT
-        : (agentProfiles.find(p => p.id === selectedAgentProfileId)?.modelOverride ??
-          CHAT_MODEL_HINT);
+      agentProfiles.find(p => p.id === selectedAgentProfileId)?.modelOverride ?? CHAT_MODEL_HINT;
     const messageText = buildMessageWithAttachments(trimmed, pendingAttachments);
     const userMessage: ThreadMessage = {
       id: `msg_${globalThis.crypto.randomUUID()}`,
@@ -1269,6 +1266,7 @@ const Conversations = ({
   // filter state remains unambiguous regardless of what threads exist.
   const labelTabs = [
     { label: t('chat.filter.general'), value: GENERAL_TAB_VALUE },
+    { label: t('chat.filter.meetings'), value: MEETINGS_TAB_VALUE },
     { label: t('chat.filter.subconscious'), value: SUBCONSCIOUS_TAB_VALUE },
     { label: t('chat.filter.tasks'), value: TASKS_TAB_VALUE },
   ];
