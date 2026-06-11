@@ -1,13 +1,14 @@
 /**
  * Tests for BottomTabBar — verifies that:
- *  - 5 tabs are rendered (no Rewards tab, no Human tab), Activity label is present
+ *  - 6 tabs are rendered (no Rewards tab; Human restored), Activity label is present
  *  - Assistant tab is present (was "Chat", id stays 'chat', label now 'Assistant')
  *  - Walkthrough attributes reflect the new ids (tab-connections, tab-activity)
  *  - Avatar menu opens and shows Account / Billing / Rewards / Invites / Wallet
  *  - Clicking an avatar menu item navigates or opens URL
  *  - The bar is hidden on '/' and '/login' paths
  *
- * Updated for IA Phase 6: Human tab removed; Chat renamed to Assistant.
+ * Human tab restored as a first-class entry (after the IA Phase 6 merge into
+ * Assistant); Chat keeps its "Assistant" label.
  */
 import { configureStore } from '@reduxjs/toolkit';
 import { fireEvent, render, screen } from '@testing-library/react';
@@ -19,6 +20,7 @@ import accountsReducer from '../../store/accountsSlice';
 import agentProfileReducer, { setAgentProfilesFromResponse } from '../../store/agentProfileSlice';
 import companionReducer from '../../store/companionSlice';
 import notificationReducer from '../../store/notificationSlice';
+import themeReducer, { setTabBarLabels, type TabBarLabels } from '../../store/themeSlice';
 import BottomTabBar from '../BottomTabBar';
 
 // ── Module-level mocks ─────────────────────────────────────────────────────
@@ -49,6 +51,7 @@ vi.mock('../../utils/openUrl', () => ({ openUrl: vi.fn().mockResolvedValue(undef
 
 interface BuildStoreOpts {
   companionSessionActive?: boolean;
+  tabBarLabels?: TabBarLabels;
 }
 
 const testProfiles = {
@@ -86,6 +89,7 @@ function buildStore(opts: BuildStoreOpts = {}) {
       notifications: notificationReducer,
       companion: companionReducer,
       agentProfiles: agentProfileReducer,
+      theme: themeReducer,
     },
   });
   store.dispatch(setAgentProfilesFromResponse(testProfiles));
@@ -95,6 +99,9 @@ function buildStore(opts: BuildStoreOpts = {}) {
       payload: { active: true, sessionId: 'sess-test' },
     });
   }
+  if (opts.tabBarLabels) {
+    store.dispatch(setTabBarLabels(opts.tabBarLabels));
+  }
   return store;
 }
 
@@ -103,6 +110,7 @@ interface RenderOpts {
   companionSessionActive?: boolean;
   tokenValue?: string;
   currentUser?: unknown;
+  tabBarLabels?: TabBarLabels;
 }
 
 async function renderBottomTabBar(pathname = '/home', opts: RenderOpts | boolean = {}) {
@@ -138,7 +146,10 @@ async function renderBottomTabBar(pathname = '/home', opts: RenderOpts | boolean
     refreshSnapshot: vi.fn(),
   } as never);
 
-  const store = buildStore({ companionSessionActive: resolved.companionSessionActive });
+  const store = buildStore({
+    companionSessionActive: resolved.companionSessionActive,
+    tabBarLabels: resolved.tabBarLabels,
+  });
   return render(
     <Provider store={store}>
       <MemoryRouter initialEntries={[pathname]}>
@@ -156,36 +167,46 @@ describe('BottomTabBar', () => {
     agentProfilesApiMock.select.mockResolvedValue(testProfiles);
   });
 
-  it('renders exactly 5 regular tab buttons (Brain is rendered separately)', async () => {
+  it('renders exactly 6 regular tab buttons (Assistant is rendered separately)', async () => {
     await renderBottomTabBar('/home');
     // Query only the regular pill tabs inside <nav>: exclude the avatar button
-    // (aria-haspopup) and the special raised Brain button (tab-brain).
+    // (aria-haspopup) and the special raised Assistant center button (tab-chat).
     const nav = document.querySelector('nav');
     const navButtons = nav?.querySelectorAll(
-      'button:not([aria-haspopup]):not([data-walkthrough="tab-brain"])'
+      'button:not([aria-haspopup]):not([data-walkthrough="tab-chat"])'
     );
-    expect(navButtons).toHaveLength(5);
+    expect(navButtons).toHaveLength(6);
   });
 
-  it('renders the raised Brain button with data-walkthrough="tab-brain"', async () => {
+  it('gives every labelled tab a fixed width when labels are always visible', async () => {
+    await renderBottomTabBar('/home', { tabBarLabels: 'always' });
+    // With the "always show labels" theme setting, each regular tab is given the
+    // same fixed width (w-32) and its label is shown with a truncating class so
+    // the row stays symmetric — this exercises the `labelsAlwaysVisible` branch.
+    const humanBtn = screen.getByRole('button', { name: 'Human' });
+    expect(humanBtn).toHaveClass('w-32');
+    expect(humanBtn.querySelector('.truncate')).not.toBeNull();
+  });
+
+  it('renders the raised Assistant center button with data-walkthrough="tab-chat"', async () => {
     await renderBottomTabBar('/home');
-    const brainBtn = screen.getByRole('button', { name: 'Brain' });
-    expect(brainBtn).toBeInTheDocument();
-    expect(brainBtn).toHaveAttribute('data-walkthrough', 'tab-brain');
-    expect(brainBtn).toHaveClass('brain-fab');
+    const assistantBtn = screen.getByRole('button', { name: 'Assistant' });
+    expect(assistantBtn).toBeInTheDocument();
+    expect(assistantBtn).toHaveAttribute('data-walkthrough', 'tab-chat');
+    expect(assistantBtn).toHaveClass('center-fab');
   });
 
-  it('navigates to /brain and tracks the change when the Brain button is clicked', async () => {
+  it('navigates to /chat and tracks the change when the Assistant center button is clicked', async () => {
     const { trackEvent } = await import('../../services/analytics');
     await renderBottomTabBar('/home');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Brain' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Assistant' }));
 
     expect(trackEvent).toHaveBeenCalledWith('tab_bar_change', {
       from_tab: 'home',
-      to_tab: 'brain',
+      to_tab: 'chat',
       from_path: '/home',
-      to_path: '/brain',
+      to_path: '/chat',
     });
   });
 
@@ -194,9 +215,25 @@ describe('BottomTabBar', () => {
     expect(screen.queryByRole('button', { name: 'Rewards' })).toBeNull();
   });
 
-  it('does NOT render a Human tab (Phase 6: merged into Assistant)', async () => {
+  it('renders the Human tab (restored as a first-class entry)', async () => {
     await renderBottomTabBar('/home');
-    expect(screen.queryByRole('button', { name: 'Human' })).toBeNull();
+    const humanBtn = screen.getByRole('button', { name: 'Human' });
+    expect(humanBtn).toBeInTheDocument();
+    expect(humanBtn).toHaveAttribute('data-walkthrough', 'tab-human');
+  });
+
+  it('navigates to /human and tracks the change when the Human tab is clicked', async () => {
+    const { trackEvent } = await import('../../services/analytics');
+    await renderBottomTabBar('/home');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Human' }));
+
+    expect(trackEvent).toHaveBeenCalledWith('tab_bar_change', {
+      from_tab: 'home',
+      to_tab: 'human',
+      from_path: '/home',
+      to_path: '/human',
+    });
   });
 
   it('renders the Activity tab', async () => {
@@ -204,11 +241,13 @@ describe('BottomTabBar', () => {
     expect(screen.getByRole('button', { name: 'Activity' })).toBeInTheDocument();
   });
 
-  it('renders the Assistant tab (was Chat, Phase 6 rename)', async () => {
+  it('renders the Brain tab in the regular row with data-walkthrough="tab-brain"', async () => {
     await renderBottomTabBar('/home');
-    const assistantBtn = screen.getByRole('button', { name: 'Assistant' });
-    expect(assistantBtn).toBeInTheDocument();
-    expect(assistantBtn).toHaveAttribute('data-walkthrough', 'tab-chat');
+    const brainBtn = screen.getByRole('button', { name: 'Brain' });
+    expect(brainBtn).toBeInTheDocument();
+    expect(brainBtn).toHaveAttribute('data-walkthrough', 'tab-brain');
+    // It's a regular pill tab now, not the raised center FAB.
+    expect(brainBtn).not.toHaveClass('center-fab');
   });
 
   it('renders the Connections tab with data-walkthrough="tab-connections"', async () => {
@@ -258,18 +297,17 @@ describe('BottomTabBar', () => {
     expect(shell?.querySelector('nav')).toHaveClass('pointer-events-auto');
   });
 
-  it('tracks tab changes when a different tab is clicked', async () => {
+  it('tracks tab changes when a different (regular row) tab is clicked', async () => {
     const { trackEvent } = await import('../../services/analytics');
     await renderBottomTabBar('/home');
 
-    // Tab id is still 'chat' (back-compat) even though label is now 'Assistant'.
-    fireEvent.click(screen.getByRole('button', { name: 'Assistant' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Brain' }));
 
     expect(trackEvent).toHaveBeenCalledWith('tab_bar_change', {
       from_tab: 'home',
-      to_tab: 'chat',
+      to_tab: 'brain',
       from_path: '/home',
-      to_path: '/chat',
+      to_path: '/brain',
     });
   });
 
