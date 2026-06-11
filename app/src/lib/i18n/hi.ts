@@ -21,11 +21,18 @@ const messages: TranslationMap = {
   'nav.defaultAgentProfile': 'डिफॉल्ट एजेंट',
   'nav.noAgentProfiles': 'कोई एजेंट प्रोफाइल नहीं मिला',
   'nav.activity': 'गतिविधि',
+  'nav.brain': 'ब्रेन',
   'nav.avatarMenu.account': 'खाता',
   'nav.avatarMenu.billing': 'बिलिंग',
   'nav.avatarMenu.rewards': 'रिवॉर्ड',
   'nav.avatarMenu.invites': 'दोस्त को आमंत्रित करें',
   'nav.avatarMenu.wallet': 'वॉलेट',
+
+  // Brain — full-page memory knowledge-graph surface
+  'brain.subtitle': 'आपका नॉलेज ग्राफ, मेमोरी स्रोत और नियंत्रण।',
+  'brain.loading': 'आपकी यादें इकट्ठा की जा रही हैं…',
+  'brain.empty': 'आपका ब्रेन अभी खाली है — मेमोरी बनाना शुरू करने के लिए कोई स्रोत कनेक्ट करें।',
+  'brain.error': 'आपका ब्रेन लोड नहीं हो सका। कृपया फिर से प्रयास करें।',
   'common.cancel': 'रद्द करें',
   'common.save': 'सेव करें',
   'common.confirm': 'कन्फर्म करें',
@@ -82,7 +89,7 @@ const messages: TranslationMap = {
   'settings.assistant.voiceDesc': 'स्पीच-टू-टेक्स्ट और टेक्स्ट-टू-स्पीच सेटिंग्स',
   'settings.assistant.faceMascot': 'चेहरा / शुभंकर',
   'settings.assistant.faceMascotDesc': 'ऐप में उपयोग किया जाने वाला शुभंकर रंग चुनें',
-  'settings.assistant.backgroundActivity': 'पृष्ठभूमि गतिविधि',
+  'settings.assistant.backgroundActivity': 'सबकॉन्शस',
   'settings.assistant.backgroundActivityDesc':
     'नियंत्रित करें कि आपका सहायक पृष्ठभूमि में कितना सक्रिय काम करे',
   'settings.assistant.screenAwareness': 'स्क्रीन जागरूकता',
@@ -357,9 +364,9 @@ const messages: TranslationMap = {
   'skills.explorer.installed': 'इंस्टॉल किया गया',
   'skills.explorer.install': 'इंस्टॉल करें',
   'skills.explorer.installing': 'इंस्टॉल हो रहा है…',
-  'skills.integrations': 'ऐप्स',
+  'skills.integrations': 'Composio इंटीग्रेशन',
   'skills.integrationsSubtitle':
-    'क्लाउड-आधारित OAuth कनेक्शन — अपने अकाउंट से साइन इन करें और टोकन सुरक्षित रूप से प्रबंधित होते हैं ताकि एजेंट आपकी ओर से पढ़ और कार्य कर सकें। कोई API कुंजी प्रबंधित नहीं करनी।',
+    'क्लाउड-आधारित OAuth कनेक्शन — अपने अकाउंट से साइन इन करें और Composio टोकन ब्रोकर करता है ताकि एजेंट आपकी ओर से पढ़ और कार्य कर सकें। कोई API कुंजी प्रबंधित नहीं करनी।',
   'skills.composio.noApiKeyTitle': 'कोई Composio API key कॉन्फ़िगर नहीं है',
   'skills.composio.noApiKeyDescription':
     'लोकल मोड आपकी अपनी Composio API key का उपयोग करता है। यहाँ integrations जोड़ने से पहले Settings → Advanced → Composio खोलकर key जोड़ें।',
@@ -1000,6 +1007,12 @@ const messages: TranslationMap = {
   'settings.search.accessBlockAll': 'सभी को ब्लॉक करें',
   'settings.search.accessBlockAllHint':
     'सभी वेब एक्सेस अवरुद्ध है - सहायक किसी भी वेबसाइट को खोल या पढ़ नहीं सकता है।',
+  // ─── Settings global search bar ────────────────────────────
+  'settings.settingsSearch.placeholder': 'सेटिंग खोजें…',
+  'settings.settingsSearch.ariaLabel': 'सेटिंग खोजें',
+  'settings.settingsSearch.clear': 'खोज साफ़ करें',
+  'settings.settingsSearch.resultsLabel': 'खोज परिणाम',
+  'settings.settingsSearch.noResults': '“{query}” के लिए कोई सेटिंग नहीं मिली',
   'settings.embeddings.title': 'एम्बेडिंग्स',
   'settings.embeddings.description':
     'चुनें कि कौन सा एम्बेडिंग प्रदाता मेमोरी को सिमेंटिक सर्च के लिए वेक्टर में बदलता है। प्रदाता, मॉडल या आयाम बदलने से संग्रहीत वेक्टर अमान्य हो जाते हैं और पूर्ण मेमरी रीसेट की आवश्यकता होती है।',
@@ -1897,7 +1910,7 @@ const messages: TranslationMap = {
   'chat.safetyTimeout':
     '2 मिनट बाद भी एजेंट से कोई जवाब नहीं मिला। दोबारा कोशिश करें या अपना कनेक्शन चेक करें।',
   'chat.filter.general': 'सामान्य',
-  'chat.filter.subconscious': 'पृष्ठभूमि गतिविधि',
+  'chat.filter.subconscious': 'सबकॉन्शस',
   'chat.filter.meetings': 'मीटिंग',
   'chat.filter.tasks': 'टास्क',
   'chat.selectThread': 'एक थ्रेड चुनें',
@@ -2787,6 +2800,12 @@ const messages: TranslationMap = {
   'conversations.subagent.statusCompleted': 'पूर्ण',
   'conversations.subagent.statusFailed': 'विफल',
   'conversations.subagent.statusAwaitingUser': 'उपयोगकर्ता की प्रतीक्षा',
+  'conversations.agentTaskInsights.title': 'एजेंट कार्य अंतर्दृष्टि',
+  'conversations.agentTaskInsights.processSourceTitle': 'एजेंट प्रक्रिया स्रोत',
+  'conversations.agentTaskInsights.stepsHeading': 'चरण',
+  'conversations.agentTaskInsights.sourcesHeading': 'स्रोत',
+  'conversations.agentTaskInsights.noSteps': 'कोई चरण दर्ज नहीं किया गया',
+  'conversations.agentTaskInsights.viewProcessSource': 'पूर्ण एजेंट प्रक्रिया स्रोत देखें',
   'daemon.serviceBlockingGate.body': 'विवरण',
   'daemon.serviceBlockingGate.downloadHint': 'डाउनलोड संकेत',
   'daemon.serviceBlockingGate.downloadLatest': 'नवीनतम संस्करण डाउनलोड करें',
@@ -4256,7 +4275,7 @@ const messages: TranslationMap = {
   'skills.channelIcon.telegram': 'Telegram',
   'skills.channelIcon.web': 'वेब',
   'skills.channelIcon.yuanbao': 'Yuanbao',
-  'skills.composio.poweredBy': 'OAuth',
+  'skills.composio.poweredBy': 'Composio द्वारा संचालित',
   'skills.composio.staleStatusTitle': 'कनेक्शन पुरानी स्थिति दिखा रहे हैं',
   'skills.create.allowedTools': 'अनुमत टूल्स',
   'skills.create.allowedToolsHelp': 'SKILL.md फ्रंटमैटर में प्रस्तुत किया गया',
@@ -4889,7 +4908,7 @@ const messages: TranslationMap = {
   'activity.tabs.automations': 'स्वचालन',
   'activity.tabs.automationsDescription':
     'पुन: उपयोग योग्य, चलाने योग्य प्रक्रियाएँ — एक लक्ष्य और उसे प्राप्त करने के चरण।',
-  'activity.tabs.backgroundActivity': 'पृष्ठभूमि गतिविधि',
+  'activity.tabs.backgroundActivity': 'सबकॉन्शस',
   'activity.tabs.alerts': 'अलर्ट',
 
   'intelligence.agents.title': 'एजेंट लाइब्रेरी',

@@ -21,11 +21,18 @@ const messages: TranslationMap = {
   'nav.defaultAgentProfile': 'Агент по умолчанию',
   'nav.noAgentProfiles': 'Профили агентов не найдены',
   'nav.activity': 'Активность',
+  'nav.brain': 'Мозг',
   'nav.avatarMenu.account': 'Аккаунт',
   'nav.avatarMenu.billing': 'Оплата',
   'nav.avatarMenu.rewards': 'Награды',
   'nav.avatarMenu.invites': 'Пригласить друга',
   'nav.avatarMenu.wallet': 'Кошелёк',
+
+  // Brain — full-page memory knowledge-graph surface
+  'brain.subtitle': 'Ваш граф знаний, источники памяти и элементы управления.',
+  'brain.loading': 'Собираем ваши воспоминания…',
+  'brain.empty': 'Ваш мозг пока пуст — подключите источник, чтобы начать формировать память.',
+  'brain.error': 'Не удалось загрузить ваш мозг. Пожалуйста, попробуйте ещё раз.',
   'common.cancel': 'Отмена',
   'common.save': 'Сохранить',
   'common.confirm': 'Подтвердить',
@@ -82,7 +89,7 @@ const messages: TranslationMap = {
   'settings.assistant.voiceDesc': 'Настройки распознавания и синтеза речи',
   'settings.assistant.faceMascot': 'Лицо / Маскот',
   'settings.assistant.faceMascotDesc': 'Выберите цвет маскота в приложении',
-  'settings.assistant.backgroundActivity': 'Фоновая активность',
+  'settings.assistant.backgroundActivity': 'Подсознание',
   'settings.assistant.backgroundActivityDesc':
     'Управление тем, насколько активно ассистент работает в фоне',
   'settings.assistant.screenAwareness': 'Осведомлённость об экране',
@@ -363,9 +370,9 @@ const messages: TranslationMap = {
   'skills.explorer.installed': 'Установлено',
   'skills.explorer.install': 'Установить',
   'skills.explorer.installing': 'Установка…',
-  'skills.integrations': 'Приложения',
+  'skills.integrations': 'Интеграции Composio',
   'skills.integrationsSubtitle':
-    'Облачные OAuth-подключения — войдите в свой аккаунт, и токены управляются безопасно, чтобы агенты могли читать и действовать от вашего имени. Никаких API-ключей для управления.',
+    'Облачные OAuth-подключения — войдите в свой аккаунт, и Composio управляет токенами, чтобы агенты могли читать и действовать от вашего имени. Никаких API-ключей для управления.',
   'skills.composio.noApiKeyTitle': 'Ключ API Composio не настроен',
   'skills.composio.noApiKeyDescription':
     'Локальный режим использует ваш собственный ключ API Composio. Откройте Настройки → Дополнительно → Composio, чтобы добавить ключ перед подключением интеграций здесь.',
@@ -1016,6 +1023,12 @@ const messages: TranslationMap = {
   'settings.search.accessBlockAll': 'Блокировать все',
   'settings.search.accessBlockAllHint':
     'Весь веб-доступ заблокирован — помощник не может открыть или прочитать какой-либо веб-сайт.',
+  // ─── Settings global search bar ────────────────────────────
+  'settings.settingsSearch.placeholder': 'Поиск в настройках…',
+  'settings.settingsSearch.ariaLabel': 'Поиск в настройках',
+  'settings.settingsSearch.clear': 'Очистить поиск',
+  'settings.settingsSearch.resultsLabel': 'Результаты поиска',
+  'settings.settingsSearch.noResults': 'Настройки по запросу «{query}» не найдены',
   'settings.embeddings.title': 'Эмбеддинги',
   'settings.embeddings.description':
     'Выберите провайдера эмбеддингов, который преобразует память в векторы для семантического поиска. Изменение провайдера, модели или размерности делает сохранённые векторы недействительными и требует полного сброса памяти.',
@@ -1915,7 +1928,7 @@ const messages: TranslationMap = {
   'chat.safetyTimeout':
     'Агент не ответил в течение 2 минут. Попробуй снова или проверь соединение.',
   'chat.filter.general': 'Общее',
-  'chat.filter.subconscious': 'Фоновая активность',
+  'chat.filter.subconscious': 'Подсознание',
   'chat.filter.meetings': 'Встречи',
   'chat.filter.tasks': 'Задачи',
   'chat.selectThread': 'Выбери чат',
@@ -2809,6 +2822,12 @@ const messages: TranslationMap = {
   'conversations.subagent.statusCompleted': 'завершено',
   'conversations.subagent.statusFailed': 'ошибка',
   'conversations.subagent.statusAwaitingUser': 'ожидание пользователя',
+  'conversations.agentTaskInsights.title': 'Сведения о задачах агента',
+  'conversations.agentTaskInsights.processSourceTitle': 'Источник процесса агента',
+  'conversations.agentTaskInsights.stepsHeading': 'Шаги',
+  'conversations.agentTaskInsights.sourcesHeading': 'Источники',
+  'conversations.agentTaskInsights.noSteps': 'Шаги не записаны',
+  'conversations.agentTaskInsights.viewProcessSource': 'Показать полный источник процесса агента',
   'daemon.serviceBlockingGate.body': 'Текст',
   'daemon.serviceBlockingGate.downloadHint': 'Подсказка по загрузке',
   'daemon.serviceBlockingGate.downloadLatest': 'Скачать последнюю версию',
@@ -4295,7 +4314,7 @@ const messages: TranslationMap = {
   'skills.channelIcon.telegram': 'Telegram',
   'skills.channelIcon.web': 'Интернет',
   'skills.channelIcon.yuanbao': 'Yuanbao',
-  'skills.composio.poweredBy': 'OAuth',
+  'skills.composio.poweredBy': 'Работает на Composio',
   'skills.composio.staleStatusTitle': 'Соединения показывают устаревший статус',
   'skills.create.allowedTools': 'Разрешённые инструменты',
   'skills.create.allowedToolsHelp': 'Отображается в SKILL.md как',
@@ -4936,7 +4955,7 @@ const messages: TranslationMap = {
   'activity.tabs.automations': 'Автоматизации',
   'activity.tabs.automationsDescription':
     'Многократно используемые, запускаемые процедуры — цель и шаги для её достижения.',
-  'activity.tabs.backgroundActivity': 'Фоновая активность',
+  'activity.tabs.backgroundActivity': 'Подсознание',
   'activity.tabs.alerts': 'Уведомления',
 
   'intelligence.agents.title': 'Библиотека агентов',

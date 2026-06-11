@@ -21,11 +21,18 @@ const messages: TranslationMap = {
   'nav.defaultAgentProfile': '기본 에이전트',
   'nav.noAgentProfiles': '에이전트 프로필을 찾을 수 없습니다',
   'nav.activity': '활동',
+  'nav.brain': '브레인',
   'nav.avatarMenu.account': '계정',
   'nav.avatarMenu.billing': '결제',
   'nav.avatarMenu.rewards': '보상',
   'nav.avatarMenu.invites': '친구 초대',
   'nav.avatarMenu.wallet': '지갑',
+
+  // Brain — full-page memory knowledge-graph surface
+  'brain.subtitle': '지식 그래프, 메모리 소스 및 컨트롤.',
+  'brain.loading': '기억을 모으는 중…',
+  'brain.empty': '아직 브레인이 비어 있습니다 — 소스를 연결하여 메모리를 만들어 보세요.',
+  'brain.error': '브레인을 불러올 수 없습니다. 다시 시도해 주세요.',
   'common.cancel': '취소',
   'common.save': '저장',
   'common.confirm': '확인',
@@ -82,7 +89,7 @@ const messages: TranslationMap = {
   'settings.assistant.voiceDesc': '음성-텍스트 및 텍스트-음성 설정',
   'settings.assistant.faceMascot': '얼굴 / 마스코트',
   'settings.assistant.faceMascotDesc': '앱 전체에서 사용되는 마스코트 색상 선택',
-  'settings.assistant.backgroundActivity': '백그라운드 활동',
+  'settings.assistant.backgroundActivity': '잠재의식',
   'settings.assistant.backgroundActivityDesc':
     '어시스턴트가 백그라운드에서 얼마나 활발히 작동하는지 제어',
   'settings.assistant.screenAwareness': '화면 인식',
@@ -358,9 +365,9 @@ const messages: TranslationMap = {
   'skills.explorer.installed': '설치됨',
   'skills.explorer.install': '설치',
   'skills.explorer.installing': '설치 중…',
-  'skills.integrations': '앱',
+  'skills.integrations': 'Composio 통합',
   'skills.integrationsSubtitle':
-    '클라우드 기반 OAuth 연결 — 계정으로 로그인하면 토큰이 안전하게 관리되어 에이전트가 사용자를 대신해 읽고 작동할 수 있습니다. API 키 관리가 필요 없습니다.',
+    '클라우드 기반 OAuth 연결 — 계정으로 로그인하면 Composio가 토큰을 관리하여 에이전트가 사용자를 대신해 읽고 작동할 수 있습니다. API 키 관리가 필요 없습니다.',
   'skills.composio.noApiKeyTitle': '아니요 Composio API 키가 구성됨',
   'skills.composio.noApiKeyDescription':
     '로컬 모드에서는 자체 Composio API 키를 사용합니다. 설정 → 고급 → Composio에서 키를 추가한 후 여기서 통합을 연결하세요.',
@@ -999,6 +1006,12 @@ const messages: TranslationMap = {
   'settings.search.accessBlockAll': '모두 차단',
   'settings.search.accessBlockAllHint':
     '모든 웹 접근이 차단됩니다. 어시스턴트는 어떤 웹사이트도 열거나 읽을 수 없습니다.',
+  // ─── Settings global search bar ────────────────────────────
+  'settings.settingsSearch.placeholder': '설정 검색…',
+  'settings.settingsSearch.ariaLabel': '설정 검색',
+  'settings.settingsSearch.clear': '검색 지우기',
+  'settings.settingsSearch.resultsLabel': '검색 결과',
+  'settings.settingsSearch.noResults': '“{query}”에 대한 설정을 찾을 수 없습니다',
   'settings.embeddings.title': '임베딩',
   'settings.embeddings.description':
     '시맨틱 검색을 위해 메모리를 벡터로 변환할 임베딩 제공자를 선택하세요. 제공자, 모델 또는 차원을 변경하면 저장된 벡터가 무효화되며 전체 메모리 초기화가 필요합니다.',
@@ -1877,7 +1890,7 @@ const messages: TranslationMap = {
   'common.enable': '활성화',
   'chat.safetyTimeout': '2분 후에도 에이전트의 응답이 없습니다. 다시 시도하거나 연결을 확인하세요.',
   'chat.filter.general': '일반',
-  'chat.filter.subconscious': '백그라운드 활동',
+  'chat.filter.subconscious': '잠재의식',
   'chat.filter.meetings': '회의',
   'chat.filter.tasks': '작업',
   'chat.selectThread': '스레드 선택',
@@ -2762,6 +2775,12 @@ const messages: TranslationMap = {
   'conversations.subagent.statusCompleted': '완료됨',
   'conversations.subagent.statusFailed': '실패',
   'conversations.subagent.statusAwaitingUser': '사용자 대기 중',
+  'conversations.agentTaskInsights.title': '에이전트 작업 인사이트',
+  'conversations.agentTaskInsights.processSourceTitle': '에이전트 프로세스 소스',
+  'conversations.agentTaskInsights.stepsHeading': '단계',
+  'conversations.agentTaskInsights.sourcesHeading': '소스',
+  'conversations.agentTaskInsights.noSteps': '기록된 단계 없음',
+  'conversations.agentTaskInsights.viewProcessSource': '전체 에이전트 프로세스 소스 보기',
   'daemon.serviceBlockingGate.body': '본문',
   'daemon.serviceBlockingGate.downloadHint': '다운로드 안내',
   'daemon.serviceBlockingGate.downloadLatest': '최신 버전 다운로드',
@@ -4210,7 +4229,7 @@ const messages: TranslationMap = {
   'skills.channelIcon.telegram': 'Telegram',
   'skills.channelIcon.web': '웹',
   'skills.channelIcon.yuanbao': 'Yuanbao',
-  'skills.composio.poweredBy': 'OAuth',
+  'skills.composio.poweredBy': 'Composio 제공',
   'skills.composio.staleStatusTitle': '연결이 오래된 상태를 표시합니다.',
   'skills.create.allowedTools': '허용된 도구',
   'skills.create.allowedToolsHelp': 'SKILL.md 앞부분에 다음과 같이 렌더링됩니다.',
@@ -4838,7 +4857,7 @@ const messages: TranslationMap = {
   'activity.tabs.automations': '자동화',
   'activity.tabs.automationsDescription':
     '재사용 가능하고 실행 가능한 절차 — 목표와 그것을 달성하기 위한 단계.',
-  'activity.tabs.backgroundActivity': '백그라운드 활동',
+  'activity.tabs.backgroundActivity': '잠재의식',
   'activity.tabs.alerts': '알림',
 
   'intelligence.agents.title': '에이전트 라이브러리',

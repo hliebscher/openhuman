@@ -22,11 +22,18 @@ const en: TranslationMap = {
   'nav.defaultAgentProfile': 'Default agent',
   'nav.noAgentProfiles': 'No agent profiles found',
   'nav.activity': 'Activity',
+  'nav.brain': 'Brain',
   'nav.avatarMenu.account': 'Account',
   'nav.avatarMenu.billing': 'Billing',
   'nav.avatarMenu.rewards': 'Rewards',
   'nav.avatarMenu.invites': 'Invite a friend',
   'nav.avatarMenu.wallet': 'Wallet',
+
+  // Brain — full-page memory knowledge-graph surface
+  'brain.subtitle': 'Your knowledge graph, memory sources, and controls.',
+  'brain.loading': 'Gathering your memories…',
+  'brain.empty': 'Your brain is empty for now — connect a source to start building memory.',
+  'brain.error': "Couldn't load your brain. Please try again.",
 
   // Common
   'common.cancel': 'Cancel',
@@ -97,7 +104,7 @@ const en: TranslationMap = {
   'settings.assistant.voiceDesc': 'Speech-to-text and text-to-speech settings',
   'settings.assistant.faceMascot': 'Face / Mascot',
   'settings.assistant.faceMascotDesc': 'Pick the mascot color used across the app',
-  'settings.assistant.backgroundActivity': 'Background activity',
+  'settings.assistant.backgroundActivity': 'Subconscious',
   'settings.assistant.backgroundActivityDesc':
     'Control how actively your assistant works in the background',
   'settings.assistant.screenAwareness': 'Screen awareness',
@@ -397,9 +404,9 @@ const en: TranslationMap = {
   'skills.explorer.installed': 'Installed',
   'skills.explorer.install': 'Install',
   'skills.explorer.installing': 'Installing…',
-  'skills.integrations': 'Apps',
+  'skills.integrations': 'Composio Integrations',
   'skills.integrationsSubtitle':
-    'Cloud-based OAuth connections — sign in with your account and tokens are brokered securely so agents can read and act on your behalf. No API keys to manage.',
+    'Cloud-based OAuth connections — sign in with your account and Composio brokers the tokens so agents can read and act on your behalf. No API keys to manage.',
   'skills.composio.noApiKeyTitle': 'No Composio API Key Configured',
   'skills.composio.noApiKeyDescription':
     'Local mode uses your own Composio API key. Open Settings → Advanced → Composio to add one before connecting integrations here.',
@@ -449,7 +456,7 @@ const en: TranslationMap = {
   'activity.tabs.automations': 'Automations',
   'activity.tabs.automationsDescription':
     'Reusable, runnable procedures — a goal plus the steps to reach it. Create one, install from a URL, or open a workflow to run it.',
-  'activity.tabs.backgroundActivity': 'Background activity',
+  'activity.tabs.backgroundActivity': 'Subconscious',
   'activity.tabs.alerts': 'Alerts',
 
   'intelligence.agents.title': 'Agents Library',
@@ -1352,6 +1359,12 @@ const en: TranslationMap = {
   'settings.search.accessBlockAll': 'Block all',
   'settings.search.accessBlockAllHint':
     'All web access is blocked — the assistant cannot open or read any website.',
+  // ─── Settings global search bar ────────────────────────────
+  'settings.settingsSearch.placeholder': 'Search settings…',
+  'settings.settingsSearch.ariaLabel': 'Search settings',
+  'settings.settingsSearch.clear': 'Clear search',
+  'settings.settingsSearch.resultsLabel': 'Search results',
+  'settings.settingsSearch.noResults': 'No settings found for “{query}”',
   // ─── Embeddings settings ───────────────────────────────────
   'settings.embeddings.title': 'Embeddings',
   'settings.embeddings.description':
@@ -2296,7 +2309,7 @@ const en: TranslationMap = {
   'chat.safetyTimeout':
     'No response from the agent after 2 minutes. Try again or check your connection.',
   'chat.filter.general': 'General',
-  'chat.filter.subconscious': 'Background activity',
+  'chat.filter.subconscious': 'Subconscious',
   'chat.filter.meetings': 'Meetings',
   'chat.filter.tasks': 'Tasks',
   'chat.selectThread': 'Select a thread',
@@ -3320,6 +3333,12 @@ const en: TranslationMap = {
   'conversations.subagent.statusCompleted': 'completed',
   'conversations.subagent.statusFailed': 'failed',
   'conversations.subagent.statusAwaitingUser': 'awaiting user',
+  'conversations.agentTaskInsights.title': 'Agentic task insights',
+  'conversations.agentTaskInsights.processSourceTitle': 'Agent Process Source',
+  'conversations.agentTaskInsights.stepsHeading': 'Steps',
+  'conversations.agentTaskInsights.sourcesHeading': 'Sources',
+  'conversations.agentTaskInsights.noSteps': 'No steps recorded',
+  'conversations.agentTaskInsights.viewProcessSource': 'View full agent process Source',
   'daemon.serviceBlockingGate.body':
     'Retrying in the background. This usually resolves in a few seconds.',
   'daemon.serviceBlockingGate.downloadHint':
@@ -4796,7 +4815,7 @@ const en: TranslationMap = {
   'skills.channelIcon.telegram': 'Telegram',
   'skills.channelIcon.web': 'Web',
   'skills.channelIcon.yuanbao': 'Yuanbao',
-  'skills.composio.poweredBy': 'OAuth',
+  'skills.composio.poweredBy': 'Powered by Composio',
   'skills.composio.staleStatusTitle': 'Connections are showing stale status',
   'skills.create.allowedTools': 'Allowed tools',
   'skills.create.allowedToolsHelp': 'Rendered into the SKILL.md frontmatter as',

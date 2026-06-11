@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { useDeveloperMode } from '../../hooks/useDeveloperMode';
 import { useT } from '../../lib/i18n/I18nContext';
@@ -6,6 +6,7 @@ import LanguageSelect from '../LanguageSelect';
 import SettingsHeader from './components/SettingsHeader';
 import SettingsMenuItem from './components/SettingsMenuItem';
 import { useSettingsNavigation } from './hooks/useSettingsNavigation';
+import SettingsSearchBar from './search/SettingsSearchBar';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -99,17 +100,6 @@ const MascotIcon = (
   </svg>
 );
 
-const PrivacyIcon = (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-    />
-  </svg>
-);
-
 const NotificationsIcon = (
   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
@@ -180,6 +170,11 @@ const SettingsHome = () => {
   const { t } = useT();
   const developerMode = useDeveloperMode();
 
+  // Global settings search. While a query is active the normal menu is hidden
+  // and the search bar renders its own ranked result list instead.
+  const [searchQuery, setSearchQuery] = useState('');
+  const isSearching = searchQuery.trim().length > 0;
+
   // --- 👤 Account group ---
   const accountGroup: SettingsGroup = {
     id: 'account',
@@ -247,20 +242,8 @@ const SettingsHome = () => {
     ],
   };
 
-  // --- 🔒 Privacy group (Security + Approvals moved to Developer & Diagnostics) ---
-  const privacySecurityGroup: SettingsGroup = {
-    id: 'privacy-security',
-    label: t('settings.privacySecurity.privacy'),
-    items: [
-      {
-        id: 'privacy',
-        title: t('settings.privacySecurity.privacy'),
-        description: t('settings.privacySecurity.privacyDesc'),
-        icon: PrivacyIcon,
-        onClick: () => navigateToSettings('privacy'),
-      },
-    ],
-  };
+  // Privacy is reached from the Account hub (Settings → Account → Privacy);
+  // it is intentionally not duplicated as a top-level row here.
 
   // --- 🔔 Notifications group ---
   const notificationsGroup: SettingsGroup = {
@@ -293,12 +276,7 @@ const SettingsHome = () => {
   };
 
   // --- Always-visible groups ---
-  const visibleGroups: SettingsGroup[] = [
-    accountGroup,
-    assistantGroup,
-    privacySecurityGroup,
-    notificationsGroup,
-  ];
+  const visibleGroups: SettingsGroup[] = [accountGroup, assistantGroup, notificationsGroup];
 
   // Billing / Rewards / Wallet are NOT in Settings — per the design doc they
   // live in the avatar menu (monetisation out of the settings tree).
@@ -335,49 +313,55 @@ const SettingsHome = () => {
         <SettingsHeader />
       </div>
 
-      <div className="px-4 pb-5">
-        {/* Merged layman card — no Account/Assistant/… subheadings. */}
-        <div
-          data-testid="settings-group-main"
-          className="rounded-3xl overflow-hidden border border-stone-200 dark:border-neutral-800">
-          {laymanItems.map((item, index) => (
-            <SettingsMenuItem
-              key={item.id}
-              icon={item.icon}
-              title={item.title}
-              description={item.description}
-              onClick={item.onClick}
-              testId={`settings-nav-${item.id}`}
-              dangerous={item.dangerous}
-              isFirst={index === 0}
-              isLast={index === laymanItems.length - 1}
-              rightElement={item.rightElement}
-            />
+      <SettingsSearchBar value={searchQuery} onValueChange={setSearchQuery} />
+
+      {/* While searching, the search bar renders its own results and the normal
+          settings menu is hidden to avoid a confusing double list. */}
+      {isSearching ? null : (
+        <div className="px-4 pt-3 pb-5">
+          {/* Merged layman card — no Account/Assistant/… subheadings. */}
+          <div
+            data-testid="settings-group-main"
+            className="rounded-3xl overflow-hidden border border-stone-200 dark:border-neutral-800">
+            {laymanItems.map((item, index) => (
+              <SettingsMenuItem
+                key={item.id}
+                icon={item.icon}
+                title={item.title}
+                description={item.description}
+                onClick={item.onClick}
+                testId={`settings-nav-${item.id}`}
+                dangerous={item.dangerous}
+                isFirst={index === 0}
+                isLast={index === laymanItems.length - 1}
+                rightElement={item.rightElement}
+              />
+            ))}
+          </div>
+
+          {trailingGroups.map(group => (
+            <div key={group.id} data-testid={`settings-group-${group.id}`}>
+              <GroupHeader label={group.label} />
+              <div className="rounded-3xl overflow-hidden border border-stone-200 dark:border-neutral-800">
+                {group.items.map((item, index) => (
+                  <SettingsMenuItem
+                    key={item.id}
+                    icon={item.icon}
+                    title={item.title}
+                    description={item.description}
+                    onClick={item.onClick}
+                    testId={`settings-nav-${item.id}`}
+                    dangerous={item.dangerous}
+                    isFirst={index === 0}
+                    isLast={index === group.items.length - 1}
+                    rightElement={item.rightElement}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
-
-        {trailingGroups.map(group => (
-          <div key={group.id} data-testid={`settings-group-${group.id}`}>
-            <GroupHeader label={group.label} />
-            <div className="rounded-3xl overflow-hidden border border-stone-200 dark:border-neutral-800">
-              {group.items.map((item, index) => (
-                <SettingsMenuItem
-                  key={item.id}
-                  icon={item.icon}
-                  title={item.title}
-                  description={item.description}
-                  onClick={item.onClick}
-                  testId={`settings-nav-${item.id}`}
-                  dangerous={item.dangerous}
-                  isFirst={index === 0}
-                  isLast={index === group.items.length - 1}
-                  rightElement={item.rightElement}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      )}
     </div>
   );
 };

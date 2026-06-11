@@ -21,11 +21,19 @@ const messages: TranslationMap = {
   'nav.defaultAgentProfile': 'Agent par défaut',
   'nav.noAgentProfiles': "Aucun profil d'agent trouvé",
   'nav.activity': 'Activité',
+  'nav.brain': 'Cerveau',
   'nav.avatarMenu.account': 'Compte',
   'nav.avatarMenu.billing': 'Facturation',
   'nav.avatarMenu.rewards': 'Récompenses',
   'nav.avatarMenu.invites': 'Inviter un ami',
   'nav.avatarMenu.wallet': 'Portefeuille',
+
+  // Brain — full-page memory knowledge-graph surface
+  'brain.subtitle': 'Votre graphe de connaissances, vos sources de mémoire et vos commandes.',
+  'brain.loading': 'Collecte de vos souvenirs…',
+  'brain.empty':
+    'Votre cerveau est vide pour l’instant — connectez une source pour commencer à constituer votre mémoire.',
+  'brain.error': 'Impossible de charger votre cerveau. Veuillez réessayer.',
   'common.cancel': 'Annuler',
   'common.save': 'Enregistrer',
   'common.confirm': 'Confirmer',
@@ -82,7 +90,7 @@ const messages: TranslationMap = {
   'settings.assistant.voiceDesc': 'Paramètres de synthèse vocale et de reconnaissance vocale',
   'settings.assistant.faceMascot': 'Visage / Mascotte',
   'settings.assistant.faceMascotDesc': "Choisir la couleur de la mascotte dans l'application",
-  'settings.assistant.backgroundActivity': 'Activité en arrière-plan',
+  'settings.assistant.backgroundActivity': 'Subconscient',
   'settings.assistant.backgroundActivityDesc':
     "Contrôler l'activité en arrière-plan de votre assistant",
   'settings.assistant.screenAwareness': "Conscience de l'écran",
@@ -369,9 +377,9 @@ const messages: TranslationMap = {
   'skills.explorer.installed': 'Installée',
   'skills.explorer.install': 'Installer',
   'skills.explorer.installing': 'Installation…',
-  'skills.integrations': 'Applications',
+  'skills.integrations': 'Intégrations Composio',
   'skills.integrationsSubtitle':
-    'Connexions OAuth cloud — connectez-vous avec votre compte et les jetons sont gérés en toute sécurité pour que les agents puissent lire et agir en votre nom. Aucune clé API à gérer.',
+    'Connexions OAuth cloud — connectez-vous avec votre compte et Composio gère les jetons pour que les agents puissent lire et agir en votre nom. Aucune clé API à gérer.',
   'skills.composio.noApiKeyTitle': 'Aucune clé API Composio configurée',
   'skills.composio.noApiKeyDescription':
     'Le mode local utilise votre propre clé API Composio. Ouvrez Paramètres → Avancé → Composio pour en ajouter une avant de connecter des intégrations ici.',
@@ -1032,6 +1040,12 @@ const messages: TranslationMap = {
   'settings.search.accessBlockAll': 'Bloquer tout',
   'settings.search.accessBlockAllHint':
     "Tout accès au web est bloqué — l'assistant ne peut ouvrir ni lire aucun site web.",
+  // ─── Settings global search bar ────────────────────────────
+  'settings.settingsSearch.placeholder': 'Rechercher dans les paramètres…',
+  'settings.settingsSearch.ariaLabel': 'Rechercher dans les paramètres',
+  'settings.settingsSearch.clear': 'Effacer la recherche',
+  'settings.settingsSearch.resultsLabel': 'Résultats de recherche',
+  'settings.settingsSearch.noResults': 'Aucun paramètre trouvé pour « {query} »',
   'settings.embeddings.title': 'Encastrements',
   'settings.embeddings.description':
     "Choisissez le fournisseur d'embeddings qui convertit la mémoire en vecteurs pour la recherche sémantique. Changer le fournisseur, le modèle ou les dimensions invalide les vecteurs stockés et nécessite une réinitialisation complète de la mémoire.",
@@ -1948,7 +1962,7 @@ const messages: TranslationMap = {
   'chat.safetyTimeout':
     "Aucune réponse de l'agent après 2 minutes. Réessaie ou vérifie ta connexion.",
   'chat.filter.general': 'Général',
-  'chat.filter.subconscious': 'Activité en arrière-plan',
+  'chat.filter.subconscious': 'Subconscient',
   'chat.filter.meetings': 'Réunions',
   'chat.filter.tasks': 'Tâches',
   'chat.selectThread': 'Sélectionne un fil',
@@ -2849,6 +2863,13 @@ const messages: TranslationMap = {
   'conversations.subagent.statusCompleted': 'terminé',
   'conversations.subagent.statusFailed': 'échoué',
   'conversations.subagent.statusAwaitingUser': "en attente de l'utilisateur",
+  'conversations.agentTaskInsights.title': "Aperçu des tâches de l'agent",
+  'conversations.agentTaskInsights.processSourceTitle': "Source du processus de l'agent",
+  'conversations.agentTaskInsights.stepsHeading': 'Étapes',
+  'conversations.agentTaskInsights.sourcesHeading': 'Sources',
+  'conversations.agentTaskInsights.noSteps': 'Aucune étape enregistrée',
+  'conversations.agentTaskInsights.viewProcessSource':
+    "Voir la source complète du processus de l'agent",
   'daemon.serviceBlockingGate.body': 'Corps',
   'daemon.serviceBlockingGate.downloadHint': 'Indice de téléchargement',
   'daemon.serviceBlockingGate.downloadLatest': 'Télécharger la dernière version',
@@ -4354,7 +4375,7 @@ const messages: TranslationMap = {
   'skills.channelIcon.telegram': 'Telegram',
   'skills.channelIcon.web': 'Web',
   'skills.channelIcon.yuanbao': 'Yuanbao',
-  'skills.composio.poweredBy': 'OAuth',
+  'skills.composio.poweredBy': 'Propulsé par Composio',
   'skills.composio.staleStatusTitle': 'Les connexions affichent un état obsolète',
   'skills.create.allowedTools': 'Outils autorisés',
   'skills.create.allowedToolsHelp': 'Rendu dans le frontmatter SKILL.md comme',
@@ -5003,7 +5024,7 @@ const messages: TranslationMap = {
   'activity.tabs.automations': 'Automatisations',
   'activity.tabs.automationsDescription':
     "Procédures réutilisables et exécutables — un objectif et les étapes pour l'atteindre.",
-  'activity.tabs.backgroundActivity': 'Activité en arrière-plan',
+  'activity.tabs.backgroundActivity': 'Subconscient',
   'activity.tabs.alerts': 'Alertes',
 
   'intelligence.agents.title': "Bibliothèque d'agents",

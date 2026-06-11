@@ -21,11 +21,19 @@ const messages: TranslationMap = {
   'nav.defaultAgentProfile': 'Agente predeterminado',
   'nav.noAgentProfiles': 'No se encontraron perfiles de agente',
   'nav.activity': 'Actividad',
+  'nav.brain': 'Cerebro',
   'nav.avatarMenu.account': 'Cuenta',
   'nav.avatarMenu.billing': 'Facturación',
   'nav.avatarMenu.rewards': 'Recompensas',
   'nav.avatarMenu.invites': 'Invitar a un amigo',
   'nav.avatarMenu.wallet': 'Cartera',
+
+  // Brain — full-page memory knowledge-graph surface
+  'brain.subtitle': 'Tu grafo de conocimiento, fuentes de memoria y controles.',
+  'brain.loading': 'Recopilando tus recuerdos…',
+  'brain.empty':
+    'Tu cerebro está vacío por ahora: conecta una fuente para empezar a construir tu memoria.',
+  'brain.error': 'No se pudo cargar tu cerebro. Inténtalo de nuevo.',
   'common.cancel': 'Cancelar',
   'common.save': 'Guardar',
   'common.confirm': 'Confirmar',
@@ -82,7 +90,7 @@ const messages: TranslationMap = {
   'settings.assistant.voiceDesc': 'Configuración de voz a texto y texto a voz',
   'settings.assistant.faceMascot': 'Cara / Mascota',
   'settings.assistant.faceMascotDesc': 'Elige el color de la mascota en la aplicación',
-  'settings.assistant.backgroundActivity': 'Actividad en segundo plano',
+  'settings.assistant.backgroundActivity': 'Subconsciente',
   'settings.assistant.backgroundActivityDesc':
     'Controla qué tan activo trabaja tu asistente en segundo plano',
   'settings.assistant.screenAwareness': 'Conciencia de pantalla',
@@ -370,9 +378,9 @@ const messages: TranslationMap = {
   'skills.explorer.installed': 'Instalada',
   'skills.explorer.install': 'Instalar',
   'skills.explorer.installing': 'Instalando…',
-  'skills.integrations': 'Aplicaciones',
+  'skills.integrations': 'Integraciones de Composio',
   'skills.integrationsSubtitle':
-    'Conexiones OAuth en la nube: inicia sesión con tu cuenta y los tokens se gestionan de forma segura para que los agentes puedan leer y actuar en tu nombre. Sin claves de API que administrar.',
+    'Conexiones OAuth en la nube: inicia sesión con tu cuenta y Composio gestiona los tokens para que los agentes puedan leer y actuar en tu nombre. Sin claves de API que administrar.',
   'skills.composio.noApiKeyTitle': 'No hay una API key de Composio configurada',
   'skills.composio.noApiKeyDescription':
     'El modo local usa tu propia API key de Composio. Abre Ajustes → Avanzado → Composio para añadir una antes de conectar integraciones aquí.',
@@ -1030,6 +1038,12 @@ const messages: TranslationMap = {
   'settings.search.accessBlockAll': 'Bloquear todo',
   'settings.search.accessBlockAllHint':
     'Todo el acceso web está bloqueado: el asistente no puede abrir ni leer ningún sitio web.',
+  // ─── Settings global search bar ────────────────────────────
+  'settings.settingsSearch.placeholder': 'Buscar ajustes…',
+  'settings.settingsSearch.ariaLabel': 'Buscar ajustes',
+  'settings.settingsSearch.clear': 'Borrar búsqueda',
+  'settings.settingsSearch.resultsLabel': 'Resultados de búsqueda',
+  'settings.settingsSearch.noResults': 'No se encontraron ajustes para «{query}»',
   'settings.embeddings.title': 'Incrustaciones',
   'settings.embeddings.description':
     'Elige qué proveedor de embeddings convierte la memoria en vectores para la búsqueda semántica. Cambiar el proveedor, modelo o dimensiones invalida los vectores almacenados y requiere un reinicio completo de la memoria.',
@@ -1939,7 +1953,7 @@ const messages: TranslationMap = {
   'chat.safetyTimeout':
     'Sin respuesta del agente después de 2 minutos. Intenta de nuevo o verifica tu conexión.',
   'chat.filter.general': 'General',
-  'chat.filter.subconscious': 'Actividad en segundo plano',
+  'chat.filter.subconscious': 'Subconsciente',
   'chat.filter.meetings': 'Reuniones',
   'chat.filter.tasks': 'Tareas',
   'chat.selectThread': 'Selecciona un hilo',
@@ -2836,6 +2850,13 @@ const messages: TranslationMap = {
   'conversations.subagent.statusCompleted': 'completado',
   'conversations.subagent.statusFailed': 'fallido',
   'conversations.subagent.statusAwaitingUser': 'esperando al usuario',
+  'conversations.agentTaskInsights.title': 'Información de tareas del agente',
+  'conversations.agentTaskInsights.processSourceTitle': 'Fuente del proceso del agente',
+  'conversations.agentTaskInsights.stepsHeading': 'Pasos',
+  'conversations.agentTaskInsights.sourcesHeading': 'Fuentes',
+  'conversations.agentTaskInsights.noSteps': 'No hay pasos registrados',
+  'conversations.agentTaskInsights.viewProcessSource':
+    'Ver la fuente completa del proceso del agente',
   'daemon.serviceBlockingGate.body': 'Cuerpo',
   'daemon.serviceBlockingGate.downloadHint': 'Sugerencia de descarga',
   'daemon.serviceBlockingGate.downloadLatest': 'Descargar la última versión',
@@ -4336,7 +4357,7 @@ const messages: TranslationMap = {
   'skills.channelIcon.telegram': 'Telegram',
   'skills.channelIcon.web': 'Web',
   'skills.channelIcon.yuanbao': 'Yuanbao',
-  'skills.composio.poweredBy': 'OAuth',
+  'skills.composio.poweredBy': 'Desarrollado por Composio',
   'skills.composio.staleStatusTitle': 'Las conexiones muestran un estado obsoleto',
   'skills.create.allowedTools': 'Herramientas permitidas',
   'skills.create.allowedToolsHelp': 'Representado en el frontmatter de SKILL.md como',
@@ -4984,7 +5005,7 @@ const messages: TranslationMap = {
   'activity.tabs.automations': 'Automatizaciones',
   'activity.tabs.automationsDescription':
     'Procedimientos reutilizables y ejecutables — un objetivo y los pasos para alcanzarlo.',
-  'activity.tabs.backgroundActivity': 'Actividad en segundo plano',
+  'activity.tabs.backgroundActivity': 'Subconsciente',
   'activity.tabs.alerts': 'Alertas',
 
   'intelligence.agents.title': 'Biblioteca de agentes',

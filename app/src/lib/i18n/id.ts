@@ -21,11 +21,18 @@ const messages: TranslationMap = {
   'nav.defaultAgentProfile': 'Agen default',
   'nav.noAgentProfiles': 'Profil agen tidak ditemukan',
   'nav.activity': 'Aktivitas',
+  'nav.brain': 'Otak',
   'nav.avatarMenu.account': 'Akun',
   'nav.avatarMenu.billing': 'Tagihan',
   'nav.avatarMenu.rewards': 'Hadiah',
   'nav.avatarMenu.invites': 'Undang teman',
   'nav.avatarMenu.wallet': 'Dompet',
+
+  // Brain — full-page memory knowledge-graph surface
+  'brain.subtitle': 'Grafik pengetahuan, sumber memori, dan kontrol Anda.',
+  'brain.loading': 'Mengumpulkan memori Anda…',
+  'brain.empty': 'Otak Anda masih kosong — hubungkan sumber untuk mulai membangun memori.',
+  'brain.error': 'Tidak dapat memuat otak Anda. Silakan coba lagi.',
   'common.cancel': 'Batal',
   'common.save': 'Simpan',
   'common.confirm': 'Konfirmasi',
@@ -82,7 +89,7 @@ const messages: TranslationMap = {
   'settings.assistant.voiceDesc': 'Pengaturan ucapan-ke-teks dan teks-ke-ucapan',
   'settings.assistant.faceMascot': 'Wajah / Maskot',
   'settings.assistant.faceMascotDesc': 'Pilih warna maskot yang digunakan di seluruh aplikasi',
-  'settings.assistant.backgroundActivity': 'Aktivitas latar belakang',
+  'settings.assistant.backgroundActivity': 'Bawah sadar',
   'settings.assistant.backgroundActivityDesc':
     'Kontrol seberapa aktif asisten Anda bekerja di latar belakang',
   'settings.assistant.screenAwareness': 'Kesadaran layar',
@@ -361,9 +368,9 @@ const messages: TranslationMap = {
   'skills.explorer.installed': 'Terpasang',
   'skills.explorer.install': 'Pasang',
   'skills.explorer.installing': 'Memasang…',
-  'skills.integrations': 'Aplikasi',
+  'skills.integrations': 'Integrasi Composio',
   'skills.integrationsSubtitle':
-    'Koneksi OAuth berbasis cloud — masuk dengan akun Anda dan token dikelola dengan aman agar agen dapat membaca dan bertindak atas nama Anda. Tidak perlu mengelola API key.',
+    'Koneksi OAuth berbasis cloud — masuk dengan akun Anda dan Composio mengelola token agar agen dapat membaca dan bertindak atas nama Anda. Tidak perlu mengelola API key.',
   'skills.composio.noApiKeyTitle': 'Belum ada API key Composio yang dikonfigurasi',
   'skills.composio.noApiKeyDescription':
     'Mode lokal menggunakan API key Composio milik Anda sendiri. Buka Pengaturan → Lanjutan → Composio untuk menambahkannya sebelum menghubungkan integrasi di sini.',
@@ -1009,6 +1016,12 @@ const messages: TranslationMap = {
   'settings.search.accessBlockAll': 'Blokir semua',
   'settings.search.accessBlockAllHint':
     'Semua akses web diblokir - asisten tidak dapat membuka atau membaca website apapun.',
+  // ─── Settings global search bar ────────────────────────────
+  'settings.settingsSearch.placeholder': 'Cari pengaturan…',
+  'settings.settingsSearch.ariaLabel': 'Cari pengaturan',
+  'settings.settingsSearch.clear': 'Hapus pencarian',
+  'settings.settingsSearch.resultsLabel': 'Hasil pencarian',
+  'settings.settingsSearch.noResults': 'Tidak ada pengaturan yang cocok untuk “{query}”',
   'settings.embeddings.title': 'Sematan',
   'settings.embeddings.description':
     'Pilih penyedia embedding yang mengubah memori menjadi vektor untuk pencarian semantik. Mengubah penyedia, model, atau dimensi membatalkan vektor yang tersimpan dan memerlukan reset memori penuh.',
@@ -1902,7 +1915,7 @@ const messages: TranslationMap = {
   'common.enable': 'Aktifkan',
   'chat.safetyTimeout': 'Tidak ada respons dari agen setelah 2 menit. Coba lagi atau cek koneksi.',
   'chat.filter.general': 'Umum',
-  'chat.filter.subconscious': 'Aktivitas latar belakang',
+  'chat.filter.subconscious': 'Bawah sadar',
   'chat.filter.meetings': 'Rapat',
   'chat.filter.tasks': 'Tugas',
   'chat.selectThread': 'Pilih thread',
@@ -2792,6 +2805,12 @@ const messages: TranslationMap = {
   'conversations.subagent.statusCompleted': 'selesai',
   'conversations.subagent.statusFailed': 'gagal',
   'conversations.subagent.statusAwaitingUser': 'menunggu pengguna',
+  'conversations.agentTaskInsights.title': 'Wawasan tugas agen',
+  'conversations.agentTaskInsights.processSourceTitle': 'Sumber proses agen',
+  'conversations.agentTaskInsights.stepsHeading': 'Langkah',
+  'conversations.agentTaskInsights.sourcesHeading': 'Sumber',
+  'conversations.agentTaskInsights.noSteps': 'Tidak ada langkah yang tercatat',
+  'conversations.agentTaskInsights.viewProcessSource': 'Lihat sumber proses agen lengkap',
   'daemon.serviceBlockingGate.body': 'Isi',
   'daemon.serviceBlockingGate.downloadHint': 'Petunjuk unduhan',
   'daemon.serviceBlockingGate.downloadLatest': 'Unduh Versi Terbaru',
@@ -4270,7 +4289,7 @@ const messages: TranslationMap = {
   'skills.channelIcon.telegram': 'Telegram',
   'skills.channelIcon.web': 'Web',
   'skills.channelIcon.yuanbao': 'Yuanbao',
-  'skills.composio.poweredBy': 'OAuth',
+  'skills.composio.poweredBy': 'Didukung oleh Composio',
   'skills.composio.staleStatusTitle': 'Koneksi menunjukkan status basi',
   'skills.create.allowedTools': 'Tool yang diizinkan',
   'skills.create.allowedToolsHelp': 'Dirender ke frontmatter SKILL.md sebagai',
@@ -4903,7 +4922,7 @@ const messages: TranslationMap = {
   'activity.tabs.automations': 'Otomatisasi',
   'activity.tabs.automationsDescription':
     'Prosedur yang dapat digunakan kembali dan dijalankan — tujuan beserta langkah-langkah untuk mencapainya.',
-  'activity.tabs.backgroundActivity': 'Aktivitas latar belakang',
+  'activity.tabs.backgroundActivity': 'Bawah sadar',
   'activity.tabs.alerts': 'Peringatan',
 
   'intelligence.agents.title': 'Pustaka Agen',
