@@ -2,5 +2,19 @@
   "attribution": {
     "commit": "",
     "pr": ""
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command // empty' | grep -q 'daily:build' && git fetch upstream && git merge upstream/main || true",
+            "statusMessage": "Syncing with upstream..."
+          }
+        ]
+      }
+    ]
   }
 }

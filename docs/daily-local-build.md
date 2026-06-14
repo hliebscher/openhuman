@@ -106,11 +106,13 @@ tail -f target/daily-build/logs/latest.log
 | Ziel | Befehl |
 |------|--------|
 | Remote holen + bauen, **nur bei neuen Commits** | `pnpm daily:build` |
-| **Sofort neu kompilieren** (auch ohne neue Commits) | `pnpm daily:build -- --force` |
-| **Lokal bauen** mit uncommitteten Änderungen | `pnpm daily:build -- --force` oder `--no-sync` |
-| Nur prüfen, nicht bauen | `pnpm daily:build -- --dry-run` |
-| Schneller Debug-Build | `pnpm daily:build -- --debug` |
+| **Sofort neu kompilieren** (auch ohne neue Commits) | `pnpm daily:build --force` |
+| **Lokal bauen** mit uncommitteten Änderungen | `pnpm daily:build --force` oder `--no-sync` |
+| Nur prüfen, nicht bauen | `pnpm daily:build --dry-run` |
+| Schneller Debug-Build | `pnpm daily:build --debug` |
 | Ohne upstream-Merge | `OPENHUMAN_MERGE_UPSTREAM=0 pnpm daily:build` |
+
+> `--` vor den Flags ist mit pnpm ≥ 10 optional (siehe [Abschnitt unten](#pnpm-und-das----trennzeichen)). Beide Schreibweisen funktionieren.
 
 **Ohne pnpm** (direkt, kein `--` nötig):
 
@@ -122,14 +124,21 @@ bash scripts/daily-local-build.sh --dry-run
 
 ### pnpm und das `--`-Trennzeichen
 
-Bei `pnpm` trennt `--` pnpm-Argumente von Skript-Argumenten:
+**Mit pnpm ≥ 10 reichst du Flags direkt durch — `--` ist optional:**
 
 ```bash
-pnpm daily:build -- --force    # richtig
-pnpm daily:build --force       # falsch — pnpm frisst das Flag
+pnpm daily:build --force       # funktioniert (pnpm 10.10.0, verifiziert 2026-06-12)
+pnpm daily:build -- --force    # funktioniert ebenfalls
 ```
 
-Das Skript akzeptiert `--` und leitet die Flags danach weiter.
+Verifizierung:
+
+```bash
+pnpm daily:build --dry-run     # → bash scripts/daily-local-build.sh --dry-run
+pnpm daily:build -- --dry-run  # → bash scripts/daily-local-build.sh -- --dry-run
+```
+
+Das Skript akzeptiert ein führendes `--` und überspringt es, daher ist die Variante mit `--` als Gewohnheit unschädlich. Ältere pnpm-Versionen (< 7) benötigten das `--` zwingend — wer unsicher ist, schreibt es einfach immer hin.
 
 ### Standard-Lauf (mit Git-Sync)
 
@@ -145,10 +154,32 @@ Ablauf:
 3. `upstream/main` mergen und zu `origin` pushen
 4. **Build nur**, wenn sich der Commit danach geändert hat
 
+> **Wichtig — „skipped_up_to_date":** Wenn der lokale Branch bereits den
+> kompletten `upstream/main` enthält (z. B. weil ein früherer Lauf heute Nacht
+> schon gemergt hat), findet Schritt 4 **keinen neuen Commit** und überspringt
+> den Build:
+>
+> ```
+> [daily-build] fast-forwarded with upstream/main
+> [daily-build] fork remote already at HEAD; no push needed
+> [daily-build] no new commits since last sync; skipping build
+> ```
+>
+> `last-build.json` zeigt dann `"status": "skipped_up_to_date"`. Das ist **kein
+> Fehler** — Main ist synchron, es gibt schlicht nichts Neues zu bauen. Willst du
+> trotzdem eine frische `.app`, nimm `--force` (siehe unten).
+>
+> Prüfen, ob wirklich alles drin ist:
+>
+> ```bash
+> git fetch upstream
+> git rev-list --count HEAD..upstream/main   # 0 = vollständig synchron
+> ```
+
 ### Sofort bauen (`--force`)
 
 ```bash
-pnpm daily:build -- --force
+pnpm daily:build --force
 ```
 
 Zwei Fälle:
@@ -163,7 +194,7 @@ Typisch bei lokalen Skript-/Config-Änderungen, die du noch nicht committen will
 ### Nur bauen, kein Git (`--no-sync`)
 
 ```bash
-pnpm daily:build -- --no-sync
+pnpm daily:build --no-sync
 ```
 
 Überspringt `git fetch`, Merge und Push komplett. Baut den **aktuellen Working Tree** — auch mit uncommitteten Änderungen. Sinnvoll, wenn du genau den lokalen Stand testen willst.
@@ -171,13 +202,13 @@ pnpm daily:build -- --no-sync
 ### Erst prüfen, nicht bauen
 
 ```bash
-pnpm daily:build -- --dry-run
+pnpm daily:build --dry-run
 ```
 
 ### Debug-Build (schneller, größere Binary)
 
 ```bash
-pnpm daily:build -- --debug
+pnpm daily:build --debug
 ```
 
 ### Nur Fork, ohne upstream-Merge
@@ -259,9 +290,9 @@ git status --porcelain
 **Lösung A — lokal bauen, Änderungen behalten (empfohlen beim Entwickeln):**
 
 ```bash
-pnpm daily:build -- --force
+pnpm daily:build --force
 # oder explizit ohne Git:
-pnpm daily:build -- --no-sync
+pnpm daily:build --no-sync
 ```
 
 **Lösung B — Working Tree säubern, dann normaler Sync-Build:**
@@ -309,7 +340,7 @@ git fetch upstream origin
 git merge upstream/main
 # Konflikte lösen
 git push origin daily-local-build
-pnpm daily:build -- --force
+pnpm daily:build --force
 ```
 
 ---
@@ -321,11 +352,11 @@ pnpm daily:build -- --force
 git checkout daily-local-build && pnpm install
 pnpm daily:build:install
 
-# ── Manuell bauen ──
+# ── Manuell bauen ── (pnpm ≥ 10: -- vor den Flags ist optional)
 pnpm daily:build                    # sync + bauen (nur bei neuen Commits)
-pnpm daily:build -- --force         # immer bauen; bei dirty tree → lokal ohne sync
-pnpm daily:build -- --no-sync       # kein git, nur aktuellen Stand kompilieren
-pnpm daily:build -- --dry-run       # nur anzeigen, was passieren würde
+pnpm daily:build --force            # immer bauen; bei dirty tree → lokal ohne sync
+pnpm daily:build --no-sync          # kein git, nur aktuellen Stand kompilieren
+pnpm daily:build --dry-run          # nur anzeigen, was passieren würde
 
 # Direkt (ohne pnpm --):
 bash scripts/daily-local-build.sh --force
@@ -341,4 +372,41 @@ openhuman-core --help
 
 # ── App starten ──
 open ~/Applications/OpenHuman\ \(Daily\).app
+```
+
+---
+
+## 7. Verifizierter Ablauf (Worked Example, 2026-06-12)
+
+Konkreter Mitschnitt einer echten Session auf einem **Apple M5 Max** — zeigt
+Build-Dauer, Versionssprünge und das `skipped_up_to_date`-Verhalten in der Praxis.
+
+| # | Befehl | Ergebnis | Dauer |
+|---|--------|----------|-------|
+| 1 | `pnpm daily:build --no-sync` (≙ `bash scripts/daily-local-build.sh --no-sync`) | Build aus aktuellem Tree → **OpenHuman 0.57.33** (`33592058`) | ~7 min |
+| 2 | `pnpm daily:build` | Fetch + Merge `upstream/main` (246 Dateien), Push zu `origin/daily-local-build` (`1ca81b1e`) → **0.57.37** | ~11 min |
+| 3 | `pnpm daily:build` | `upstream/main` schon eingemergt → `no new commits` → **`status: skipped_up_to_date`**, kein Build | ~2 s |
+| 4 | `pnpm daily:build --force` | Sync (nichts Neues) + erzwungener Build → **0.57.37** (`db0c6be4`) | ~3 min |
+
+**Erkenntnisse aus dieser Session:**
+
+- `pnpm daily:build --force` **ohne** `--` reicht das Flag in pnpm 10.10.0 korrekt
+  durch — die frühere Doku-Behauptung („pnpm frisst das Flag") traf für diese
+  Version nicht zu.
+- Lauf #3 war **kein Fehler**: Ein vorheriger (nächtlicher) Lauf hatte
+  `upstream/main` bereits gemergt, deshalb gab es nichts Neues. Verifiziert mit
+  `git rev-list --count HEAD..upstream/main` → `0`.
+- Build-Zeiten: erster Voll-Build ~7–11 min (inkl. CEF-aware `cargo-tauri` ggf.
+  neu installieren); reiner Re-Build bei warmem Cache ~3 min.
+- ESLint-Schritt gibt aus dem Upstream-Code viele
+  `react-hooks/set-state-in-effect`-**Warnings** aus — das sind Warnungen, keine
+  Errors, und blockieren den Build nicht.
+
+**Artefakte nach Lauf #4:**
+
+```
+app/src-tauri/target/aarch64-apple-darwin/release/bundle/macos/OpenHuman.app
+app/src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/OpenHuman_0.57.37_arm64.dmg
+~/Applications/OpenHuman (Daily).app   (Symlink)
+~/.local/bin/openhuman-core            (CLI-Symlink)
 ```
