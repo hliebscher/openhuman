@@ -125,7 +125,7 @@ fn run_dump_all(args: &[String]) -> Result<()> {
         .thread_stack_size(crate::core::runtime::AGENT_WORKER_STACK_BYTES)
         .build()?;
     log::debug!("[agent-cli] run_dump_all: calling dump_all_agent_prompts");
-    let dumps = rt.block_on(async {
+    let dumps: Vec<_> = rt.block_on(async {
         dump_all_agent_prompts(flags.workspace.clone(), flags.model.clone()).await
     })?;
     log::debug!(
@@ -312,7 +312,7 @@ fn print_json(dumped: &DumpedPrompt, with_tools: bool) -> Result<()> {
     obj.insert(
         "toolkit".into(),
         match &dumped.toolkit {
-            Some(tk) => serde_json::Value::String(tk.clone()),
+            Some(tk) => serde_json::Value::String(String::from(tk)),
             None => serde_json::Value::Null,
         },
     );

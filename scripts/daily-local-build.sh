@@ -434,6 +434,11 @@ build_app() {
   log "fork: $REMOTE_REF"
 }
 
+cleanup_build_artifacts() {
+  log "cleaning up build artifacts..."
+  "$SCRIPT_DIR/cleanup-builds.sh" 2>&1 | sed 's/^/[cleanup] /'
+}
+
 main() {
   acquire_lock
   log "starting daily build (mode=$BUILD_MODE force=$FORCE dry_run=$DRY_RUN)"
@@ -443,6 +448,7 @@ main() {
   ensure_sync_remote
   sync_from_fork
   build_app
+  cleanup_build_artifacts
 }
 
 main "$@"

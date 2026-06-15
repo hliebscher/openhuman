@@ -20,7 +20,7 @@
 
 pub mod bus;
 pub mod cost;
-pub mod debug;
+// pub mod debug;
 pub mod dispatcher;
 pub mod error;
 pub mod harness;
