@@ -8,12 +8,13 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 echo "[cleanup] Removing build artifacts..."
 
-# Remove all debug/ directories
-find "$REPO_ROOT" -type d -name "debug" 2>/dev/null | xargs rm -rf 2>/dev/null || true
+# Remove debug/ build directories (scoped to target/ — never touch source dirs
+# like src/openhuman/agent/debug/)
+find "$REPO_ROOT" -type d -path "*/target/*" -name "debug" 2>/dev/null | xargs rm -rf 2>/dev/null || true
 echo "[cleanup] ✓ debug/ directories"
 
-# Remove all incremental/ cache
-find "$REPO_ROOT" -type d -name "incremental" 2>/dev/null | xargs rm -rf 2>/dev/null || true
+# Remove incremental/ cache (scoped to target/)
+find "$REPO_ROOT" -type d -path "*/target/*" -name "incremental" 2>/dev/null | xargs rm -rf 2>/dev/null || true
 echo "[cleanup] ✓ incremental/ cache"
 
 # Remove old .a and .rlib files (keep only latest)
