@@ -2620,6 +2620,21 @@ const messages: TranslationMap = {
     'Przepraszamy — coś poszło nie tak po naszej stronie. Staramy się rejestrować takie błędy automatycznie, ale udostępnienie szczegółów na Discord pomaga nam szybciej je naprawić.',
   'app.openhumanLink.discordReport.openDiscord': 'Otwórz Discord',
   'app.openhumanLink.done': 'Gotowe',
+  'app.openhumanLink.notifications.desktopOnly':
+    'Natywne powiadomienia są dostępne tylko w aplikacji desktopowej (uruchom `pnpm dev:app`).',
+  'app.openhumanLink.notifications.permissionOff':
+    'Uprawnienie do powiadomień jest wyłączone. Włącz OpenHuman w Ustawieniach systemu → Powiadomienia, a następnie spróbuj ponownie.',
+  'app.openhumanLink.notifications.triggerFailed':
+    'OpenHuman nie mógł wywołać powiadomienia systemowego. Sprawdź ustawienia powiadomień systemu operacyjnego i spróbuj ponownie.',
+  'app.openhumanLink.notifications.welcomeBody':
+    'Otrzymasz tutaj powiadomienia, gdy coś będzie wymagać Twojej uwagi.',
+  'app.openhumanLink.notifications.welcomeTitle': 'OpenHuman jest gotowy do pracy',
+  'app.openhumanLink.status.closed': 'Zamknięte',
+  'app.openhumanLink.status.connected': 'Połączono',
+  'app.openhumanLink.status.error': 'Błąd',
+  'app.openhumanLink.status.loading': 'Ładowanie…',
+  'app.openhumanLink.status.needsSignIn': 'Wymagane logowanie',
+  'app.openhumanLink.status.timedOut': 'Przekroczono czas',
   'app.openhumanLink.loadingChannelSetup': 'Wczytywanie konfiguracji kanału',
   'app.openhumanLink.maybeLater': 'Może później',
   'app.openhumanLink.notifications.asking': 'Pytanie systemu operacyjnego…',
@@ -5293,6 +5308,11 @@ const messages: TranslationMap = {
   'modelCouncil.modelPickerHelp':
     'Wybierz wskazówkę routingu lub przypnij dokładny model dostawcy.',
   'modelCouncil.closeModelPicker': 'Close',
+  'modelCouncil.hint.chat': 'Czat',
+  'modelCouncil.hint.code': 'Kod',
+  'modelCouncil.hint.default': 'Domyślny',
+  'modelCouncil.hint.reasoning': 'Rozumowanie',
+  'modelCouncil.hint.summarize': 'Podsumowanie',
   'modelCouncil.modelPickerHints': 'Hints',
   'modelCouncil.modelPickerProviderModel': 'Dostawca + model',
   'modelCouncil.modelProviderLabel': 'Dostawca modelu',
