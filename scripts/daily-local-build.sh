@@ -38,7 +38,7 @@ FORCE=0
 DRY_RUN=0
 NO_SYNC=0
 BUILD_MODE="release"
-APPLICATIONS_LINK="${HOME}/Applications/OpenHuman Daily.app"
+APPLICATIONS_LINK="${HOME}/Applications/OpenHuman.app"
 # Daily builds are Apple Silicon (arm64) only — no x86_64 / universal artifacts.
 MACOS_TARGET="${OPENHUMAN_MACOS_TARGET:-aarch64-apple-darwin}"
 ARCH_LABEL="arm64"
