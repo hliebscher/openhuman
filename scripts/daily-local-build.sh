@@ -38,7 +38,7 @@ FORCE=0
 DRY_RUN=0
 NO_SYNC=0
 BUILD_MODE="release"
-APPLICATIONS_LINK="${HOME}/Applications/OpenHuman.app"
+APPLICATIONS_LINK="/Applications/OpenHuman.app"
 # Daily builds are Apple Silicon (arm64) only — no x86_64 / universal artifacts.
 MACOS_TARGET="${OPENHUMAN_MACOS_TARGET:-aarch64-apple-darwin}"
 ARCH_LABEL="arm64"
@@ -73,6 +73,16 @@ ln -sfn "$LOG_FILE" "$LOG_DIR/latest.log"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 log() { echo "[daily-build] $(date '+%Y-%m-%d %H:%M:%S') $*" >&2; }
+
+check_sudo_access() {
+  if [[ "$APPLICATIONS_LINK" == /Applications/* ]]; then
+    log "checking sudo access for /Applications..."
+    if ! sudo -n true 2>/dev/null; then
+      echo "[daily-build] sudo required to copy app to $APPLICATIONS_LINK"
+      sudo -v
+    fi
+  fi
+}
 
 acquire_lock() {
   if ! mkdir "$LOCK_FILE" 2>/dev/null; then
@@ -419,9 +429,15 @@ build_app() {
   xattr -dr com.apple.quarantine "$app_path" 2>/dev/null || true
 
   log "copying launcher to $APPLICATIONS_LINK"
-  rm -rf "$APPLICATIONS_LINK"
-  cp -R "$app_path" "$APPLICATIONS_LINK"
-  xattr -dr com.apple.quarantine "$APPLICATIONS_LINK" 2>/dev/null || true
+  if [[ "$APPLICATIONS_LINK" == /Applications/* ]]; then
+    sudo rm -rf "$APPLICATIONS_LINK"
+    sudo cp -R "$app_path" "$(dirname "$APPLICATIONS_LINK")"
+    sudo xattr -dr com.apple.quarantine "$APPLICATIONS_LINK" 2>/dev/null || true
+  else
+    rm -rf "$APPLICATIONS_LINK"
+    cp -R "$app_path" "$APPLICATIONS_LINK"
+    xattr -dr com.apple.quarantine "$APPLICATIONS_LINK" 2>/dev/null || true
+  fi
 
   local sha
   sha="$(git rev-parse HEAD)"
@@ -443,6 +459,7 @@ cleanup_build_artifacts() {
 
 main() {
   acquire_lock
+  check_sudo_access
   log "starting daily build (mode=$BUILD_MODE force=$FORCE dry_run=$DRY_RUN)"
   log "repo: $REPO_ROOT"
   log "log file: $LOG_FILE"
