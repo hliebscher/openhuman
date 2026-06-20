@@ -86,8 +86,10 @@ export interface AgentQueryParams {
 
 export interface AgentCard {
   agentId: string;
+  cryptoId?: string;
   name?: string;
   description?: string;
+  username?: string;
   [key: string]: unknown;
 }
 
@@ -97,6 +99,9 @@ export interface ListAgentsResponse {
 }
 
 export interface ExplorerOverview {
+  allTime?: { feesUsd?: string; registeredAgents?: number; volumeUsd?: string };
+  last24h?: { feesUsd?: string; transactions?: number; uniqueAgents?: number; volumeUsd?: string };
+  ledger?: { totalEntries?: number; latestTxId?: string; latestTimestamp?: string };
   [key: string]: unknown;
 }
 
@@ -666,6 +671,8 @@ export interface GroupQueryParams {
   minMembers?: number;
   maxMembers?: number;
   limit?: number;
+  /** When set, returns only groups this agent is an active member of. */
+  member?: string;
   [key: string]: unknown;
 }
 // ── Groups invite/role types ────────────────────────────────────────────────
@@ -1166,6 +1173,39 @@ export interface GqlJobPosting {
 export interface GqlJobListResult {
   jobs: GqlJobPosting[];
   count: number;
+}
+
+/** Reward block on a GraphQL bounty (amount in the asset's smallest base unit). */
+export interface GqlBountyReward {
+  amount: string;
+  asset: string;
+  network: string;
+}
+
+/** A bounty as returned by the tiny.place GraphQL gateway. */
+export interface GqlBounty {
+  bountyId: string;
+  creator: string;
+  title: string;
+  description: string;
+  reward: GqlBountyReward;
+  status: string;
+  submissionCount: number;
+  commentCount: number;
+  winnerSubmissionId?: string;
+  winnerAgent?: string;
+  startAt: string;
+  deadline: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Filters for the GraphQL bounties query (all optional). */
+export interface GqlBountyQueryParams {
+  status?: string;
+  creator?: string;
+  limit?: number;
+  offset?: number;
 }
 
 /**
@@ -1790,13 +1830,6 @@ export function createInvokeApiClient() {
           durationDays: params.durationDays ?? null,
           confirmed: opts?.confirmed ?? false,
         }),
-      /** Fund a bounty via x402 confirm-before-spend. confirmed:false returns
-       *  the challenge (no spend); confirmed:true pays and funds. */
-      fund: (bountyId: string, opts?: { confirmed?: boolean }) =>
-        call<X402BuyResult>('openhuman.tinyplace_bounties_fund', {
-          bountyId,
-          confirmed: opts?.confirmed ?? false,
-        }),
       cancel: (bountyId: string) =>
         call<Bounty>('openhuman.tinyplace_bounties_cancel', { bountyId }),
       submit: (bountyId: string, url: string, title?: string, note?: string) =>
@@ -1985,6 +2018,9 @@ export function createInvokeApiClient() {
         call<GqlJobListResult>('openhuman.tinyplace_graphql_jobs', { params: params ?? null }),
       /** Fetch a single job posting by ID (public, no auth). */
       job: (id: string) => call<GqlJobPosting | null>('openhuman.tinyplace_graphql_job', { id }),
+      bounties: (params?: GqlBountyQueryParams) =>
+        call<GqlBounty[]>('openhuman.tinyplace_graphql_bounties', { params: params ?? null }),
+      bounty: (id: string) => call<GqlBounty | null>('openhuman.tinyplace_graphql_bounty', { id }),
       /** Fetch a full GqlProfile by @handle (public GraphQL). */
       profile: (username: string) =>
         call<GqlProfile | null>('openhuman.tinyplace_graphql_profile', { username }),

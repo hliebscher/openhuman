@@ -239,7 +239,7 @@ describe('Register tab — x402 registration', () => {
     expect(screen.getByTestId('x402-confirm')).toBeEnabled();
   });
 
-  test('insufficient balance disables the confirm button', async () => {
+  test('insufficient balance swaps Pay for an Add-funds redirect', async () => {
     vi.mocked(apiClient.registry.register).mockResolvedValueOnce({
       challenge: { amount: FREE_AMOUNT, asset: 'USDC', network: 'solana-devnet' },
       walletBalance: { raw: '1000000', formatted: '1', decimals: 6, assetSymbol: 'USDC' },
@@ -249,7 +249,9 @@ describe('Register tab — x402 registration', () => {
     await checkAndRegister('buyer');
 
     expect(await screen.findByTestId('x402-insufficient')).toBeInTheDocument();
-    expect(screen.getByTestId('x402-confirm')).toBeDisabled();
+    // The disabled Pay button is replaced by an Add-funds action.
+    expect(screen.queryByTestId('x402-confirm')).not.toBeInTheDocument();
+    expect(screen.getByTestId('x402-add-funds')).toBeInTheDocument();
   });
 
   test('confirmed:true success renders the registered identity + explorer link', async () => {
@@ -369,6 +371,119 @@ describe('Register tab — x402 registration', () => {
     expect(await screen.findByTestId('register-error')).toHaveTextContent(
       'Registration did not complete.'
     );
+  });
+});
+
+// ── Register tab — post-registration directory refresh ─────────────────────────
+//
+// After a successful registration (free-tier or paid), the parent increments
+// `registryKey` via `bumpRegistryKey` → `RegistryTab` remounts → the directory
+// fetch re-runs and surfaces the newly published agent card.
+
+describe('Register tab — post-registration directory refresh', () => {
+  beforeEach(() => {
+    vi.mocked(apiClient.registry.get).mockResolvedValue({ available: true, name: '@buyer' });
+  });
+
+  test('free-tier success: Registry tab re-fetches and shows new card', async () => {
+    // RegistryTab calls list() once per mount. After registration bumps the
+    // registry key, it remounts and calls list() again with the updated response.
+    vi.mocked(apiClient.directoryIdentities.list)
+      .mockResolvedValueOnce({ identities: [] })
+      .mockResolvedValueOnce({
+        identities: [
+          {
+            listingId: 'new-id-1',
+            name: '@buyer',
+            price: { amount: '10', asset: 'USDC' },
+            updatedAt: '2026-06-01T00:00:00Z',
+            status: 'active',
+          },
+        ],
+      });
+    vi.mocked(apiClient.registry.register).mockResolvedValueOnce({
+      identity: { username: '@buyer' },
+    });
+
+    render(<IdentitiesSection />);
+    // Navigate to Registry first so it fetches the initial (empty) list.
+    await gotoTab('Registry');
+    expect(
+      await screen.findByText(/No directory identities are currently listed/)
+    ).toBeInTheDocument();
+
+    // Go back to Register tab and trigger free-tier registration.
+    await gotoTab('Register');
+    await checkAndRegister('buyer');
+    expect(await screen.findByTestId('register-success')).toBeInTheDocument();
+
+    // Navigate to Registry tab again — RegistryTab remounts with new key,
+    // re-fetches, and the new card appears.
+    await gotoTab('Registry');
+    expect(await screen.findByText('@buyer')).toBeInTheDocument();
+    // list() was called twice: once on initial Registry mount, once on remount.
+    expect(apiClient.directoryIdentities.list).toHaveBeenCalledTimes(2);
+  });
+
+  test('paid registration success: Registry tab re-fetches and shows new card', async () => {
+    vi.mocked(apiClient.directoryIdentities.list)
+      .mockResolvedValueOnce({ identities: [] })
+      .mockResolvedValueOnce({
+        identities: [
+          {
+            listingId: 'new-id-2',
+            name: '@buyer',
+            price: { amount: '10', asset: 'USDC' },
+            updatedAt: '2026-06-01T00:00:00Z',
+            status: 'active',
+          },
+        ],
+      });
+    vi.mocked(apiClient.registry.register)
+      .mockResolvedValueOnce({
+        challenge: { amount: FREE_AMOUNT, asset: 'USDC', network: 'solana-devnet' },
+        walletBalance: { raw: '50000000', formatted: '50', decimals: 6, assetSymbol: 'USDC' },
+        walletAddress: 'WaLLetdeadbeef0123456789',
+      })
+      .mockResolvedValueOnce({
+        identity: { username: '@buyer' },
+        payment: { onChainTx: 'TxSig999' },
+      });
+
+    render(<IdentitiesSection />);
+    // Navigate to Registry first to consume the initial (empty) list response.
+    await gotoTab('Registry');
+    expect(
+      await screen.findByText(/No directory identities are currently listed/)
+    ).toBeInTheDocument();
+
+    // Go back to Register tab and complete paid registration.
+    await gotoTab('Register');
+    await checkAndRegister('buyer');
+    await userEvent.click(await screen.findByTestId('x402-confirm'));
+    expect(await screen.findByTestId('register-success')).toBeInTheDocument();
+
+    // Navigate to Registry tab — RegistryTab remounts and shows the new card.
+    await gotoTab('Registry');
+    expect(await screen.findByText('@buyer')).toBeInTheDocument();
+    expect(apiClient.directoryIdentities.list).toHaveBeenCalledTimes(2);
+  });
+
+  test('failed registration does not bump registry key (no extra remount)', async () => {
+    vi.mocked(apiClient.directoryIdentities.list).mockResolvedValue({ identities: [] });
+    vi.mocked(apiClient.registry.register).mockRejectedValueOnce(new Error('probe-failed'));
+
+    render(<IdentitiesSection />);
+    // Trigger a failed registration.
+    await checkAndRegister('buyer');
+    expect(await screen.findByTestId('register-error')).toBeInTheDocument();
+
+    // Navigate to Registry tab — only one list() call (normal mount, no extra bump).
+    await gotoTab('Registry');
+    expect(
+      await screen.findByText(/No directory identities are currently listed/)
+    ).toBeInTheDocument();
+    expect(apiClient.directoryIdentities.list).toHaveBeenCalledTimes(1);
   });
 });
 
